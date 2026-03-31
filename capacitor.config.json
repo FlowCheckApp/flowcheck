@@ -1,0 +1,14 @@
+{
+  "appId": "com.brandon.flowcheck",
+  "appName": "FlowCheck",
+  "webDir": "public",
+  "plugins": {
+    "Purchases": {
+      "apiKey": "appl_uXPDYRZDWiuLWcHfmesBUwKHmOQ"
+    }
+  },
+  "packageClassList": [
+    "PreferencesPlugin",
+    "PurchasesPlugin"
+  ]
+}

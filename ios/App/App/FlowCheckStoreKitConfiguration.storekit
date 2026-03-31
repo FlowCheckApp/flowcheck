@@ -1,0 +1,118 @@
+{
+  "identifier" : "FlowCheckStoreKit",
+  "nonConsumableProducts" : [
+
+  ],
+  "nonRenewingSubscriptionProducts" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+    "_applicationInternalID" : "com.brandon.flowcheck",
+    "_developerTeamID" : "WGX2CUMPQ4",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Win-Back Offer"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "FlowCheckPremiumGroup",
+      "localizations" : [
+        {
+          "description" : "Full access to all FlowCheck Premium features",
+          "displayName" : "FlowCheck Premium",
+          "locale" : "en_US"
+        }
+      ],
+      "name" : "FlowCheck Premium",
+      "products" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "2.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "premium_monthly_001",
+          "introductoryOffer" : null,
+          "locale" : "en_US",
+          "localizations" : [
+            {
+              "description" : "Unlock all FlowCheck Premium features, billed monthly.",
+              "displayName" : "Monthly Premium",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "premium_monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Monthly Premium",
+          "subscriptionGroupID" : "FlowCheckPremiumGroup",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "14.99",
+          "familyShareable" : false,
+          "groupNumber" : 2,
+          "internalID" : "premium_yearly_001",
+          "introductoryOffer" : null,
+          "locale" : "en_US",
+          "localizations" : [
+            {
+              "description" : "Unlock all FlowCheck Premium features, billed yearly. Save 58%!",
+              "displayName" : "Yearly Premium",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "premium_yearly",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Yearly Premium",
+          "subscriptionGroupID" : "FlowCheckPremiumGroup",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 2,
+    "minor" : 0
+  }
+}
