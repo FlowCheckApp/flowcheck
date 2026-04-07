@@ -23,9 +23,14 @@ module.exports = async (req, res) => {
   try {
     const user = await requireUser(req);
 
-    const plaidDeleted = await deleteAllPlaidItems(user.uid);
-    await db.collection('userEmailState').doc(user.uid).delete().catch(() => {});
-    await deleteCollectionByUser('emailLogs', user.uid).catch(() => {});
+    let plaidDeleted = 0;
+    try {
+      plaidDeleted = await deleteAllPlaidItems(user.uid);
+      await db.collection('userEmailState').doc(user.uid).delete().catch(() => {});
+      await deleteCollectionByUser('emailLogs', user.uid).catch(() => {});
+    } catch (error) {
+      console.warn('[delete_account] Firestore cleanup skipped:', error.message || error);
+    }
 
     try {
       await auth.deleteUser(user.uid);

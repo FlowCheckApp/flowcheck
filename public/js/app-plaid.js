@@ -226,7 +226,14 @@ function rPlaid() {
 
 // ── LAUNCH PLAID LINK ──
 function launchPlaid(type) {
-  if (!requireSignedInForPlaid()) return;
+  if (!requireSignedInForPlaid()) {
+    try {
+      if (typeof obShowOverlay === 'function') obShowOverlay();
+      if (typeof obPg === 'function') obPg('ob-signin');
+      else if (typeof openAuth === 'function') openAuth('signin');
+    } catch (e) {}
+    return;
+  }
   if (typeof toast === 'function') toast('Opening Plaid…');
   if (!FC_PLAID.BACKEND_URL) FC_PLAID.BACKEND_URL = 'https://getflowcheck.app';
   getLinkToken(type);
@@ -253,7 +260,7 @@ function getLinkToken(type) {
   if (btn) { btn.textContent = 'Connecting…'; btn.disabled = true; }
 
   console.log('FlowCheck: requesting link token from', url);
-  refreshAuthTokenIfNeeded(true).catch(function(){ return null; }).then(function(){
+  ensureFreshAuthToken(true).then(function() {
     return authFetchWithBackendFallback(path, {
       method: 'POST',
       body: JSON.stringify({})
