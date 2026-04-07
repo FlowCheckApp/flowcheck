@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlowCheck — Connecting your bank...</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0a0a0a;
+    color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+    padding: 32px;
+  }
+  .icon {
+    width: 80px;
+    height: 80px;
+    background: rgba(245,166,35,.1);
+    border: 1.5px solid rgba(245,166,35,.25);
+    border-radius: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 36px;
+  }
+  h1 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: -.3px;
+  }
+  p {
+    font-size: 15px;
+    color: rgba(255,255,255,.45);
+    line-height: 1.6;
+    max-width: 280px;
+  }
+  .spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba(245,166,35,.2);
+    border-top-color: #F5A623;
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+    margin: 28px auto 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+  <div class="icon">🏦</div>
+  <h1>Connecting your bank...</h1>
+  <p>Completing your secure bank connection. You'll be returned to FlowCheck automatically.</p>
+  <div class="spinner"></div>
+
+  <script>
+    // When Plaid OAuth redirect lands here, hand control back to Plaid Link
+    // The receivedRedirectUri is the full current URL including query params
+    (function() {
+      var receivedRedirectUri = window.location.href;
+
+      // If opened inside the app's webview, post message back
+      if (window.opener) {
+        window.opener.postMessage({
+          type: 'plaid_oauth_redirect',
+          redirectUri: receivedRedirectUri
+        }, '*');
+        window.close();
+        return;
+      }
+
+      // If in Capacitor webview
+      if (window.Capacitor) {
+        window.dispatchEvent(new CustomEvent('plaid_oauth_redirect', {
+          detail: { redirectUri: receivedRedirectUri }
+        }));
+        return;
+      }
+
+      // Fallback: try to reinitialize Plaid Link with the redirect URI
+      // This handles the case where the page is loaded in the same window
+      if (window.Plaid) {
+        var handler = window.Plaid.create({
+          token: null,
+          receivedRedirectUri: receivedRedirectUri,
+          onSuccess: function(public_token, metadata) {
+            // Post back to the app
+            if (window.opener) {
+              window.opener.postMessage({
+                type: 'plaid_success',
+                public_token: public_token,
+                metadata: metadata
+              }, '*');
+              window.close();
+            }
+          },
+          onExit: function() {
+            if (window.opener) window.close();
+          }
+        });
+        handler.open();
+      }
+    })();
+  </script>
+</body>
+</html>
