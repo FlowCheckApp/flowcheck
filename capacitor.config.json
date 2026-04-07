@@ -7,8 +7,15 @@
       "apiKey": "appl_uXPDYRZDWiuLWcHfmesBUwKHmOQ"
     }
   },
-  "packageClassList": [
-    "PreferencesPlugin",
-    "PurchasesPlugin"
-  ]
+  "server": {
+    "allowNavigation": [
+      "identitytoolkit.googleapis.com",
+      "*.googleapis.com",
+      "*.firebase.com",
+      "*.firebaseapp.com",
+      "getflowcheck.app",
+      "flowcheck-one.vercel.app",
+      "*.plaid.com"
+    ]
+  }
 }

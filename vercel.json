@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "functions": {
+    "api/*.js": {
+      "includeFiles": "node_modules/firebase-admin/**"
+    }
+  },
+  "routes": [
+    { "src": "/api/create-link-token", "dest": "/api/create-link-token.js" },
+    { "src": "/api/exchange-token",    "dest": "/api/exchange_token.js" },
+    { "src": "/api/disconnect-item",   "dest": "/api/disconnect_item.js" },
+    { "src": "/api/delete-account",    "dest": "/api/delete_account.js" },
+    { "src": "/api/migrate-plaid-item","dest": "/api/migrate_plaid_item.js" },
+    { "src": "/api/transactions",      "dest": "/api/transactions.js" },
+    { "src": "/api/liabilities",       "dest": "/api/liabilities.js" },
+    { "src": "/api/balance",           "dest": "/api/balance.js" },
+    { "src": "/api/health",            "dest": "/api/health.js" },
+    { "src": "/api/send-email",        "dest": "/api/send_email.js" },
+    { "src": "/api/email/(.*)",        "dest": "/api/email.js" }
+  ],
+  "crons": [
+    {
+      "path": "/api/email/scheduler",
+      "schedule": "0 9 * * *"
+    }
+  ]
+}
