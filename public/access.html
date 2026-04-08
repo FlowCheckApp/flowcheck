@@ -44,6 +44,12 @@
       50% { transform: translateY(-7px); }
     }
 
+    @keyframes portalFocus {
+      0% { transform: scale(0.992); border-color: rgba(255,255,255,0.07); box-shadow: var(--shadow); }
+      45% { transform: scale(1); border-color: rgba(255,191,82,0.32); box-shadow: 0 24px 56px rgba(243,174,61,.2); }
+      100% { transform: scale(1); border-color: rgba(255,255,255,0.07); box-shadow: var(--shadow); }
+    }
+
     .reveal-1,
     .reveal-2,
     .reveal-3 {
@@ -121,6 +127,9 @@
         var(--panel);
       border:1px solid var(--line); box-shadow: var(--shadow);
       animation: drift 8s ease-in-out infinite;
+    }
+    .portal.mode-spotlight {
+      animation: portalFocus .5s cubic-bezier(0.22, 1, 0.36, 1), drift 8s ease-in-out infinite;
     }
     .portal-top {
       padding: 18px 20px; border-radius: 22px; background: var(--panel-soft); border:1px solid var(--line); margin-bottom:18px;
@@ -236,6 +245,39 @@
       border: 1px solid var(--line);
       color: var(--muted);
       font-size: .86rem;
+    }
+    .member-download {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(255,191,82,0.08), rgba(255,255,255,0.03));
+      border: 1px solid var(--line-gold);
+    }
+    .member-download small {
+      display:block;
+      color:var(--gold);
+      font-size:.76rem;
+      font-weight:700;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+    }
+    .member-download strong {
+      display:block;
+      margin-top:10px;
+      font-size:1.08rem;
+      letter-spacing:-.02em;
+    }
+    .member-download span {
+      display:block;
+      margin-top:8px;
+      color:var(--soft);
+      line-height:1.6;
+    }
+    .member-download-actions {
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:16px;
     }
     @media (max-width: 1040px) {
       .layout, .member-grid, .portal-trust { grid-template-columns:1fr; }
@@ -398,8 +440,16 @@
                 <span>Email <a href="mailto:flowcheckapp.help@outlook.com" style="color:var(--gold);">flowcheckapp.help@outlook.com</a> if you need help.</span>
               </div>
             </div>
+            <div class="member-download">
+              <small>Next Step</small>
+              <strong>Take your account into the full FlowCheck experience.</strong>
+              <span>Linked accounts, transactions, recurring charges, and your calm daily money plan all come together inside the iPhone app.</span>
+              <div class="member-download-actions">
+                <a class="button button-primary" href="/index.html">Open FlowCheck App</a>
+                <a class="button button-secondary" href="https://apps.apple.com/us/search?term=FlowCheck" target="_blank" rel="noopener">Download on the App Store</a>
+              </div>
+            </div>
             <div class="member-actions">
-              <a class="button button-primary" href="/index.html">Open FlowCheck App</a>
               <button class="button button-secondary" type="button" onclick="siteSignOut()">Sign Out</button>
             </div>
           </div>
@@ -410,9 +460,28 @@
 
   <script src="/js/app-auth.js"></script>
   <script>
-    function scrollToPortal() {
+    function getPortalMode() {
+      var hash = String(window.location.hash || '').toLowerCase();
+      return hash === '#signin' ? 'signin' : 'signup';
+    }
+
+    function updatePortalHash(kind) {
+      var nextHash = '#' + (kind === 'signin' ? 'signin' : 'signup');
+      if (window.location.hash === nextHash) return;
+      try {
+        history.replaceState(null, '', nextHash);
+      } catch (e) {
+        window.location.hash = nextHash;
+      }
+    }
+
+    function scrollToPortal(force) {
       var portal = document.querySelector('.portal');
-      if (portal) portal.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (!portal) return;
+      var rect = portal.getBoundingClientRect();
+      var inView = rect.top >= 0 && rect.top <= window.innerHeight * 0.42;
+      if (!force && inView) return;
+      portal.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     function setHeroMode(kind) {
@@ -422,6 +491,17 @@
       var signup = kind === 'signup';
       createBtn.classList.toggle('is-secondary', !signup);
       signInBtn.classList.toggle('is-secondary', signup);
+    }
+
+    function spotlightPortal() {
+      var portal = document.querySelector('.portal');
+      if (!portal) return;
+      portal.classList.remove('mode-spotlight');
+      void portal.offsetWidth;
+      portal.classList.add('mode-spotlight');
+      setTimeout(function() {
+        portal.classList.remove('mode-spotlight');
+      }, 700);
     }
 
     function focusPortalField(kind) {
@@ -439,8 +519,9 @@
 
     function openPortalMode(kind) {
       showAuthPanel(kind);
-      setHeroMode(kind);
-      scrollToPortal();
+      updatePortalHash(kind);
+      scrollToPortal(false);
+      spotlightPortal();
       focusPortalField(kind);
     }
 
@@ -453,6 +534,7 @@
       document.getElementById('tabSignup').setAttribute('aria-selected', signup ? 'true' : 'false');
       document.getElementById('tabSignin').setAttribute('aria-selected', signup ? 'false' : 'true');
       setHeroMode(kind);
+      updatePortalHash(kind);
       clearStatuses();
     }
 
@@ -576,7 +658,7 @@
     }
 
     window.addEventListener('DOMContentLoaded', function() {
-      setHeroMode('signup');
+      showAuthPanel(getPortalMode());
       hydrateMemberState();
       var email = '';
       try {
@@ -587,6 +669,10 @@
         var input = document.getElementById('site-signin-email');
         if (input) input.value = email;
       }
+    });
+
+    window.addEventListener('hashchange', function() {
+      showAuthPanel(getPortalMode());
     });
   </script>
 </body>
