@@ -197,6 +197,12 @@
       background: linear-gradient(180deg, #ffcd69, #eda62f);
       box-shadow: 0 14px 34px rgba(243,174,61,.18);
     }
+    .button-inline.is-secondary {
+      color: var(--text);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: none;
+    }
     .helper-row { display:flex; justify-content:space-between; gap:12px; align-items:center; margin:10px 0 0; flex-wrap:wrap; }
     .helper-row button { border:0; background:transparent; color:var(--gold); font:inherit; cursor:pointer; padding:0; }
     .terms { margin:14px 0 0; color:var(--soft); font-size:.92rem; line-height:1.6; }
@@ -281,8 +287,8 @@
           Create your FlowCheck account, return to it later, or recover access in one focused place built purely for conversion and trust.
         </p>
         <div class="member-actions reveal-3" style="margin-top:22px;">
-          <button class="button button-inline" type="button" onclick="showAuthPanel('signup'); scrollToPortal();">Create Account</button>
-          <button class="button button-secondary" type="button" onclick="showAuthPanel('signin'); scrollToPortal();">Sign In</button>
+          <button id="heroCreateBtn" class="button button-inline" type="button" onclick="openPortalMode('signup')">Create Account</button>
+          <button id="heroSignInBtn" class="button button-inline is-secondary" type="button" onclick="openPortalMode('signin')">Sign In</button>
         </div>
         <div class="quick-meta reveal-3">
           <span class="meta-pill">7-day premium trial</span>
@@ -409,6 +415,35 @@
       if (portal) portal.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
+    function setHeroMode(kind) {
+      var createBtn = document.getElementById('heroCreateBtn');
+      var signInBtn = document.getElementById('heroSignInBtn');
+      if (!createBtn || !signInBtn) return;
+      var signup = kind === 'signup';
+      createBtn.classList.toggle('is-secondary', !signup);
+      signInBtn.classList.toggle('is-secondary', signup);
+    }
+
+    function focusPortalField(kind) {
+      var targetId = kind === 'signin' ? 'site-signin-email' : 'site-signup-name';
+      var target = document.getElementById(targetId);
+      if (!target) return;
+      setTimeout(function() {
+        try {
+          target.focus({ preventScroll: true });
+        } catch (e) {
+          target.focus();
+        }
+      }, 180);
+    }
+
+    function openPortalMode(kind) {
+      showAuthPanel(kind);
+      setHeroMode(kind);
+      scrollToPortal();
+      focusPortalField(kind);
+    }
+
     function showAuthPanel(kind) {
       var signup = kind === 'signup';
       document.getElementById('panelSignup').classList.toggle('active', signup);
@@ -417,6 +452,7 @@
       document.getElementById('tabSignin').classList.toggle('active', !signup);
       document.getElementById('tabSignup').setAttribute('aria-selected', signup ? 'true' : 'false');
       document.getElementById('tabSignin').setAttribute('aria-selected', signup ? 'false' : 'true');
+      setHeroMode(kind);
       clearStatuses();
     }
 
@@ -540,6 +576,7 @@
     }
 
     window.addEventListener('DOMContentLoaded', function() {
+      setHeroMode('signup');
       hydrateMemberState();
       var email = '';
       try {
