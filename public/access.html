@@ -261,6 +261,23 @@
     .mini span { display:block; color:var(--soft); line-height:1.55; font-size:.92rem; }
     .member { display:none; }
     .member.active { display:block; }
+    body.member-logged-in .support-card {
+      display: none;
+    }
+    body.member-logged-in .footer-note {
+      display: none;
+    }
+    body.member-logged-in .hero {
+      max-width: 860px;
+      margin-bottom: 18px;
+    }
+    body.member-logged-in .access-layout {
+      max-width: 860px;
+      grid-template-columns: 1fr;
+    }
+    body.member-logged-in #authState {
+      display: none !important;
+    }
     .member-card {
       padding: 24px;
       border-radius: 28px;
@@ -286,6 +303,31 @@
     .member-actions .button {
       width:auto;
       min-width: 210px;
+    }
+    .member-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .member-badge {
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .86rem;
+    }
+    .member-headline {
+      margin: 0 0 14px;
+      font-size: 2rem;
+      letter-spacing: -.04em;
+      line-height: 1.05;
+    }
+    .member-intro {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
     }
     .footer-note {
       max-width: 760px;
@@ -377,14 +419,27 @@
           <div class="member-card">
             <strong id="memberName" class="member-name">FlowCheck Member</strong>
             <span id="memberEmail" class="member-email">you@email.com</span>
+            <div class="member-badges">
+              <span class="member-badge">Member session active</span>
+              <span class="member-badge">Same account as iPhone app</span>
+              <span class="member-badge">Secure Firebase access</span>
+            </div>
+            <h2 class="member-headline">Your FlowCheck member portal is ready.</h2>
+            <p class="member-intro">
+              You are signed in successfully. From here, the best next move is to continue in the app, where your linked accounts, transactions, recurring charges, and daily money plan live.
+            </p>
             <div class="stack" style="margin-top:18px;">
               <div class="mini">
-                <strong>Signed in successfully</strong>
-                <span>Your account is active and ready to continue in the FlowCheck app.</span>
+                <strong>Account recognized</strong>
+                <span>Your FlowCheck account is active and ready to continue on the same member profile you use on iPhone.</span>
               </div>
               <div class="mini">
-                <strong>Next step</strong>
-                <span>Open the app for linked accounts, transactions, recurring charges, and your daily money plan.</span>
+                <strong>Best next step</strong>
+                <span>Open the app for linked accounts, transactions, recurring charges, premium onboarding, and your daily money plan.</span>
+              </div>
+              <div class="mini">
+                <strong>Need the app?</strong>
+                <span>If you are on a new device, go straight to the App Store and sign in there with this same account.</span>
               </div>
             </div>
             <div class="member-actions">
@@ -454,11 +509,13 @@
       var authState = document.getElementById('authState');
       var memberState = document.getElementById('memberState');
       if (!user || !user.email) {
+        document.body.classList.remove('member-logged-in');
         authState.style.display = '';
         memberState.classList.remove('active');
         memberState.style.display = 'none';
         return;
       }
+      document.body.classList.add('member-logged-in');
       document.getElementById('memberName').textContent = user.name || (user.email.split('@')[0]) || 'FlowCheck Member';
       document.getElementById('memberEmail').textContent = user.email;
       authState.style.display = 'none';
