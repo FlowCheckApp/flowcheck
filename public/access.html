@@ -86,7 +86,7 @@
     .layout {
       padding-top: 64px;
       display: grid;
-      grid-template-columns: 0.96fr 1.04fr;
+      grid-template-columns: 0.88fr 1.12fr;
       gap: 28px;
       align-items: start;
     }
@@ -290,8 +290,8 @@
       .shell, .nav-inner { padding-left:16px; padding-right:16px; }
       .nav-inner { align-items:start; flex-direction:column; }
       .layout { padding-top:34px; }
-      .access-copy { order: 2; }
-      .portal { order: 1; }
+      .access-copy { order: 1; }
+      .portal { order: 2; }
       .portal-top { margin-bottom: 14px; }
       .proofs { margin-top: 18px; }
       .proof:nth-child(3) { display: none; }
@@ -332,7 +332,7 @@
           Existing members can sign in here, recover access, and move back into FlowCheck without distractions. New customers should start in the iPhone app for the full premium onboarding.
         </p>
         <div class="member-actions reveal-3" style="margin-top:22px;">
-          <a id="heroSignInBtn" class="button button-inline" href="#member-signin">Sign In</a>
+          <a id="heroSignInBtn" class="button button-inline" href="#member-signin">Go to Member Sign-In</a>
           <a class="button button-inline is-secondary" href="https://apps.apple.com/us/search?term=FlowCheck" target="_blank" rel="noopener">Download the App</a>
         </div>
         <div class="quick-meta reveal-3">
@@ -340,6 +340,52 @@
           <span class="meta-pill">App-first onboarding</span>
           <span class="meta-pill">Same account on web + app</span>
         </div>
+        <section class="portal reveal-2" aria-label="FlowCheck member sign-in">
+          <div class="portal-top">
+            <small>Member Sign-In</small>
+            <strong>Sign in with the same FlowCheck account you already use in the app.</strong>
+            <span>Enter your email and password below. If you’re new here, start in the iPhone app for the full premium onboarding.</span>
+          </div>
+          <div class="portal-trust" aria-label="Trust signals">
+            <div class="portal-chip">Existing member access</div>
+            <div class="portal-chip">Secure Firebase auth</div>
+            <div class="portal-chip">Fast password recovery</div>
+          </div>
+
+          <div class="auth-state" id="authState">
+            <section id="panelSignin" class="panel active" role="tabpanel" aria-labelledby="member-signin-title">
+              <div class="panel-head">
+                <strong id="member-signin-title">Welcome back</strong>
+                <span>Sign in with the same FlowCheck account you already use in the app.</span>
+              </div>
+              <div id="member-signin" class="field">
+                <label for="site-signin-email">Email address</label>
+                <input id="site-signin-email" type="email" placeholder="you@email.com" autocomplete="email">
+              </div>
+              <div class="field">
+                <label for="site-signin-password">Password</label>
+                <input id="site-signin-password" type="password" placeholder="Your password" autocomplete="current-password">
+              </div>
+              <button id="signinButton" class="button button-primary" type="button" onclick="siteSignIn()">Sign In to FlowCheck</button>
+              <div class="helper-row">
+                <span style="color:var(--soft);">Need help getting back in?</span>
+                <button type="button" onclick="siteForgotPassword()">Reset password</button>
+              </div>
+              <div id="signinStatus" class="status" aria-live="polite"></div>
+            </section>
+
+            <section id="panelSignup" class="panel active" role="region" aria-label="New customer download">
+              <div class="panel-head" style="margin-top:18px;">
+                <strong>New to FlowCheck?</strong>
+                <span>Start in the iPhone app to begin your premium trial, connect your accounts, and go through the full guided onboarding experience.</span>
+              </div>
+              <a class="button button-secondary" href="https://apps.apple.com/us/search?term=FlowCheck" target="_blank" rel="noopener" style="width:100%;">Download on the App Store</a>
+              <p class="terms">
+                Your FlowCheck account works across web and app, but new account creation and trial onboarding now start in the app for a cleaner, more premium experience.
+              </p>
+            </section>
+          </div>
+        </section>
         <div class="proofs reveal-3">
           <div class="proof">
             <strong>Separate from the main website</strong>
@@ -356,52 +402,7 @@
         </div>
       </div>
 
-      <section class="portal reveal-2" aria-label="FlowCheck access portal">
-        <div class="portal-top">
-          <small>Private Portal</small>
-          <strong>Secure account access for FlowCheck members.</strong>
-          <span>Use this page to sign in or recover access. New accounts and premium trial setup begin in the app, where the full money workflow lives.</span>
-        </div>
-        <div class="portal-trust" aria-label="Trust signals">
-          <div class="portal-chip">Read-only bank sync</div>
-          <div class="portal-chip">Secure Firebase auth</div>
-          <div class="portal-chip">Fast password recovery</div>
-        </div>
-
-        <div class="auth-state" id="authState">
-          <section id="panelSignin" class="panel active" role="tabpanel" aria-labelledby="member-signin-title">
-            <div class="panel-head">
-              <strong id="member-signin-title">Welcome back</strong>
-              <span>Sign in with the same FlowCheck account you already use in the app.</span>
-            </div>
-            <div id="member-signin" class="field">
-              <label for="site-signin-email">Email address</label>
-              <input id="site-signin-email" type="email" placeholder="you@email.com" autocomplete="email">
-            </div>
-            <div class="field">
-              <label for="site-signin-password">Password</label>
-              <input id="site-signin-password" type="password" placeholder="Your password" autocomplete="current-password">
-            </div>
-            <button id="signinButton" class="button button-primary" type="button" onclick="siteSignIn()">Sign In to FlowCheck</button>
-            <div class="helper-row">
-              <span style="color:var(--soft);">Need help getting back in?</span>
-              <button type="button" onclick="siteForgotPassword()">Reset password</button>
-            </div>
-            <div id="signinStatus" class="status" aria-live="polite"></div>
-          </section>
-
-          <section id="panelSignup" class="panel active" role="region" aria-label="New customer download">
-            <div class="panel-head" style="margin-top:18px;">
-              <strong>New to FlowCheck?</strong>
-              <span>Start in the iPhone app to begin your premium trial, connect your accounts, and go through the full guided onboarding experience.</span>
-            </div>
-            <a class="button button-secondary" href="https://apps.apple.com/us/search?term=FlowCheck" target="_blank" rel="noopener" style="width:100%;">Download on the App Store</a>
-            <p class="terms">
-              Your FlowCheck account works across web and app, but new account creation and trial onboarding now start in the app for a cleaner, more premium experience.
-            </p>
-          </section>
-        </div>
-
+      <section class="portal reveal-2" aria-label="Signed in FlowCheck member state">
         <section class="member" id="memberState" aria-label="Signed in state">
           <div class="member-card">
             <strong id="memberName" style="display:block;font-size:1.6rem;letter-spacing:-0.03em;">FlowCheck Member</strong>
