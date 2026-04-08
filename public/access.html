@@ -84,6 +84,10 @@
       gap: 28px;
       align-items: start;
     }
+
+    .access-copy {
+      order: 1;
+    }
     .eyebrow {
       display:inline-flex; align-items:center; gap:10px; padding:10px 15px; border-radius:999px;
       background: rgba(255,191,82,0.08); border:1px solid var(--line-gold); color:var(--gold);
@@ -107,6 +111,9 @@
     .proof strong { display:block; margin-bottom:6px; }
     .proof span { display:block; color:var(--soft); line-height:1.65; }
     .portal {
+      order: 2;
+      position: sticky;
+      top: 92px;
       padding: 28px; border-radius: 34px;
       background:
         radial-gradient(circle at top right, rgba(255,191,82,0.12), transparent 34%),
@@ -123,6 +130,21 @@
     }
     .portal-top strong { display:block; margin-top:10px; font-size:1.25rem; line-height:1.2; letter-spacing:-.03em; }
     .portal-top span { display:block; margin-top:8px; color:var(--soft); line-height:1.6; }
+    .portal-trust {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin: 0 0 18px;
+    }
+    .portal-chip {
+      padding: 11px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .84rem;
+      text-align: center;
+    }
     .tabs {
       display:inline-grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; padding:8px; width:100%;
       border-radius:20px; background: rgba(255,255,255,0.025); border:1px solid var(--line); margin-bottom:18px;
@@ -137,6 +159,21 @@
     }
     .panel { display:none; }
     .panel.active { display:block; }
+    .panel-head {
+      margin-bottom: 16px;
+    }
+    .panel-head strong {
+      display: block;
+      font-size: 1.08rem;
+      letter-spacing: -0.02em;
+    }
+    .panel-head span {
+      display: block;
+      margin-top: 6px;
+      color: var(--soft);
+      line-height: 1.55;
+      font-size: .92rem;
+    }
     .field { margin-bottom:14px; }
     .field label {
       display:block; margin-bottom:8px; color:var(--soft); font-size:.82rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
@@ -153,6 +190,12 @@
     }
     .button-primary {
       width:100%; color:#170f04; background: linear-gradient(180deg, #ffcd69, #eda62f); box-shadow: 0 18px 40px rgba(243,174,61,.22);
+    }
+
+    .button-inline {
+      color:#170f04;
+      background: linear-gradient(180deg, #ffcd69, #eda62f);
+      box-shadow: 0 14px 34px rgba(243,174,61,.18);
     }
     .helper-row { display:flex; justify-content:space-between; gap:12px; align-items:center; margin:10px 0 0; flex-wrap:wrap; }
     .helper-row button { border:0; background:transparent; color:var(--gold); font:inherit; cursor:pointer; padding:0; }
@@ -174,11 +217,35 @@
     .button-secondary {
       color:var(--text); background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
     }
-    @media (max-width: 1040px) { .layout, .member-grid { grid-template-columns:1fr; } }
+    .quick-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .meta-pill {
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .86rem;
+    }
+    @media (max-width: 1040px) {
+      .layout, .member-grid, .portal-trust { grid-template-columns:1fr; }
+      .portal { position: relative; top: 0; }
+    }
     @media (max-width: 760px) {
       .shell, .nav-inner { padding-left:16px; padding-right:16px; }
       .nav-inner { align-items:start; flex-direction:column; }
       .layout { padding-top:34px; }
+      .access-copy { order: 2; }
+      .portal { order: 1; }
+      .portal-top { margin-bottom: 14px; }
+      .proofs { margin-top: 18px; }
+      .proof:nth-child(3) { display: none; }
+      h1 { font-size: clamp(2.5rem, 10vw, 4.2rem); }
+      .portal-trust { grid-template-columns: 1fr; }
     }
     @media (prefers-reduced-motion: reduce) {
       .reveal-1, .reveal-2, .reveal-3, .portal { animation:none !important; opacity:1; transform:none; }
@@ -207,12 +274,21 @@
 
   <main class="shell">
     <section class="layout">
-      <div>
+      <div class="access-copy">
         <div class="eyebrow reveal-1">Member Access</div>
         <h1 class="reveal-2">Sign in without the noise.</h1>
         <p class="lead reveal-3">
-          This page is dedicated to account access only. Create your FlowCheck account, sign back in, or reset your password in one clean place.
+          Create your FlowCheck account, return to it later, or recover access in one focused place built purely for conversion and trust.
         </p>
+        <div class="member-actions reveal-3" style="margin-top:22px;">
+          <button class="button button-inline" type="button" onclick="showAuthPanel('signup'); scrollToPortal();">Create Account</button>
+          <button class="button button-secondary" type="button" onclick="showAuthPanel('signin'); scrollToPortal();">Sign In</button>
+        </div>
+        <div class="quick-meta reveal-3">
+          <span class="meta-pill">7-day premium trial</span>
+          <span class="meta-pill">No card required</span>
+          <span class="meta-pill">Same account on web + app</span>
+        </div>
         <div class="proofs reveal-3">
           <div class="proof">
             <strong>Separate from the main website</strong>
@@ -235,6 +311,11 @@
           <strong>Secure account access for FlowCheck members.</strong>
           <span>Use this page to sign up, sign in, or recover access. The full money workflow still lives in the app.</span>
         </div>
+        <div class="portal-trust" aria-label="Trust signals">
+          <div class="portal-chip">Read-only bank sync</div>
+          <div class="portal-chip">Secure Firebase auth</div>
+          <div class="portal-chip">Fast password recovery</div>
+        </div>
 
         <div class="auth-state" id="authState">
           <div class="tabs" role="tablist" aria-label="Authentication tabs">
@@ -243,6 +324,10 @@
           </div>
 
           <section id="panelSignup" class="panel active" role="tabpanel">
+            <div class="panel-head">
+              <strong>Start your FlowCheck account</strong>
+              <span>Create your access in under a minute and continue into the app whenever you’re ready.</span>
+            </div>
             <div class="field">
               <label for="site-signup-name">Full name</label>
               <input id="site-signup-name" type="text" placeholder="Your full name" autocomplete="name">
@@ -263,6 +348,10 @@
           </section>
 
           <section id="panelSignin" class="panel" role="tabpanel">
+            <div class="panel-head">
+              <strong>Welcome back</strong>
+              <span>Sign in to continue with the same FlowCheck account you use in the app.</span>
+            </div>
             <div class="field">
               <label for="site-signin-email">Email address</label>
               <input id="site-signin-email" type="email" placeholder="you@email.com" autocomplete="email">
@@ -315,6 +404,11 @@
 
   <script src="/js/app-auth.js"></script>
   <script>
+    function scrollToPortal() {
+      var portal = document.querySelector('.portal');
+      if (portal) portal.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
     function showAuthPanel(kind) {
       var signup = kind === 'signup';
       document.getElementById('panelSignup').classList.toggle('active', signup);
