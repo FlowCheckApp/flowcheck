@@ -68,13 +68,13 @@
     .nav-links a:hover { color:var(--text); background: rgba(255,255,255,0.04); }
 
     .shell {
-      width: min(100%, var(--max));
+      width: min(100%, 960px);
       margin: 0 auto;
-      padding: 40px 24px 80px;
+      padding: 36px 24px 80px;
     }
     .hero {
       max-width: 760px;
-      margin: 0 auto 28px;
+      margin: 0 auto 24px;
       text-align: center;
     }
     .eyebrow {
@@ -104,13 +104,11 @@
       line-height: 1.8;
       font-size: 1.08rem;
     }
-    .access-layout {
-      max-width: 980px;
+    .access-stack {
+      max-width: 760px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-      gap: 22px;
-      align-items: start;
+      gap: 18px;
     }
     .card {
       border-radius: 30px;
@@ -121,12 +119,8 @@
       border: 1px solid var(--line);
       box-shadow: var(--shadow);
     }
-    .signin-card {
-      padding: 28px;
-    }
-    .support-card {
-      padding: 24px;
-    }
+    .signin-card { padding: 28px; }
+    .support-card { padding: 24px; }
     .card-top {
       padding: 18px 20px;
       border-radius: 22px;
@@ -261,19 +255,14 @@
     .mini span { display:block; color:var(--soft); line-height:1.55; font-size:.92rem; }
     .member { display:none; }
     .member.active { display:block; }
-    body.member-logged-in .support-card {
-      display: none;
-    }
-    body.member-logged-in .footer-note {
-      display: none;
-    }
+    body.member-logged-in .support-card { display: none; }
+    body.member-logged-in .footer-note { display: none; }
     body.member-logged-in .hero {
       max-width: 860px;
       margin-bottom: 18px;
     }
-    body.member-logged-in .access-layout {
+    body.member-logged-in .access-stack {
       max-width: 860px;
-      grid-template-columns: 1fr;
     }
     body.member-logged-in #authState {
       display: none !important;
@@ -337,13 +326,26 @@
       line-height: 1.7;
       font-size: .95rem;
     }
+    .split-line {
+      height: 1px;
+      margin: 8px 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+    }
+    .download-card {
+      display: grid;
+      gap: 16px;
+    }
+    .download-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .download-actions .button {
+      width: auto;
+      min-width: 220px;
+    }
     @media (max-width: 900px) {
-      .access-layout {
-        grid-template-columns: 1fr;
-      }
-      .trust-row {
-        grid-template-columns: 1fr;
-      }
+      .trust-row { grid-template-columns: 1fr; }
     }
     @media (max-width: 760px) {
       .shell, .nav-inner { padding-left:16px; padding-right:16px; }
@@ -353,6 +355,7 @@
       .signin-card, .support-card { padding: 20px; border-radius: 24px; }
       .card-top { padding: 16px; }
       .member-actions .button { width:100%; min-width: 0; }
+      .download-actions .button { width:100%; min-width: 0; }
     }
   </style>
 </head>
@@ -384,12 +387,12 @@
       </p>
     </section>
 
-    <section class="access-layout">
+    <section class="access-stack">
       <section class="card signin-card" aria-label="FlowCheck member sign-in">
         <div class="card-top">
           <small>Member Sign-In</small>
-          <strong>Enter your email and password below.</strong>
-          <span>Everything you need to sign in is on this card. Nothing is hidden behind another click.</span>
+          <strong>Your sign-in form is right here.</strong>
+          <span>Use the same FlowCheck email and password you already use in the app. Nothing is hidden behind another click.</span>
         </div>
 
         <div id="authState">
@@ -449,18 +452,30 @@
             </div>
           </div>
         </section>
+
+        <div class="split-line" aria-hidden="true"></div>
+
+        <div class="download-card" id="newHere">
+          <div class="mini">
+            <strong>New to FlowCheck?</strong>
+            <span>Start in the iPhone app for your premium trial, guided onboarding, bank connection, and the full money-plan setup.</span>
+          </div>
+          <div class="download-actions">
+            <a class="button button-secondary" href="https://apps.apple.com/us/search?term=FlowCheck" target="_blank" rel="noopener">Download on the App Store</a>
+          </div>
+        </div>
       </section>
 
       <aside class="card support-card" aria-label="New member guidance">
         <div class="card-top">
-          <small>New To FlowCheck?</small>
-          <strong>Start in the iPhone app.</strong>
-          <span>New account creation, premium trial setup, bank connection, and guided onboarding now begin in the app for a cleaner premium experience.</span>
+          <small>Why The Website Exists</small>
+          <strong>Sign in here. Start in the app.</strong>
+          <span>This page is intentionally simple: existing members can access their account here, while new customers start in the app where the full premium FlowCheck experience lives.</span>
         </div>
         <div class="stack">
           <div class="mini">
             <strong>App-first onboarding</strong>
-            <span>Download the app to begin your premium trial and connect your accounts the way FlowCheck was designed to be experienced.</span>
+            <span>Download the app to begin your premium trial, connect your accounts, and unlock your first calm daily money plan.</span>
           </div>
           <div class="mini">
             <strong>Same account on web + app</strong>
