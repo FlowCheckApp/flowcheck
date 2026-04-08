@@ -86,9 +86,10 @@
     .layout {
       padding-top: 64px;
       display: grid;
-      grid-template-columns: 0.88fr 1.12fr;
-      gap: 28px;
-      align-items: start;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      max-width: 760px;
+      margin: 0 auto;
     }
 
     .access-copy {
@@ -118,15 +119,15 @@
     .proof span { display:block; color:var(--soft); line-height:1.65; }
     .portal {
       order: 2;
-      position: sticky;
-      top: 92px;
+      position: relative;
+      top: 0;
       padding: 28px; border-radius: 34px;
       background:
         radial-gradient(circle at top right, rgba(255,191,82,0.12), transparent 34%),
         linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)),
         var(--panel);
       border:1px solid var(--line); box-shadow: var(--shadow);
-      animation: drift 8s ease-in-out infinite;
+      animation: none;
     }
     .portal.mode-spotlight {
       animation: portalFocus .5s cubic-bezier(0.22, 1, 0.36, 1), drift 8s ease-in-out infinite;
@@ -285,15 +286,12 @@
       margin-top:16px;
     }
     @media (max-width: 1040px) {
-      .layout, .member-grid, .portal-trust { grid-template-columns:1fr; }
-      .portal { position: relative; top: 0; }
+      .member-grid, .portal-trust { grid-template-columns:1fr; }
     }
     @media (max-width: 760px) {
       .shell, .nav-inner { padding-left:16px; padding-right:16px; }
       .nav-inner { align-items:start; flex-direction:column; }
       .layout { padding-top:34px; }
-      .access-copy { order: 1; }
-      .portal { order: 2; }
       .portal-top { margin-bottom: 14px; }
       .proofs { margin-top: 18px; }
       .proof:nth-child(3) { display: none; }
@@ -336,11 +334,6 @@
         <div class="member-actions reveal-3" style="margin-top:22px;">
           <a id="heroSignInBtn" class="button button-inline" href="#member-signin">Go to Member Sign-In</a>
           <a class="button button-inline is-secondary" href="https://apps.apple.com/us/search?term=FlowCheck" target="_blank" rel="noopener">Download the App</a>
-        </div>
-        <div class="quick-meta reveal-3">
-          <span class="meta-pill">Existing member sign-in</span>
-          <span class="meta-pill">App-first onboarding</span>
-          <span class="meta-pill">Same account on web + app</span>
         </div>
         <section class="portal reveal-2" aria-label="FlowCheck member sign-in">
           <div class="portal-top">
@@ -388,6 +381,11 @@
             </section>
           </div>
         </section>
+        <div class="quick-meta reveal-3">
+          <span class="meta-pill">Existing member sign-in</span>
+          <span class="meta-pill">App-first onboarding</span>
+          <span class="meta-pill">Same account on web + app</span>
+        </div>
         <div class="proofs reveal-3">
           <div class="proof">
             <strong>Separate from the main website</strong>
