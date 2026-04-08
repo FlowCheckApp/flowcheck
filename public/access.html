@@ -326,15 +326,15 @@
         <div class="eyebrow reveal-1">Member Access</div>
         <h1 class="reveal-2">Sign in without the noise.</h1>
         <p class="lead reveal-3">
-          Create your FlowCheck account, return to it later, or recover access in one focused place built purely for conversion and trust.
+          Existing members can sign in here, recover access, and move back into FlowCheck without distractions. New customers should start in the iPhone app for the full premium onboarding.
         </p>
         <div class="member-actions reveal-3" style="margin-top:22px;">
-          <button id="heroCreateBtn" class="button button-inline" type="button" onclick="openPortalMode('signup')">Create Account</button>
-          <button id="heroSignInBtn" class="button button-inline is-secondary" type="button" onclick="openPortalMode('signin')">Sign In</button>
+          <button id="heroSignInBtn" class="button button-inline" type="button" onclick="openPortalMode('signin')">Sign In</button>
+          <a class="button button-inline is-secondary" href="https://apps.apple.com/us/search?term=FlowCheck" target="_blank" rel="noopener">Download the App</a>
         </div>
         <div class="quick-meta reveal-3">
-          <span class="meta-pill">7-day premium trial</span>
-          <span class="meta-pill">No card required</span>
+          <span class="meta-pill">Existing member sign-in</span>
+          <span class="meta-pill">App-first onboarding</span>
           <span class="meta-pill">Same account on web + app</span>
         </div>
         <div class="proofs reveal-3">
@@ -344,11 +344,11 @@
           </div>
           <div class="proof">
             <strong>One account system</strong>
-            <span>The same FlowCheck credentials work here and in the iPhone app.</span>
+            <span>Existing members use the same FlowCheck credentials here and in the iPhone app.</span>
           </div>
           <div class="proof">
-            <strong>Trust-first experience</strong>
-            <span>Clear support, clean sign in, and no clutter around the forms.</span>
+            <strong>New here?</strong>
+            <span>Download the app to start your premium trial and go through the full guided onboarding experience.</span>
           </div>
         </div>
       </div>
@@ -357,7 +357,7 @@
         <div class="portal-top">
           <small>Private Portal</small>
           <strong>Secure account access for FlowCheck members.</strong>
-          <span>Use this page to sign up, sign in, or recover access. The full money workflow still lives in the app.</span>
+          <span>Use this page to sign in or recover access. New accounts and premium trial setup begin in the app, where the full money workflow lives.</span>
         </div>
         <div class="portal-trust" aria-label="Trust signals">
           <div class="portal-chip">Read-only bank sync</div>
@@ -366,39 +366,22 @@
         </div>
 
         <div class="auth-state" id="authState">
-          <div class="tabs" role="tablist" aria-label="Authentication tabs">
-            <button id="tabSignup" class="active" type="button" onclick="showAuthPanel('signup')" role="tab" aria-selected="true">Create Account</button>
-            <button id="tabSignin" type="button" onclick="showAuthPanel('signin')" role="tab" aria-selected="false">Sign In</button>
-          </div>
-
           <section id="panelSignup" class="panel active" role="tabpanel">
             <div class="panel-head">
-              <strong>Start your FlowCheck account</strong>
-              <span>Create your access in under a minute and continue into the app whenever you’re ready.</span>
+              <strong>New to FlowCheck?</strong>
+              <span>Download the iPhone app to begin your premium trial, connect your accounts, and go through the full onboarding experience the way it was designed.</span>
             </div>
-            <div class="field">
-              <label for="site-signup-name">Full name</label>
-              <input id="site-signup-name" type="text" placeholder="Your full name" autocomplete="name">
-            </div>
-            <div class="field">
-              <label for="site-signup-email">Email address</label>
-              <input id="site-signup-email" type="email" placeholder="you@email.com" autocomplete="email">
-            </div>
-            <div class="field">
-              <label for="site-signup-password">Password</label>
-              <input id="site-signup-password" type="password" placeholder="At least 6 characters" autocomplete="new-password">
-            </div>
-            <button id="signupButton" class="button button-primary" type="button" onclick="siteSignUp()">Start Your 7-Day Premium Trial</button>
+            <a class="button button-primary" href="https://apps.apple.com/us/search?term=FlowCheck" target="_blank" rel="noopener" style="width:100%;">Download on the App Store</a>
             <p class="terms">
-              By continuing, you agree to the <a href="/index.html#tos">Terms of Service</a> and <a href="/index.html#privacy">Privacy Policy</a>.
+              Your FlowCheck account lives across web and app, but new account creation and trial onboarding now start in the app for a cleaner, more premium experience.
             </p>
-            <div id="signupStatus" class="status" aria-live="polite"></div>
+            <div id="signupStatus" class="status success" aria-live="polite">Existing member already? Switch to sign in below.</div>
           </section>
 
           <section id="panelSignin" class="panel" role="tabpanel">
             <div class="panel-head">
               <strong>Welcome back</strong>
-              <span>Sign in to continue with the same FlowCheck account you use in the app.</span>
+              <span>Sign in with the same FlowCheck account you already use in the app.</span>
             </div>
             <div class="field">
               <label for="site-signin-email">Email address</label>
@@ -462,7 +445,7 @@
   <script>
     function getPortalMode() {
       var hash = String(window.location.hash || '').toLowerCase();
-      return hash === '#signin' ? 'signin' : 'signup';
+      return hash === '#signup' ? 'signup' : 'signin';
     }
 
     function updatePortalHash(kind) {
@@ -485,12 +468,9 @@
     }
 
     function setHeroMode(kind) {
-      var createBtn = document.getElementById('heroCreateBtn');
       var signInBtn = document.getElementById('heroSignInBtn');
-      if (!createBtn || !signInBtn) return;
-      var signup = kind === 'signup';
-      createBtn.classList.toggle('is-secondary', !signup);
-      signInBtn.classList.toggle('is-secondary', signup);
+      if (!signInBtn) return;
+      signInBtn.classList.toggle('is-secondary', kind !== 'signin');
     }
 
     function spotlightPortal() {
@@ -505,7 +485,8 @@
     }
 
     function focusPortalField(kind) {
-      var targetId = kind === 'signin' ? 'site-signin-email' : 'site-signup-name';
+      var targetId = kind === 'signin' ? 'site-signin-email' : null;
+      if (!targetId) return;
       var target = document.getElementById(targetId);
       if (!target) return;
       setTimeout(function() {
@@ -529,10 +510,6 @@
       var signup = kind === 'signup';
       document.getElementById('panelSignup').classList.toggle('active', signup);
       document.getElementById('panelSignin').classList.toggle('active', !signup);
-      document.getElementById('tabSignup').classList.toggle('active', signup);
-      document.getElementById('tabSignin').classList.toggle('active', !signup);
-      document.getElementById('tabSignup').setAttribute('aria-selected', signup ? 'true' : 'false');
-      document.getElementById('tabSignin').setAttribute('aria-selected', signup ? 'false' : 'true');
       setHeroMode(kind);
       updatePortalHash(kind);
       clearStatuses();
@@ -580,32 +557,6 @@
       memberState.classList.add('active');
     }
 
-    function siteSignUp() {
-      clearStatuses();
-      var name = getValue('site-signup-name');
-      var email = getValue('site-signup-email');
-      var password = getValue('site-signup-password');
-      if (!name) return setStatus('signupStatus', 'Enter your full name to create your FlowCheck account.', 'error');
-      if (!email) return setStatus('signupStatus', 'Enter your email address to continue.', 'error');
-      if (!password) return setStatus('signupStatus', 'Create a password with at least 6 characters.', 'error');
-
-      setButtonState('signupButton', 'Creating account…', true);
-      setStatus('signupStatus', 'Setting up your account securely…');
-
-      fbSignUp(email, password, name)
-        .then(function(data) {
-          fbSaveUser(data, name);
-          setStatus('signupStatus', 'Your FlowCheck account is ready.', 'success');
-          hydrateMemberState();
-        })
-        .catch(function(err) {
-          setStatus('signupStatus', fbErrMsg(err && err.code ? err.code : String(err || 'Sign up failed')), 'error');
-        })
-        .finally(function() {
-          setButtonState('signupButton', 'Start Your 7-Day Premium Trial', false);
-        });
-    }
-
     function siteSignIn() {
       clearStatuses();
       var email = getValue('site-signin-email');
@@ -631,7 +582,7 @@
 
     function siteForgotPassword() {
       clearStatuses();
-      var email = getValue('site-signin-email') || getValue('site-signup-email');
+      var email = getValue('site-signin-email');
       if (!email) return setStatus('signinStatus', 'Enter your email first, then tap reset password.', 'error');
 
       setStatus('signinStatus', 'Sending your reset email…');
