@@ -168,6 +168,9 @@
     }
     .panel { display:none; }
     .panel.active { display:block; }
+    #member-signin {
+      scroll-margin-top: 110px;
+    }
     .panel-head {
       margin-bottom: 16px;
     }
@@ -329,7 +332,7 @@
           Existing members can sign in here, recover access, and move back into FlowCheck without distractions. New customers should start in the iPhone app for the full premium onboarding.
         </p>
         <div class="member-actions reveal-3" style="margin-top:22px;">
-          <button id="heroSignInBtn" class="button button-inline" type="button" onclick="openPortalMode('signin')">Sign In</button>
+          <a id="heroSignInBtn" class="button button-inline" href="#member-signin">Sign In</a>
           <a class="button button-inline is-secondary" href="https://apps.apple.com/us/search?term=FlowCheck" target="_blank" rel="noopener">Download the App</a>
         </div>
         <div class="quick-meta reveal-3">
@@ -366,12 +369,12 @@
         </div>
 
         <div class="auth-state" id="authState">
-          <section id="panelSignin" class="panel active" role="tabpanel">
+          <section id="panelSignin" class="panel active" role="tabpanel" aria-labelledby="member-signin-title">
             <div class="panel-head">
-              <strong>Welcome back</strong>
+              <strong id="member-signin-title">Welcome back</strong>
               <span>Sign in with the same FlowCheck account you already use in the app.</span>
             </div>
-            <div class="field">
+            <div id="member-signin" class="field">
               <label for="site-signin-email">Email address</label>
               <input id="site-signin-email" type="email" placeholder="you@email.com" autocomplete="email">
             </div>
