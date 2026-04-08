@@ -166,8 +166,10 @@
       background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
       color:var(--text);
     }
-    .panel { display:none; }
-    .panel.active { display:block; }
+    .signin-shell,
+    .download-shell {
+      display:block;
+    }
     #member-signin {
       scroll-margin-top: 110px;
     }
@@ -353,7 +355,7 @@
           </div>
 
           <div class="auth-state" id="authState">
-            <section id="panelSignin" class="panel active" role="tabpanel" aria-labelledby="member-signin-title">
+            <section id="panelSignin" class="signin-shell" role="region" aria-labelledby="member-signin-title">
               <div class="panel-head">
                 <strong id="member-signin-title">Welcome back</strong>
                 <span>Sign in with the same FlowCheck account you already use in the app.</span>
@@ -374,7 +376,7 @@
               <div id="signinStatus" class="status" aria-live="polite"></div>
             </section>
 
-            <section id="panelSignup" class="panel active" role="region" aria-label="New customer download">
+            <section id="panelSignup" class="download-shell" role="region" aria-label="New customer download">
               <div class="panel-head" style="margin-top:18px;">
                 <strong>New to FlowCheck?</strong>
                 <span>Start in the iPhone app to begin your premium trial, connect your accounts, and go through the full guided onboarding experience.</span>
