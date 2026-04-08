@@ -366,19 +366,7 @@
         </div>
 
         <div class="auth-state" id="authState">
-          <section id="panelSignup" class="panel active" role="tabpanel">
-            <div class="panel-head">
-              <strong>New to FlowCheck?</strong>
-              <span>Download the iPhone app to begin your premium trial, connect your accounts, and go through the full onboarding experience the way it was designed.</span>
-            </div>
-            <a class="button button-primary" href="https://apps.apple.com/us/search?term=FlowCheck" target="_blank" rel="noopener" style="width:100%;">Download on the App Store</a>
-            <p class="terms">
-              Your FlowCheck account lives across web and app, but new account creation and trial onboarding now start in the app for a cleaner, more premium experience.
-            </p>
-            <div id="signupStatus" class="status success" aria-live="polite">Existing member already? Switch to sign in below.</div>
-          </section>
-
-          <section id="panelSignin" class="panel" role="tabpanel">
+          <section id="panelSignin" class="panel active" role="tabpanel">
             <div class="panel-head">
               <strong>Welcome back</strong>
               <span>Sign in with the same FlowCheck account you already use in the app.</span>
@@ -397,6 +385,17 @@
               <button type="button" onclick="siteForgotPassword()">Reset password</button>
             </div>
             <div id="signinStatus" class="status" aria-live="polite"></div>
+          </section>
+
+          <section id="panelSignup" class="panel active" role="region" aria-label="New customer download">
+            <div class="panel-head" style="margin-top:18px;">
+              <strong>New to FlowCheck?</strong>
+              <span>Start in the iPhone app to begin your premium trial, connect your accounts, and go through the full guided onboarding experience.</span>
+            </div>
+            <a class="button button-secondary" href="https://apps.apple.com/us/search?term=FlowCheck" target="_blank" rel="noopener" style="width:100%;">Download on the App Store</a>
+            <p class="terms">
+              Your FlowCheck account works across web and app, but new account creation and trial onboarding now start in the app for a cleaner, more premium experience.
+            </p>
           </section>
         </div>
 
@@ -443,21 +442,6 @@
 
   <script src="/js/app-auth.js"></script>
   <script>
-    function getPortalMode() {
-      var hash = String(window.location.hash || '').toLowerCase();
-      return hash === '#signup' ? 'signup' : 'signin';
-    }
-
-    function updatePortalHash(kind) {
-      var nextHash = '#' + (kind === 'signin' ? 'signin' : 'signup');
-      if (window.location.hash === nextHash) return;
-      try {
-        history.replaceState(null, '', nextHash);
-      } catch (e) {
-        window.location.hash = nextHash;
-      }
-    }
-
     function scrollToPortal(force) {
       var portal = document.querySelector('.portal');
       if (!portal) return;
@@ -470,7 +454,7 @@
     function setHeroMode(kind) {
       var signInBtn = document.getElementById('heroSignInBtn');
       if (!signInBtn) return;
-      signInBtn.classList.toggle('is-secondary', kind !== 'signin');
+      signInBtn.classList.toggle('is-secondary', false);
     }
 
     function spotlightPortal() {
@@ -485,7 +469,7 @@
     }
 
     function focusPortalField(kind) {
-      var targetId = kind === 'signin' ? 'site-signin-email' : null;
+      var targetId = 'site-signin-email';
       if (!targetId) return;
       var target = document.getElementById(targetId);
       if (!target) return;
@@ -499,20 +483,9 @@
     }
 
     function openPortalMode(kind) {
-      showAuthPanel(kind);
-      updatePortalHash(kind);
       scrollToPortal(false);
       spotlightPortal();
-      focusPortalField(kind);
-    }
-
-    function showAuthPanel(kind) {
-      var signup = kind === 'signup';
-      document.getElementById('panelSignup').classList.toggle('active', signup);
-      document.getElementById('panelSignin').classList.toggle('active', !signup);
-      setHeroMode(kind);
-      updatePortalHash(kind);
-      clearStatuses();
+      focusPortalField('signin');
     }
 
     function setStatus(id, text, tone) {
@@ -604,12 +577,12 @@
     function siteSignOut() {
       try { localStorage.removeItem('fc-fb-user'); } catch (e) {}
       hydrateMemberState();
-      showAuthPanel('signin');
+      setHeroMode('signin');
       setStatus('signinStatus', 'Signed out successfully.', 'success');
     }
 
     window.addEventListener('DOMContentLoaded', function() {
-      showAuthPanel(getPortalMode());
+      setHeroMode('signin');
       hydrateMemberState();
       var email = '';
       try {
@@ -620,10 +593,6 @@
         var input = document.getElementById('site-signin-email');
         if (input) input.value = email;
       }
-    });
-
-    window.addEventListener('hashchange', function() {
-      showAuthPanel(getPortalMode());
     });
   </script>
 </body>
