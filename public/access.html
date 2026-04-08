@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FlowCheck Access</title>
+  <meta name="description" content="Create your FlowCheck account, sign in securely, or reset your password.">
+  <style>
+    :root {
+      --bg: #090807;
+      --panel: rgba(20, 18, 16, 0.95);
+      --panel-soft: rgba(255,255,255,0.03);
+      --line: rgba(255,255,255,0.07);
+      --line-gold: rgba(255,191,82,0.22);
+      --text: #f5f0e8;
+      --muted: #b9b0a2;
+      --soft: #8f8679;
+      --gold: #ffbf52;
+      --danger: #ff7b7b;
+      --green: #5ed391;
+      --max: 1120px;
+      --shadow: 0 26px 70px rgba(0, 0, 0, 0.36);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "SF Pro Display", "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(255, 191, 82, 0.14), transparent 28%),
+        radial-gradient(circle at left center, rgba(255, 191, 82, 0.08), transparent 30%),
+        linear-gradient(180deg, #0a0908, #090807);
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    @keyframes riseIn {
+      from { opacity: 0; transform: translateY(22px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-7px); }
+    }
+
+    .reveal-1,
+    .reveal-2,
+    .reveal-3 {
+      opacity: 0;
+      animation: riseIn 0.72s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    .reveal-2 { animation-delay: 0.08s; }
+    .reveal-3 { animation-delay: 0.16s; }
+    .shell { width: min(100%, var(--max)); margin: 0 auto; padding: 0 24px 80px; }
+    .nav {
+      position: sticky; top: 0; z-index: 30;
+      backdrop-filter: blur(18px); background: rgba(10,9,8,0.72);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .nav-inner {
+      width: min(100%, var(--max)); margin: 0 auto; padding: 18px 24px;
+      display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap;
+    }
+    .brand { display:flex; align-items:center; gap:14px; }
+    .brand-mark {
+      width:48px; height:48px; border-radius:16px; display:grid; place-items:center;
+      background: linear-gradient(180deg, rgba(255,205,102,0.18), rgba(213,141,21,0.08)), #13110f;
+      border: 1px solid var(--line-gold);
+    }
+    .bars { display:flex; align-items:end; gap:4px; height:20px; }
+    .bars span { width:6px; border-radius:999px; background: linear-gradient(180deg,#ffcd66,#d58d15); }
+    .bars span:nth-child(1){height:8px}.bars span:nth-child(2){height:13px}.bars span:nth-child(3){height:17px}.bars span:nth-child(4){height:22px}
+    .brand-copy strong { display:block; }
+    .brand-copy span { display:block; margin-top:2px; color:var(--soft); font-size:.84rem; }
+    .nav-links { display:flex; gap:10px; flex-wrap:wrap; }
+    .nav-links a { color:var(--muted); padding:10px 14px; border-radius:999px; transition:.2s ease; }
+    .nav-links a:hover { color:var(--text); background: rgba(255,255,255,0.04); }
+    .layout {
+      padding-top: 64px;
+      display: grid;
+      grid-template-columns: 0.96fr 1.04fr;
+      gap: 28px;
+      align-items: start;
+    }
+    .eyebrow {
+      display:inline-flex; align-items:center; gap:10px; padding:10px 15px; border-radius:999px;
+      background: rgba(255,191,82,0.08); border:1px solid var(--line-gold); color:var(--gold);
+      font-size:.82rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+    }
+    h1 {
+      margin: 22px 0 18px; font-size: clamp(3.1rem, 6.1vw, 5.5rem); line-height:.92; letter-spacing:-.05em; max-width:9ch;
+    }
+    .lead { margin:0; color:var(--muted); line-height:1.82; font-size:1.12rem; max-width:38rem; }
+    .proofs { display:grid; gap:14px; margin-top:28px; }
+    .proof {
+      padding:18px 20px; border-radius:22px; background: var(--panel-soft); border:1px solid var(--line);
+      transition: transform .24s ease, border-color .24s ease, box-shadow .24s ease;
+    }
+    .proof:hover,
+    .mini:hover {
+      transform: translateY(-3px);
+      border-color: rgba(255,191,82,0.18);
+      box-shadow: 0 22px 46px rgba(0,0,0,.22);
+    }
+    .proof strong { display:block; margin-bottom:6px; }
+    .proof span { display:block; color:var(--soft); line-height:1.65; }
+    .portal {
+      padding: 28px; border-radius: 34px;
+      background:
+        radial-gradient(circle at top right, rgba(255,191,82,0.12), transparent 34%),
+        linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)),
+        var(--panel);
+      border:1px solid var(--line); box-shadow: var(--shadow);
+      animation: drift 8s ease-in-out infinite;
+    }
+    .portal-top {
+      padding: 18px 20px; border-radius: 22px; background: var(--panel-soft); border:1px solid var(--line); margin-bottom:18px;
+    }
+    .portal-top small {
+      display:block; color:var(--gold); font-size:.76rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+    }
+    .portal-top strong { display:block; margin-top:10px; font-size:1.25rem; line-height:1.2; letter-spacing:-.03em; }
+    .portal-top span { display:block; margin-top:8px; color:var(--soft); line-height:1.6; }
+    .tabs {
+      display:inline-grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; padding:8px; width:100%;
+      border-radius:20px; background: rgba(255,255,255,0.025); border:1px solid var(--line); margin-bottom:18px;
+    }
+    .tabs button {
+      min-height:46px; border-radius:14px; border:0; font:inherit; font-weight:700; cursor:pointer;
+      color:var(--muted); background:transparent; transition:.2s ease;
+    }
+    .tabs button.active {
+      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+      color:var(--text);
+    }
+    .panel { display:none; }
+    .panel.active { display:block; }
+    .field { margin-bottom:14px; }
+    .field label {
+      display:block; margin-bottom:8px; color:var(--soft); font-size:.82rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+    }
+    .field input {
+      width:100%; min-height:56px; border-radius:18px; border:1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.025); color:var(--text); font:inherit; padding:0 16px; outline:none;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    .field input:focus { border-color: rgba(255,191,82,0.45); box-shadow: 0 0 0 4px rgba(255,191,82,0.08); }
+    .button {
+      appearance:none; border:0; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:10px;
+      min-height:56px; padding:0 22px; border-radius:16px; font:inherit; font-weight:700; transition:.2s ease;
+    }
+    .button-primary {
+      width:100%; color:#170f04; background: linear-gradient(180deg, #ffcd69, #eda62f); box-shadow: 0 18px 40px rgba(243,174,61,.22);
+    }
+    .helper-row { display:flex; justify-content:space-between; gap:12px; align-items:center; margin:10px 0 0; flex-wrap:wrap; }
+    .helper-row button { border:0; background:transparent; color:var(--gold); font:inherit; cursor:pointer; padding:0; }
+    .terms { margin:14px 0 0; color:var(--soft); font-size:.92rem; line-height:1.6; }
+    .terms a { color:var(--gold); }
+    .status { min-height:24px; margin:12px 0 0; color:var(--muted); font-size:.94rem; }
+    .status.error { color:var(--danger); }
+    .status.success { color:var(--green); }
+    .member { display:none; }
+    .member.active { display:block; }
+    .member-card { padding:22px; border-radius:24px; background: var(--panel-soft); border:1px solid var(--line); }
+    .pill-row { display:flex; flex-wrap:wrap; gap:10px; margin:16px 0 18px; }
+    .pill { padding:9px 12px; border-radius:999px; background: rgba(255,255,255,0.04); border:1px solid var(--line); color:var(--muted); font-size:.87rem; }
+    .member-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+    .mini { padding:16px 18px; border-radius:18px; background: rgba(255,255,255,0.03); border:1px solid var(--line); }
+    .mini strong { display:block; margin-bottom:6px; }
+    .mini span { display:block; color:var(--soft); line-height:1.55; font-size:.92rem; }
+    .member-actions { display:flex; gap:14px; flex-wrap:wrap; margin-top:22px; }
+    .button-secondary {
+      color:var(--text); background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
+    }
+    @media (max-width: 1040px) { .layout, .member-grid { grid-template-columns:1fr; } }
+    @media (max-width: 760px) {
+      .shell, .nav-inner { padding-left:16px; padding-right:16px; }
+      .nav-inner { align-items:start; flex-direction:column; }
+      .layout { padding-top:34px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal-1, .reveal-2, .reveal-3, .portal { animation:none !important; opacity:1; transform:none; }
+      .proof, .mini { transition:none; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="/site.html">
+        <div class="brand-mark"><div class="bars"><span></span><span></span><span></span><span></span></div></div>
+        <div class="brand-copy">
+          <strong>FlowCheck</strong>
+          <span>Private by design. Built for calm money clarity.</span>
+        </div>
+      </a>
+      <div class="nav-links">
+        <a href="/site.html">Home</a>
+        <a href="/about.html">About</a>
+        <a href="/story.html">Our Story</a>
+        <a href="/contact.html">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="shell">
+    <section class="layout">
+      <div>
+        <div class="eyebrow reveal-1">Member Access</div>
+        <h1 class="reveal-2">Sign in without the noise.</h1>
+        <p class="lead reveal-3">
+          This page is dedicated to account access only. Create your FlowCheck account, sign back in, or reset your password in one clean place.
+        </p>
+        <div class="proofs reveal-3">
+          <div class="proof">
+            <strong>Separate from the main website</strong>
+            <span>The public site stays focused on the brand. This page stays focused on access.</span>
+          </div>
+          <div class="proof">
+            <strong>One account system</strong>
+            <span>The same FlowCheck credentials work here and in the iPhone app.</span>
+          </div>
+          <div class="proof">
+            <strong>Trust-first experience</strong>
+            <span>Clear support, clean sign in, and no clutter around the forms.</span>
+          </div>
+        </div>
+      </div>
+
+      <section class="portal reveal-2" aria-label="FlowCheck access portal">
+        <div class="portal-top">
+          <small>Private Portal</small>
+          <strong>Secure account access for FlowCheck members.</strong>
+          <span>Use this page to sign up, sign in, or recover access. The full money workflow still lives in the app.</span>
+        </div>
+
+        <div class="auth-state" id="authState">
+          <div class="tabs" role="tablist" aria-label="Authentication tabs">
+            <button id="tabSignup" class="active" type="button" onclick="showAuthPanel('signup')" role="tab" aria-selected="true">Create Account</button>
+            <button id="tabSignin" type="button" onclick="showAuthPanel('signin')" role="tab" aria-selected="false">Sign In</button>
+          </div>
+
+          <section id="panelSignup" class="panel active" role="tabpanel">
+            <div class="field">
+              <label for="site-signup-name">Full name</label>
+              <input id="site-signup-name" type="text" placeholder="Your full name" autocomplete="name">
+            </div>
+            <div class="field">
+              <label for="site-signup-email">Email address</label>
+              <input id="site-signup-email" type="email" placeholder="you@email.com" autocomplete="email">
+            </div>
+            <div class="field">
+              <label for="site-signup-password">Password</label>
+              <input id="site-signup-password" type="password" placeholder="At least 6 characters" autocomplete="new-password">
+            </div>
+            <button id="signupButton" class="button button-primary" type="button" onclick="siteSignUp()">Start Your 7-Day Premium Trial</button>
+            <p class="terms">
+              By continuing, you agree to the <a href="/index.html#tos">Terms of Service</a> and <a href="/index.html#privacy">Privacy Policy</a>.
+            </p>
+            <div id="signupStatus" class="status" aria-live="polite"></div>
+          </section>
+
+          <section id="panelSignin" class="panel" role="tabpanel">
+            <div class="field">
+              <label for="site-signin-email">Email address</label>
+              <input id="site-signin-email" type="email" placeholder="you@email.com" autocomplete="email">
+            </div>
+            <div class="field">
+              <label for="site-signin-password">Password</label>
+              <input id="site-signin-password" type="password" placeholder="Your password" autocomplete="current-password">
+            </div>
+            <button id="signinButton" class="button button-primary" type="button" onclick="siteSignIn()">Sign In to FlowCheck</button>
+            <div class="helper-row">
+              <span style="color:var(--soft);">Need help getting back in?</span>
+              <button type="button" onclick="siteForgotPassword()">Reset password</button>
+            </div>
+            <div id="signinStatus" class="status" aria-live="polite"></div>
+          </section>
+        </div>
+
+        <section class="member" id="memberState" aria-label="Signed in state">
+          <div class="member-card">
+            <strong id="memberName" style="display:block;font-size:1.6rem;letter-spacing:-0.03em;">FlowCheck Member</strong>
+            <span id="memberEmail" style="display:block;margin-top:8px;color:var(--muted);">you@email.com</span>
+            <div class="pill-row">
+              <span class="pill">Secure account active</span>
+              <span class="pill">Firebase-authenticated</span>
+              <span class="pill">Premium-ready access</span>
+            </div>
+            <div class="member-grid">
+              <div class="mini">
+                <strong>Account access</strong>
+                <span>Your website sign in is active and ready.</span>
+              </div>
+              <div class="mini">
+                <strong>Open the app</strong>
+                <span>Use the FlowCheck app for linked accounts, transactions, and your money workflow.</span>
+              </div>
+              <div class="mini">
+                <strong>Support</strong>
+                <span>Email <a href="mailto:flowcheckapp.help@outlook.com" style="color:var(--gold);">flowcheckapp.help@outlook.com</a> if you need help.</span>
+              </div>
+            </div>
+            <div class="member-actions">
+              <a class="button button-primary" href="/index.html">Open FlowCheck App</a>
+              <button class="button button-secondary" type="button" onclick="siteSignOut()">Sign Out</button>
+            </div>
+          </div>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <script src="/js/app-auth.js"></script>
+  <script>
+    function showAuthPanel(kind) {
+      var signup = kind === 'signup';
+      document.getElementById('panelSignup').classList.toggle('active', signup);
+      document.getElementById('panelSignin').classList.toggle('active', !signup);
+      document.getElementById('tabSignup').classList.toggle('active', signup);
+      document.getElementById('tabSignin').classList.toggle('active', !signup);
+      document.getElementById('tabSignup').setAttribute('aria-selected', signup ? 'true' : 'false');
+      document.getElementById('tabSignin').setAttribute('aria-selected', signup ? 'false' : 'true');
+      clearStatuses();
+    }
+
+    function setStatus(id, text, tone) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.className = 'status' + (tone ? ' ' + tone : '');
+      el.textContent = text || '';
+    }
+
+    function clearStatuses() {
+      setStatus('signupStatus', '');
+      setStatus('signinStatus', '');
+    }
+
+    function getValue(id) {
+      var el = document.getElementById(id);
+      return el ? String(el.value || '').trim() : '';
+    }
+
+    function setButtonState(id, text, disabled) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = text;
+      el.disabled = !!disabled;
+      el.style.opacity = disabled ? '0.78' : '1';
+    }
+
+    function hydrateMemberState() {
+      var user = typeof getFbUser === 'function' ? getFbUser() : null;
+      var authState = document.getElementById('authState');
+      var memberState = document.getElementById('memberState');
+      if (!user || !user.email) {
+        authState.style.display = '';
+        memberState.classList.remove('active');
+        memberState.style.display = 'none';
+        return;
+      }
+      document.getElementById('memberName').textContent = user.name || (user.email.split('@')[0]) || 'FlowCheck Member';
+      document.getElementById('memberEmail').textContent = user.email;
+      authState.style.display = 'none';
+      memberState.style.display = 'block';
+      memberState.classList.add('active');
+    }
+
+    function siteSignUp() {
+      clearStatuses();
+      var name = getValue('site-signup-name');
+      var email = getValue('site-signup-email');
+      var password = getValue('site-signup-password');
+      if (!name) return setStatus('signupStatus', 'Enter your full name to create your FlowCheck account.', 'error');
+      if (!email) return setStatus('signupStatus', 'Enter your email address to continue.', 'error');
+      if (!password) return setStatus('signupStatus', 'Create a password with at least 6 characters.', 'error');
+
+      setButtonState('signupButton', 'Creating account…', true);
+      setStatus('signupStatus', 'Setting up your account securely…');
+
+      fbSignUp(email, password, name)
+        .then(function(data) {
+          fbSaveUser(data, name);
+          setStatus('signupStatus', 'Your FlowCheck account is ready.', 'success');
+          hydrateMemberState();
+        })
+        .catch(function(err) {
+          setStatus('signupStatus', fbErrMsg(err && err.code ? err.code : String(err || 'Sign up failed')), 'error');
+        })
+        .finally(function() {
+          setButtonState('signupButton', 'Start Your 7-Day Premium Trial', false);
+        });
+    }
+
+    function siteSignIn() {
+      clearStatuses();
+      var email = getValue('site-signin-email');
+      var password = getValue('site-signin-password');
+      if (!email || !password) return setStatus('signinStatus', 'Enter your email and password to sign in.', 'error');
+
+      setButtonState('signinButton', 'Signing in…', true);
+      setStatus('signinStatus', 'Signing you in securely…');
+
+      fbSignIn(email, password)
+        .then(function(data) {
+          fbSaveUser(data, data.displayName || email.split('@')[0]);
+          setStatus('signinStatus', 'Signed in successfully.', 'success');
+          hydrateMemberState();
+        })
+        .catch(function(err) {
+          setStatus('signinStatus', fbErrMsg(err && err.code ? err.code : String(err || 'Sign in failed')), 'error');
+        })
+        .finally(function() {
+          setButtonState('signinButton', 'Sign In to FlowCheck', false);
+        });
+    }
+
+    function siteForgotPassword() {
+      clearStatuses();
+      var email = getValue('site-signin-email') || getValue('site-signup-email');
+      if (!email) return setStatus('signinStatus', 'Enter your email first, then tap reset password.', 'error');
+
+      setStatus('signinStatus', 'Sending your reset email…');
+      fcFetch('https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=' + FC_FB.apiKey, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requestType: 'PASSWORD_RESET', email: email })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data && data.error) throw { code: data.error.message };
+        setStatus('signinStatus', 'Reset email sent. Check your inbox.', 'success');
+      })
+      .catch(function(err) {
+        setStatus('signinStatus', fbErrMsg(err && err.code ? err.code : String(err || 'Reset failed')), 'error');
+      });
+    }
+
+    function siteSignOut() {
+      try { localStorage.removeItem('fc-fb-user'); } catch (e) {}
+      hydrateMemberState();
+      showAuthPanel('signin');
+      setStatus('signinStatus', 'Signed out successfully.', 'success');
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+      hydrateMemberState();
+      var email = '';
+      try {
+        var user = getFbUser();
+        email = user && user.email ? user.email : '';
+      } catch (e) {}
+      if (email) {
+        var input = document.getElementById('site-signin-email');
+        if (input) input.value = email;
+      }
+    });
+  </script>
+</body>
+</html>

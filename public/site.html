@@ -1,0 +1,888 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FlowCheck | Money Clarity, Made Calm</title>
+  <meta name="description" content="FlowCheck is a premium money clarity brand built to help people feel calmer, more informed, and more in control of what is actually safe to spend.">
+  <style>
+    :root {
+      --bg: #090807;
+      --bg-elevated: #11100e;
+      --panel: rgba(21, 19, 17, 0.92);
+      --panel-soft: rgba(255, 255, 255, 0.03);
+      --line: rgba(255, 255, 255, 0.07);
+      --line-gold: rgba(255, 191, 82, 0.22);
+      --text: #f5f0e8;
+      --muted: #b9b0a2;
+      --soft: #8f8679;
+      --gold: #ffbf52;
+      --gold-deep: #e6a338;
+      --green: #5ed391;
+      --max: 1180px;
+      --shadow: 0 26px 70px rgba(0, 0, 0, 0.34);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "SF Pro Display", "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(255, 191, 82, 0.14), transparent 26%),
+        radial-gradient(circle at left center, rgba(255, 191, 82, 0.08), transparent 30%),
+        linear-gradient(180deg, #0a0908 0%, #090807 55%, #080706 100%);
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    @keyframes riseIn {
+      from { opacity: 0; transform: translateY(22px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    @keyframes glowPulse {
+      0%, 100% { box-shadow: 0 20px 46px rgba(243, 174, 61, 0.22); }
+      50% { box-shadow: 0 24px 56px rgba(243, 174, 61, 0.28); }
+    }
+
+    .reveal-1,
+    .reveal-2,
+    .reveal-3,
+    .reveal-4 {
+      opacity: 0;
+      animation: riseIn 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    .reveal-2 { animation-delay: 0.08s; }
+    .reveal-3 { animation-delay: 0.16s; }
+    .reveal-4 { animation-delay: 0.24s; }
+
+    .shell {
+      width: min(100%, var(--max));
+      margin: 0 auto;
+      padding: 0 24px 84px;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      backdrop-filter: blur(18px);
+      background: rgba(10, 9, 8, 0.72);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .nav-inner {
+      width: min(100%, var(--max));
+      margin: 0 auto;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background:
+        linear-gradient(180deg, rgba(255, 205, 102, 0.18), rgba(213, 141, 21, 0.08)),
+        #13110f;
+      border: 1px solid var(--line-gold);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    .brand-bars {
+      display: flex;
+      align-items: end;
+      gap: 4px;
+      height: 20px;
+    }
+
+    .brand-bars span {
+      width: 6px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ffcd66, #d58d15);
+    }
+
+    .brand-bars span:nth-child(1) { height: 8px; }
+    .brand-bars span:nth-child(2) { height: 13px; }
+    .brand-bars span:nth-child(3) { height: 17px; }
+    .brand-bars span:nth-child(4) { height: 22px; }
+
+    .brand-copy strong {
+      display: block;
+      font-size: 1rem;
+      letter-spacing: 0.01em;
+    }
+
+    .brand-copy span {
+      display: block;
+      margin-top: 2px;
+      color: var(--soft);
+      font-size: 0.84rem;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      padding: 10px 14px;
+      border-radius: 999px;
+      transition: 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .nav-links .cta {
+      color: #1a1104;
+      font-weight: 700;
+      background: linear-gradient(180deg, #ffc966, #eda62f);
+      box-shadow: 0 14px 36px rgba(243, 174, 61, 0.2);
+    }
+
+    .hero {
+      padding: 70px 0 34px;
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: 28px;
+      align-items: end;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 15px;
+      border-radius: 999px;
+      background: rgba(255, 191, 82, 0.08);
+      border: 1px solid var(--line-gold);
+      color: var(--gold);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 22px 0 18px;
+      font-size: clamp(3.4rem, 6.4vw, 6rem);
+      line-height: 0.9;
+      letter-spacing: -0.055em;
+      max-width: 9.2ch;
+    }
+
+    .hero-copy p {
+      margin: 0;
+      max-width: 42rem;
+      color: var(--muted);
+      font-size: 1.14rem;
+      line-height: 1.82;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 32px;
+    }
+
+    .button {
+      appearance: none;
+      border: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 58px;
+      padding: 0 24px;
+      border-radius: 16px;
+      font: inherit;
+      font-weight: 700;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .button:hover { transform: translateY(-1px); }
+
+    .button-primary {
+      color: #170f04;
+      background: linear-gradient(180deg, #ffcd69, #eda62f);
+      box-shadow: 0 20px 46px rgba(243, 174, 61, 0.22);
+      animation: glowPulse 4.6s ease-in-out infinite;
+    }
+
+    .button-secondary {
+      color: var(--text);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .hero-panel {
+      padding: 28px;
+      border-radius: 34px;
+      background:
+        radial-gradient(circle at top right, rgba(255, 191, 82, 0.14), transparent 34%),
+        linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)),
+        var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      animation: drift 8s ease-in-out infinite;
+    }
+
+    .hero-panel small,
+    .section-label {
+      display: inline-block;
+      color: var(--gold);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .hero-panel h2 {
+      margin: 16px 0 12px;
+      font-size: 2rem;
+      letter-spacing: -0.04em;
+      line-height: 1.02;
+    }
+
+    .hero-panel p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    .hero-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .hero-item {
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: var(--panel-soft);
+      border: 1px solid var(--line);
+    }
+
+    .hero-item strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 1rem;
+    }
+
+    .hero-item span {
+      display: block;
+      color: var(--soft);
+      line-height: 1.6;
+    }
+
+    .section {
+      margin-top: 82px;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 24px;
+      align-items: end;
+      margin-bottom: 22px;
+    }
+
+    .section-head h3 {
+      margin: 14px 0 0;
+      font-size: clamp(1.95rem, 4vw, 3.2rem);
+      letter-spacing: -0.045em;
+      line-height: 1.02;
+    }
+
+    .section-head p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.8;
+      max-width: 42rem;
+    }
+
+    .grid-3,
+    .grid-2 {
+      display: grid;
+      gap: 18px;
+    }
+
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    .card {
+      padding: 28px;
+      border-radius: 28px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: 0 18px 46px rgba(0, 0, 0, 0.24);
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .card:hover,
+    .mini:hover,
+    .hero-item:hover {
+      transform: translateY(-3px);
+      border-color: rgba(255, 191, 82, 0.18);
+      box-shadow: 0 24px 56px rgba(0, 0, 0, 0.28);
+    }
+
+    .card h4 {
+      margin: 0 0 12px;
+      font-size: 1.35rem;
+      letter-spacing: -0.03em;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.78;
+    }
+
+    .stack {
+      display: grid;
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .mini {
+      padding: 16px 18px;
+      border-radius: 20px;
+      background: var(--panel-soft);
+      border: 1px solid var(--line);
+    }
+
+    .mini strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 1rem;
+    }
+
+    .mini span {
+      display: block;
+      color: var(--soft);
+      line-height: 1.6;
+    }
+
+    .quote-band {
+      padding: 34px;
+      border-radius: 30px;
+      background:
+        radial-gradient(circle at top left, rgba(255, 191, 82, 0.12), transparent 30%),
+        linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)),
+        var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .quote-band blockquote {
+      margin: 0;
+      font-size: clamp(1.5rem, 3.2vw, 2.4rem);
+      line-height: 1.35;
+      letter-spacing: -0.03em;
+      max-width: 18ch;
+    }
+
+    .quote-band p {
+      margin: 18px 0 0;
+      color: var(--muted);
+      line-height: 1.8;
+      max-width: 46rem;
+    }
+
+    .browser-showcase {
+      padding: 24px;
+      border-radius: 32px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)),
+        var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .browser-shell {
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #151311;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    .browser-bar {
+      height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 0 18px;
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .browser-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .browser-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.18);
+    }
+
+    .browser-url {
+      flex: 1;
+      min-width: 0;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+      color: var(--soft);
+      font-size: 0.9rem;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .browser-body {
+      padding: 26px;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 18px;
+    }
+
+    .browser-copy h4 {
+      margin: 0;
+      font-size: 2rem;
+      letter-spacing: -0.05em;
+      line-height: 1;
+    }
+
+    .browser-copy p {
+      margin: 14px 0 0;
+      color: var(--muted);
+      line-height: 1.78;
+    }
+
+    .browser-stats {
+      display: grid;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .browser-stat {
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .browser-stat strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 1rem;
+    }
+
+    .browser-stat span {
+      display: block;
+      color: var(--soft);
+      line-height: 1.6;
+    }
+
+    .browser-side {
+      padding: 18px;
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at top right, rgba(255,191,82,0.1), transparent 34%),
+        rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .device-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .device-pill {
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: var(--muted);
+      font-size: 0.87rem;
+    }
+
+    .footer {
+      margin-top: 86px;
+      padding-top: 30px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      color: var(--soft);
+    }
+
+    .footer strong {
+      display: block;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .footer-links a:hover { color: var(--text); }
+
+    @media (max-width: 1040px) {
+      .hero,
+      .section-head,
+      .grid-2,
+      .grid-3,
+      .browser-body { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .shell, .nav-inner { padding-left: 16px; padding-right: 16px; }
+      .nav-inner { align-items: start; flex-direction: column; }
+      .nav-links { width: 100%; justify-content: flex-start; }
+      .hero { padding-top: 34px; }
+      h1 { max-width: 10ch; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .reveal-1, .reveal-2, .reveal-3, .reveal-4,
+      .hero-panel,
+      .button-primary {
+        animation: none !important;
+        opacity: 1;
+        transform: none;
+      }
+      .button,
+      .card,
+      .mini,
+      .hero-item { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="/site.html" aria-label="FlowCheck home">
+        <div class="brand-mark" aria-hidden="true">
+          <div class="brand-bars">
+            <span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+        <div class="brand-copy">
+          <strong>FlowCheck</strong>
+          <span>Private by design. Built for calm money clarity.</span>
+        </div>
+      </a>
+      <div class="nav-links">
+        <a href="#what">What is FlowCheck</a>
+        <a href="#why">Why it feels different</a>
+        <a href="#security">Security</a>
+        <a href="/about.html">About</a>
+        <a href="/story.html">Our Story</a>
+        <a href="/contact.html">Contact</a>
+        <a href="/access.html">Sign In</a>
+        <a class="cta" href="/access.html">Start Free Trial</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow reveal-1">Money clarity for real life</div>
+        <h1 class="reveal-2">Know what is actually safe to spend.</h1>
+        <p class="reveal-3">
+          FlowCheck is a premium money clarity brand built for people who want a calmer relationship with their finances.
+          It is designed to feel more composed, more trustworthy, and more useful than the typical budgeting experience.
+        </p>
+        <div class="hero-actions reveal-4">
+          <a class="button button-primary" href="/access.html">Start 7-Day Trial</a>
+          <a class="button button-secondary" href="/story.html">Read Our Story</a>
+        </div>
+      </div>
+
+      <aside class="hero-panel reveal-3" aria-label="FlowCheck positioning">
+        <small>What FlowCheck is</small>
+        <h2>A clearer financial perspective, not another noisy finance app.</h2>
+        <p>
+          The website introduces the brand. The app handles the day-to-day money experience. That separation makes both surfaces feel cleaner, stronger, and more intentional.
+        </p>
+        <div class="hero-list">
+          <div class="hero-item">
+            <strong>Premium first impression</strong>
+            <span>A more mature public website for new visitors, referrals, and App Store support traffic.</span>
+          </div>
+          <div class="hero-item">
+            <strong>Separate access experience</strong>
+            <span>Sign up and sign in now live on their own dedicated page instead of crowding the homepage.</span>
+          </div>
+          <div class="hero-item">
+            <strong>Brand-led presentation</strong>
+            <span>Calm copy, clearer structure, and a more polished visual rhythm throughout the site.</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section reveal-2" id="what">
+      <div class="section-head">
+        <div>
+          <span class="section-label">What Is FlowCheck</span>
+          <h3>FlowCheck is built to help people feel calmer and more informed about money.</h3>
+        </div>
+        <p>
+          Instead of leaning on shame, noise, or endless manual work, the product is designed to surface what matters most: what is safe to spend, what is recurring, and what deserves attention next.
+        </p>
+      </div>
+      <div class="grid-3">
+        <article class="card">
+          <h4>Clarity over clutter</h4>
+          <p>FlowCheck is meant to reduce mental overhead. The experience should feel composed, intelligent, and easier to trust at a glance.</p>
+        </article>
+        <article class="card">
+          <h4>Private by design</h4>
+          <p>Read-only bank syncing, transparent language, and careful account flows are part of the product, not an afterthought.</p>
+        </article>
+        <article class="card">
+          <h4>Premium but welcoming</h4>
+          <p>The brand should feel elevated and polished while still being warm enough that people want to stay with it.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section reveal-3" id="why">
+      <div class="section-head">
+        <div>
+          <span class="section-label">Why It Feels Different</span>
+          <h3>Most finance products feel loud. FlowCheck is being shaped to feel calm, useful, and expensive in the best way.</h3>
+        </div>
+        <p>
+          This is not a homepage built from app screenshots and generic slogans. It is a brand surface designed to make the product feel more credible, more human, and more desirable before someone even signs in.
+        </p>
+      </div>
+      <div class="grid-2">
+        <article class="card">
+          <h4>What bigger apps often get wrong</h4>
+          <div class="stack">
+            <div class="mini">
+              <strong>Too much too fast</strong>
+              <span>Visitors get hit with product clutter, upsells, and tiny charts before understanding the brand.</span>
+            </div>
+            <div class="mini">
+              <strong>Utility with no soul</strong>
+              <span>The product may work, but it feels generic and forgettable.</span>
+            </div>
+            <div class="mini">
+              <strong>Trust explained badly</strong>
+              <span>Privacy and bank-linking copy often feels defensive or confusing instead of confident.</span>
+            </div>
+          </div>
+        </article>
+        <article class="card">
+          <h4>What FlowCheck is aiming for</h4>
+          <div class="stack">
+            <div class="mini">
+              <strong>Cleaner story</strong>
+              <span>People should understand what FlowCheck is and why it matters before being asked to create an account.</span>
+            </div>
+            <div class="mini">
+              <strong>Better emotional feel</strong>
+              <span>The site should leave people feeling calmer, more curious, and more trusting.</span>
+            </div>
+            <div class="mini">
+              <strong>Sharper separation</strong>
+              <span>The website handles brand and access. The app handles the product workflow. Each surface gets to be better.</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section reveal-2">
+      <div class="quote-band">
+        <small class="section-label">The Standard</small>
+        <blockquote>FlowCheck should feel like a private money companion, not a finance app fighting for attention.</blockquote>
+        <p>
+          That principle should show up everywhere: in the brand, in the product design, in the copy, and in the way people move from website to app without friction.
+        </p>
+      </div>
+    </section>
+
+    <section class="section reveal-3" id="security">
+      <div class="section-head">
+        <div>
+          <span class="section-label">Security</span>
+          <h3>Trust has to feel clear, not hidden in fine print.</h3>
+        </div>
+        <p>
+          FlowCheck uses the same Firebase account system across web and mobile, and Plaid handles bank credential entry. The goal is a secure flow that still feels understandable to a normal person.
+        </p>
+      </div>
+      <div class="grid-3">
+        <article class="card">
+          <h4>One account system</h4>
+          <p>People can create an account on the web and use the same credentials in the app without confusion.</p>
+        </article>
+        <article class="card">
+          <h4>Read-only bank sync</h4>
+          <p>Plaid handles bank credentials directly. FlowCheck does not store a user’s bank password or move their money.</p>
+        </article>
+        <article class="card">
+          <h4>Clear support paths</h4>
+          <p>The site now includes cleaner About, Story, and Contact pages so the brand feels more established and easier to trust.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section reveal-4" id="desktop">
+      <div class="section-head">
+        <div>
+          <span class="section-label">Desktop Compatible</span>
+          <h3>Built to feel intentional on a PC browser, not just tolerated on one.</h3>
+        </div>
+        <p>
+          The website is designed to scale cleanly on larger screens, with room for stronger typography, a better browsing rhythm, and a more polished first impression on desktop and laptop.
+        </p>
+      </div>
+      <div class="browser-showcase">
+        <div class="browser-shell">
+          <div class="browser-bar">
+            <div class="browser-dots"><span></span><span></span><span></span></div>
+            <div class="browser-url">https://getflowcheck.app/site.html</div>
+          </div>
+          <div class="browser-body">
+            <div class="browser-copy">
+              <h4>FlowCheck on the web should feel like a real brand presence.</h4>
+              <p>
+                On desktop, the site gets to breathe more. Headlines land harder, sections feel more editorial, and the whole product story has room to feel mature and premium instead of compressed.
+              </p>
+              <div class="browser-stats">
+                <div class="browser-stat">
+                  <strong>Wider layouts, better hierarchy</strong>
+                  <span>The site takes advantage of desktop space instead of simply stretching a mobile design.</span>
+                </div>
+                <div class="browser-stat">
+                  <strong>Dedicated access page</strong>
+                  <span>Sign up and sign in are separated from the homepage so the main site stays elegant.</span>
+                </div>
+              </div>
+            </div>
+            <aside class="browser-side">
+              <div class="device-pills">
+                <span class="device-pill">Desktop-ready</span>
+                <span class="device-pill">Laptop-friendly</span>
+                <span class="device-pill">Mobile-responsive</span>
+              </div>
+              <div class="stack" style="margin-top:0;">
+                <div class="mini">
+                  <strong>For visitors</strong>
+                  <span>The site feels more credible and easier to trust when viewed on a big screen.</span>
+                </div>
+                <div class="mini">
+                  <strong>For you</strong>
+                  <span>You can send people to the site from PC, Mac, tablet, or phone and still feel good about the presentation.</span>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section reveal-4">
+      <div class="section-head">
+        <div>
+          <span class="section-label">Explore FlowCheck</span>
+          <h3>Get to know the brand before you get into the product.</h3>
+        </div>
+        <p>
+          The strongest finance brands make the product feel coherent across every surface. These pages help FlowCheck feel more complete, more welcoming, and more real.
+        </p>
+      </div>
+      <div class="grid-3">
+        <article class="card">
+          <h4>About FlowCheck</h4>
+          <p>Learn what the product stands for, what it is trying to change, and what kind of experience it is designed to create.</p>
+          <div class="hero-actions" style="margin-top:20px;">
+            <a class="button button-secondary" href="/about.html">Open About</a>
+          </div>
+        </article>
+        <article class="card">
+          <h4>Our Story</h4>
+          <p>Read the longer narrative behind why FlowCheck is being built and what kind of money relationship it wants users to have.</p>
+          <div class="hero-actions" style="margin-top:20px;">
+            <a class="button button-secondary" href="/story.html">Read Story</a>
+          </div>
+        </article>
+        <article class="card">
+          <h4>Account Access</h4>
+          <p>Create an account, sign in, or reset a password on a dedicated access page that is separate from the main website experience.</p>
+          <div class="hero-actions" style="margin-top:20px;">
+            <a class="button button-primary" href="/access.html">Go to Access</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>
+        <strong>FlowCheck</strong>
+        <span>Brand site, story, and dedicated account access for a calmer money experience.</span>
+      </div>
+      <div class="footer-links">
+        <a href="/about.html">About</a>
+        <a href="/story.html">Our Story</a>
+        <a href="/contact.html">Contact</a>
+        <a href="/access.html">Sign In</a>
+        <a href="/index.html#privacy">Privacy Policy</a>
+        <a href="/index.html#tos">Terms</a>
+        <span>© 2026 FlowCheck LLC</span>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>

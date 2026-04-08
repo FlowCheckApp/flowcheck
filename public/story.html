@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Our Story | FlowCheck</title>
+  <meta name="description" content="Read the story behind FlowCheck and why it is being built as a calmer, more premium, and more trustworthy money experience.">
+  <style>
+    :root {
+      --bg: #0b0908;
+      --panel: rgba(23,20,18,0.94);
+      --text: #f6f1e7;
+      --muted: #beb4a5;
+      --soft: #908577;
+      --gold: #ffbf52;
+      --line: rgba(255,255,255,0.07);
+      --max: 980px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "SF Pro Display","Segoe UI",Arial,sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top center, rgba(255,191,82,0.12), transparent 26%),
+        linear-gradient(180deg,#0b0908,#090807);
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration:none; }
+    @keyframes riseIn {
+      from { opacity:0; transform: translateY(20px); }
+      to { opacity:1; transform: translateY(0); }
+    }
+    .reveal-1,.reveal-2,.reveal-3 { opacity:0; animation: riseIn .72s cubic-bezier(0.22,1,0.36,1) forwards; }
+    .reveal-2 { animation-delay:.08s; }
+    .reveal-3 { animation-delay:.16s; }
+    .shell { width:min(100%,var(--max)); margin:0 auto; padding:0 22px 80px; }
+    .nav {
+      position: sticky; top:0; z-index:20;
+      background: rgba(11,9,8,0.75); backdrop-filter: blur(18px);
+      border-bottom:1px solid rgba(255,255,255,0.04);
+    }
+    .nav-inner {
+      width:min(100%,var(--max)); margin:0 auto; padding:18px 22px;
+      display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
+    }
+    .hero { padding: 64px 0 24px; }
+    .label {
+      display:inline-block; padding:10px 14px; border-radius:999px;
+      color: var(--gold); border:1px solid rgba(255,191,82,0.18); background: rgba(255,191,82,0.08);
+      font-size:0.8rem; letter-spacing:.14em; text-transform:uppercase; font-weight:700;
+    }
+    h1 {
+      margin:22px 0 16px; font-size: clamp(3rem, 7vw, 5.8rem); line-height:.9; letter-spacing:-.05em; max-width:10ch;
+    }
+    .hero p { margin:0; max-width:42rem; color:var(--muted); font-size:1.12rem; line-height:1.84; }
+    .story-card {
+      margin-top:34px; padding:32px; border-radius:30px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)), var(--panel);
+      border:1px solid var(--line); box-shadow: 0 24px 60px rgba(0,0,0,0.32);
+    }
+    .story-card h2 { margin:0 0 14px; font-size:1.55rem; letter-spacing:-.04em; }
+    .story-card p { margin:0 0 18px; color:var(--muted); line-height:1.9; }
+    .quote {
+      margin-top: 28px; padding:24px; border-radius:24px;
+      background: rgba(255,255,255,0.03); border:1px solid var(--line);
+      color: var(--text); font-size:1.2rem; line-height:1.65; letter-spacing:-.02em;
+    }
+    .timeline { display:grid; gap:16px; margin-top:28px; }
+    .point { padding:18px 20px; border-radius:22px; background: rgba(255,255,255,0.03); border:1px solid var(--line); }
+    .point, .story-card { transition: transform .24s ease, border-color .24s ease; }
+    .point:hover, .story-card:hover { transform: translateY(-3px); border-color: rgba(255,191,82,0.18); }
+    .point strong { display:block; margin-bottom:8px; }
+    .point span { display:block; color:var(--soft); line-height:1.7; }
+    .footer { margin-top:70px; padding-top:28px; border-top:1px solid var(--line); color:var(--soft); display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+    .footer-links { display:flex; gap:16px; flex-wrap:wrap; }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal-1,.reveal-2,.reveal-3 { animation:none !important; opacity:1; transform:none; }
+      .point, .story-card { transition:none; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <strong><a href="/site.html">FlowCheck</a></strong>
+      <div class="footer-links">
+        <a href="/site.html">Home</a>
+        <a href="/about.html">About</a>
+        <a href="/access.html">Sign In</a>
+      </div>
+    </div>
+  </nav>
+  <main class="shell">
+    <section class="hero">
+      <span class="label reveal-1">Our Story</span>
+      <h1 class="reveal-2">FlowCheck started with a simple feeling: money should feel clearer than this.</h1>
+      <p class="reveal-3">
+        Too many finance products feel noisy, judgmental, or generic. They throw charts and categories at people without helping them feel more grounded.
+        FlowCheck is being built to feel different: quieter, sharper, more private, and more emotionally useful.
+      </p>
+    </section>
+
+    <section class="story-card reveal-2">
+      <h2>Why FlowCheck exists</h2>
+      <p>
+        The idea behind FlowCheck is not just to show balances or list transactions. It is to give people a stronger sense of what is truly safe,
+        what is changing, and what deserves attention next. That requires better design, better product judgment, and more trust than a typical money app delivers.
+      </p>
+      <p>
+        The brand is being shaped around calm confidence. That means polished visuals, premium product feel, and language that respects the user instead of talking down to them.
+      </p>
+
+      <div class="quote">
+        “FlowCheck should feel like a private money companion that makes people feel more in control the moment they open it.”
+      </div>
+
+      <div class="timeline">
+        <div class="point">
+          <strong>Step one: calm clarity</strong>
+          <span>Build a product that helps people understand what is safe to spend and where recurring commitments are shaping their cash flow.</span>
+        </div>
+        <div class="point">
+          <strong>Step two: premium trust</strong>
+          <span>Create a brand experience across app, website, and email that feels expensive, private, and thoughtfully designed.</span>
+        </div>
+        <div class="point">
+          <strong>Step three: lasting relationship</strong>
+          <span>Grow FlowCheck into a top-tier money brand people genuinely want to stay with because it feels better than the alternatives.</span>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span>© 2026 FlowCheck LLC</span>
+      <div class="footer-links">
+        <a href="/site.html">Home</a>
+        <a href="/about.html">About</a>
+        <a href="/access.html">Sign In</a>
+        <a href="/index.html#tos">Terms</a>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>

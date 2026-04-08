@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact FlowCheck</title>
+  <meta name="description" content="Contact FlowCheck support, partnerships, and general inquiries.">
+  <style>
+    :root {
+      --bg: #0b0908;
+      --panel: rgba(23,20,18,0.94);
+      --text: #f6f1e7;
+      --muted: #beb4a5;
+      --soft: #908577;
+      --gold: #ffbf52;
+      --line: rgba(255,255,255,0.07);
+      --max: 1080px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "SF Pro Display","Segoe UI",Arial,sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(255,191,82,0.12), transparent 28%),
+        linear-gradient(180deg,#0b0908,#090807);
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    @keyframes riseIn {
+      from { opacity:0; transform: translateY(20px); }
+      to { opacity:1; transform: translateY(0); }
+    }
+    .reveal-1,.reveal-2,.reveal-3 { opacity:0; animation: riseIn .72s cubic-bezier(0.22,1,0.36,1) forwards; }
+    .reveal-2 { animation-delay:.08s; }
+    .reveal-3 { animation-delay:.16s; }
+    .shell { width:min(100%,var(--max)); margin:0 auto; padding:0 22px 80px; }
+    .nav {
+      position: sticky; top: 0; z-index: 20;
+      background: rgba(11,9,8,0.75); backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .nav-inner {
+      width:min(100%,var(--max)); margin:0 auto; padding:18px 22px;
+      display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
+    }
+    .hero { padding: 64px 0 30px; }
+    .label {
+      display:inline-block; padding:10px 14px; border-radius:999px;
+      color: var(--gold); border:1px solid rgba(255,191,82,0.18); background: rgba(255,191,82,0.08);
+      font-size:0.8rem; letter-spacing:.14em; text-transform:uppercase; font-weight:700;
+    }
+    h1 {
+      margin:22px 0 16px; font-size: clamp(3rem, 7vw, 5.6rem); line-height:.92; letter-spacing:-.05em; max-width: 11ch;
+    }
+    .hero p { margin:0; max-width:42rem; color:var(--muted); font-size:1.14rem; line-height:1.82; }
+    .grid { display:grid; grid-template-columns: 1fr 1fr; gap:18px; margin-top:38px; }
+    .card {
+      padding:28px; border-radius:28px; background: var(--panel); border:1px solid var(--line);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+      transition: transform .24s ease, border-color .24s ease;
+    }
+    .card:hover, .contact-row:hover { transform: translateY(-3px); border-color: rgba(255,191,82,0.18); }
+    .card h2 { margin:0 0 14px; font-size:1.5rem; letter-spacing:-.04em; }
+    .card p { margin:0; color:var(--muted); line-height:1.82; }
+    .stack { display:grid; gap:14px; margin-top:18px; }
+    .contact-row {
+      padding:16px 18px; border-radius:20px; background: rgba(255,255,255,0.03); border:1px solid var(--line);
+      transition: transform .24s ease, border-color .24s ease;
+    }
+    .contact-row strong { display:block; margin-bottom:6px; }
+    .contact-row span { display:block; color:var(--soft); line-height:1.6; }
+    .contact-row a { color: var(--gold); }
+    .footer { margin-top:70px; padding-top:28px; border-top:1px solid var(--line); color:var(--soft); display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+    .footer-links { display:flex; gap:16px; flex-wrap:wrap; }
+    @media (max-width: 900px) { .grid { grid-template-columns:1fr; } }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal-1,.reveal-2,.reveal-3 { animation:none !important; opacity:1; transform:none; }
+      .card, .contact-row { transition:none; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <strong><a href="/site.html">FlowCheck</a></strong>
+      <div class="footer-links">
+        <a href="/site.html">Home</a>
+        <a href="/about.html">About</a>
+        <a href="/story.html">Our Story</a>
+        <a href="/access.html">Sign In</a>
+      </div>
+    </div>
+  </nav>
+  <main class="shell">
+    <section class="hero">
+      <span class="label reveal-1">Contact</span>
+      <h1 class="reveal-2">Reach out to FlowCheck.</h1>
+      <p class="reveal-3">
+        Whether someone needs support, wants to talk partnerships, or just has a question about the product, this page should feel clear,
+        warm, and easy to trust.
+      </p>
+    </section>
+
+    <section class="grid reveal-2">
+      <article class="card">
+        <h2>Support and product help</h2>
+        <p>
+          For account questions, sign-in help, app issues, subscription questions, or general support, email FlowCheck directly and someone will respond.
+        </p>
+        <div class="stack">
+          <div class="contact-row">
+            <strong>Support email</strong>
+            <span><a href="mailto:flowcheckapp.help@outlook.com">flowcheckapp.help@outlook.com</a></span>
+          </div>
+          <div class="contact-row">
+            <strong>Best for</strong>
+            <span>Sign in help, subscription support, account access, app questions, and user issues.</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Brand, press, and partnerships</h2>
+        <p>
+          As FlowCheck grows, this page can also serve future press, collaboration, and partnership outreach without making the product feel impersonal.
+        </p>
+        <div class="stack">
+          <div class="contact-row">
+            <strong>General inquiries</strong>
+            <span><a href="mailto:flowcheckapp.help@outlook.com">flowcheckapp.help@outlook.com</a></span>
+          </div>
+          <div class="contact-row">
+            <strong>What to include</strong>
+            <span>Your name, what you’re reaching out about, and the best way to reply.</span>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <footer class="footer">
+      <span>© 2026 FlowCheck LLC</span>
+      <div class="footer-links">
+        <a href="/site.html">Home</a>
+        <a href="/about.html">About</a>
+        <a href="/story.html">Our Story</a>
+        <a href="/access.html">Sign In</a>
+        <a href="/index.html#privacy">Privacy Policy</a>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>
