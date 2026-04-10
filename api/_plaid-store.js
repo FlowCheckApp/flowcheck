@@ -34,6 +34,13 @@ async function deletePlaidItem(userId, itemId) {
   await itemDoc(userId, itemId).delete();
 }
 
+async function listPlaidItems(userId) {
+  if (!userId) return [];
+  const snapshot = await db.collection(COLLECTION).where('userId', '==', userId).get();
+  if (snapshot.empty) return [];
+  return snapshot.docs.map((doc) => doc.data());
+}
+
 async function deleteAllPlaidItems(userId) {
   if (!userId) return 0;
   const snapshot = await db.collection(COLLECTION).where('userId', '==', userId).get();
@@ -49,5 +56,6 @@ module.exports = {
   savePlaidItem,
   getPlaidItem,
   deletePlaidItem,
+  listPlaidItems,
   deleteAllPlaidItems,
 };

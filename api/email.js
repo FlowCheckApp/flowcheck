@@ -5,22 +5,12 @@ const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM = 'FlowCheck <hello@getflowcheck.app>';
 const { requireUser } = require('./_auth');
 
-// Firebase Admin for user lookup
+// Firebase compatibility layer for user lookup
 let _admin = null;
 function getAdmin() {
   if (_admin) return _admin;
-  const admin = require('firebase-admin');
-  if (!admin.apps.length) {
-    admin.initializeApp({
-      credential: admin.credential.cert({
-        projectId:   process.env.FIREBASE_PROJECT_ID,
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey:  (process.env.FIREBASE_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
-      }),
-    });
-  }
-  _admin = admin;
-  return admin;
+  _admin = require('../lib/firebase-admin').admin;
+  return _admin;
 }
 
 async function getUserInfo(userId, dataOverride) {
@@ -96,7 +86,7 @@ function wrap(body, subj, preview) {
       <div class="body">${body}</div>
       <div class="ft"><p>
         You're receiving this because you have a FlowCheck account.<br>
-        Questions? <a href="mailto:support@getflowcheck.app">support@getflowcheck.app</a><br>
+        Questions? <a href="mailto:flowcheckapp.help@outlook.com">flowcheckapp.help@outlook.com</a><br>
         <a href="https://getflowcheck.app/unsubscribe">Unsubscribe from non-essential emails</a><br><br>
         © 2026 FlowCheck LLC — All rights reserved.
       </p></div>
@@ -355,7 +345,7 @@ function buildEmail(type, name, d) {
     account_deleted: () => wrap(`
       <h1>Account deleted</h1>
       <p>Hi ${name}, your FlowCheck account and all data have been permanently deleted as requested.</p>
-      <div class="box"><p style="margin:0;font-size:13px;color:#92400e">If this was a mistake, contact us immediately at <a href="mailto:support@getflowcheck.app" style="color:#F5A623">support@getflowcheck.app</a>.</p></div>`,
+      <div class="box"><p style="margin:0;font-size:13px;color:#92400e">If this was a mistake, contact us immediately at <a href="mailto:flowcheckapp.help@outlook.com" style="color:#F5A623">flowcheckapp.help@outlook.com</a>.</p></div>`,
       `Your FlowCheck account has been deleted`
     ),
 

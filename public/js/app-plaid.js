@@ -41,6 +41,21 @@ function getPrimaryPlaidItemId() {
   return null;
 }
 
+function getActivePlaidItemIds() {
+  if (!Array.isArray(plaidLinkedAccounts)) return [];
+  return plaidLinkedAccounts
+    .filter(function(acct) { return !!(acct && acct.itemId && !acct.needsRelink); })
+    .map(function(acct) { return acct.itemId; });
+}
+
+function getPlaidLinkedItem(itemId) {
+  if (!itemId || !Array.isArray(plaidLinkedAccounts)) return null;
+  for (var i = 0; i < plaidLinkedAccounts.length; i++) {
+    if (plaidLinkedAccounts[i] && plaidLinkedAccounts[i].itemId === itemId) return plaidLinkedAccounts[i];
+  }
+  return null;
+}
+
 function migrateLegacyPlaidTokens() {
   var fbUser = requireSignedInForPlaid();
   if (!fbUser || !Array.isArray(plaidLinkedAccounts) || !plaidLinkedAccounts.length) return Promise.resolve(false);
@@ -151,6 +166,43 @@ function savePlaidState() {
   } catch(e) { console.error('[Plaid] savePlaidState failed:', e); }
 }
 
+function sameInstitution(a, b) {
+  if (!a || !b) return false;
+  var idA = String(a.institutionId || '').trim();
+  var idB = String(b.institutionId || '').trim();
+  if (idA && idB && idA === idB) return true;
+  var nameA = String(a.institutionName || '').trim().toLowerCase();
+  var nameB = String(b.institutionName || '').trim().toLowerCase();
+  return !!(nameA && nameB && nameA === nameB);
+}
+
+function sameAnyAccount(a, b) {
+  var aAccounts = Array.isArray(a && a.accounts) ? a.accounts : [];
+  var bAccounts = Array.isArray(b && b.accounts) ? b.accounts : [];
+  if (!aAccounts.length || !bAccounts.length) return false;
+  for (var i = 0; i < aAccounts.length; i++) {
+    for (var j = 0; j < bAccounts.length; j++) {
+      if (aAccounts[i] && bAccounts[j] && aAccounts[i].id && bAccounts[j].id && aAccounts[i].id === bAccounts[j].id) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+function upsertLinkedPlaidItem(linkedItem) {
+  if (!linkedItem) return;
+  if (!Array.isArray(plaidLinkedAccounts)) plaidLinkedAccounts = [];
+  plaidLinkedAccounts = plaidLinkedAccounts.filter(function(existing) {
+    if (!existing) return false;
+    if (linkedItem.itemId && existing.itemId === linkedItem.itemId) return false;
+    if (sameInstitution(existing, linkedItem)) return false;
+    if (sameAnyAccount(existing, linkedItem)) return false;
+    return true;
+  });
+  plaidLinkedAccounts.push(linkedItem);
+}
+
 // ── Render Plaid page ──
 function rPlaid() {
   var connected = plaidLinkedAccounts.length > 0;
@@ -195,7 +247,7 @@ function rPlaid() {
     wrap.innerHTML = plaidLinkedAccounts.map(function(acct, i) {
       var isLast = i === plaidLinkedAccounts.length - 1;
       return '<div style="display:flex;align-items:center;gap:13px;padding:14px 16px;' + (!isLast ? 'border-bottom:1px solid rgba(255,255,255,.04);' : '') + '">' +
-        '<div style="width:40px;height:40px;background:rgba(245,166,35,.08);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🏦</div>' +
+        '<div style="width:40px;height:40px;background:rgba(245,166,35,.08);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#F5A623"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 10h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M6 10V18M10 10V18M14 10V18M18 10V18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M3 20h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 4l9 4H3l9-4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div>' +
         '<div style="flex:1;min-width:0">' +
           '<div style="font-size:14.5px;font-weight:600;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + (acct.institutionName || 'Bank') + '</div>' +
           '<div style="font-size:11.5px;color:var(--t3);margin-top:2px">' + (acct.accounts ? acct.accounts.length + ' account' + (acct.accounts.length > 1 ? 's' : '') : 'Linked') + '</div>' +
@@ -226,6 +278,8 @@ function rPlaid() {
 
 // ── LAUNCH PLAID LINK ──
 function launchPlaid(type) {
+  try { window._fcPlaidRequestedType = type || window._fcPlaidRequestedType || 'checking'; } catch (e) {}
+  try { if (typeof FCTrack === 'function') FCTrack('plaid_link_started', { requestedType: type || 'checking' }); } catch (e) {}
   if (!requireSignedInForPlaid()) {
     try {
       if (typeof obShowOverlay === 'function') obShowOverlay();
@@ -237,6 +291,10 @@ function launchPlaid(type) {
   if (typeof toast === 'function') toast('Opening Plaid…');
   if (!FC_PLAID.BACKEND_URL) FC_PLAID.BACKEND_URL = 'https://getflowcheck.app';
   getLinkToken(type);
+}
+
+if (typeof window !== 'undefined') {
+  window.__fcRealLaunchPlaid = launchPlaid;
 }
 
 function plaidBackendOrigin() {
@@ -257,13 +315,14 @@ function getLinkToken(type) {
   var path = '/api/create-link-token';
   var url = plaidBackendOrigin().replace(/\/$/, '') + path;
   var btn = document.querySelector('#pg-plaid button[onclick="launchPlaid()"]');
+  var requestedType = type || window._fcOnboardingPlaidType || window._fcPlaidRequestedType || 'checking';
   if (btn) { btn.textContent = 'Connecting…'; btn.disabled = true; }
 
   console.log('FlowCheck: requesting link token from', url);
   ensureFreshAuthToken(true).then(function() {
     return authFetchWithBackendFallback(path, {
       method: 'POST',
-      body: JSON.stringify({})
+      body: JSON.stringify({ requested_type: requestedType })
     }, plaidBackendOrigin());
   })
   .then(function(r) {
@@ -371,7 +430,7 @@ function handlePlaidSuccess(publicToken, metadata) {
     exchangePublicToken(publicToken, inst, accounts);
   } else {
     // Store minimal info for demo
-    plaidLinkedAccounts.push({
+    upsertLinkedPlaidItem({
       institutionName: inst.name || 'Bank',
       institutionId: inst.institution_id,
       publicToken: publicToken, // In production: exchange this server-side ONLY
@@ -380,6 +439,9 @@ function handlePlaidSuccess(publicToken, metadata) {
     });
     savePlaidState();
     rPlaid();
+    try {
+      if (typeof obMarkLinked === 'function') obMarkLinked((window._fcOnboardingPlaidType || window._fcPlaidRequestedType || 'checking') === 'credit' ? 'credit' : 'checking');
+    } catch (e) {}
     if (typeof toast === 'function') toast('✓ ' + (inst.name || 'Bank') + ' connected!');
     fetchPlaidTransactions();
   }
@@ -411,16 +473,33 @@ function exchangePublicToken(publicToken, inst, accounts) {
       accounts:        accounts,
       connectedAt:     new Date().toISOString()
     };
-    plaidLinkedAccounts.push(linkedItem);
+    upsertLinkedPlaidItem(linkedItem);
     savePlaidState();
     // Mirror non-secret account metadata to legacy plaidConfig while preserving compatibility.
     if (typeof plaidConfig !== 'undefined') {
       if (!plaidConfig.linkedItems) plaidConfig.linkedItems = [];
-      plaidConfig.linkedItems.push({ itemId: data.item_id, institutionName: inst.name || 'Bank', accounts: accounts });
+      plaidConfig.linkedItems = plaidConfig.linkedItems.filter(function(existing) {
+        if (!existing) return false;
+        if (data.item_id && existing.itemId === data.item_id) return false;
+        if (sameInstitution(existing, linkedItem)) return false;
+        if (sameAnyAccount(existing, linkedItem)) return false;
+        return true;
+      });
+      plaidConfig.linkedItems.push({ itemId: data.item_id, institutionName: inst.name || 'Bank', institutionId: inst.institution_id || '', accounts: accounts });
       if (typeof savePlaidConfig === 'function') savePlaidConfig();
     }
     rPlaid();
+    try {
+      var requestedType = window._fcOnboardingPlaidType || window._fcPlaidRequestedType || '';
+      var accountLooksChecking = (accounts || []).some(function(a) {
+        var type = String((a && a.type) || '').toLowerCase();
+        var subtype = String((a && a.subtype) || '').toLowerCase();
+        return type === 'depository' || subtype.indexOf('checking') > -1;
+      });
+      if (typeof obMarkLinked === 'function') obMarkLinked((requestedType === 'credit' && !accountLooksChecking) ? 'credit' : 'checking');
+    } catch (e) {}
     if (typeof haptic === 'function') haptic('heavy');
+    try { if (typeof FCTrack === 'function') FCTrack('plaid_link_succeeded', { institution: inst.name || 'Bank', accountCount: (accounts || []).length }); } catch (e) {}
     if (typeof toast === 'function') toast('\u2713 ' + (inst.name || 'Bank') + ' connected!');
     // Auto-fetch liabilities in background
     _triggerLiabilitySync();
@@ -428,6 +507,7 @@ function exchangePublicToken(publicToken, inst, accounts) {
   })
   .catch(function(err) {
     console.error('[Plaid] Exchange error:', err.message || err);
+    try { if (typeof FCTrack === 'function') FCTrack('plaid_link_failed', { institution: inst && inst.name ? inst.name : '', code: err.message || 'unknown' }); } catch (e) {}
     if (typeof toast === 'function') toast('Failed to link bank: ' + (err.message || 'Unknown error'), 'red');
   });
 }
@@ -440,28 +520,65 @@ var _plaidLastLiabilitySync = null;
 var _plaidLiabilitySyncError = null;
 
 function fetchPlaidLiabilities(silent) {
-  var itemId=(typeof getPrimaryPlaidItemId==='function')?getPrimaryPlaidItemId():null;
-  if(!itemId){
-    if(!silent&&typeof toast==='function')toast('Connect a bank account first','amb');
+  var itemIds = getActivePlaidItemIds();
+  if (!itemIds.length) {
+    if (!silent && typeof toast === 'function') toast('Connect a bank account first', 'amb');
     return;
   }
-  if(!silent&&typeof toast==='function')toast('Syncing debts…','amb');
-  plaidAuthFetch('/api/liabilities',{
-    method:'POST',
-    body:JSON.stringify({item_id:itemId})
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
-    if (!data || data.error) {
-      _plaidLiabilitySyncError = (data && data.error) || 'Unknown error';
+  if (!silent && typeof toast === 'function') toast('Syncing debts…', 'amb');
+
+  Promise.allSettled(itemIds.map(function(itemId) {
+    return plaidAuthFetch('/api/liabilities', {
+      method: 'POST',
+      body: JSON.stringify({ item_id: itemId })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (!data || data.error) throw new Error((data && (data.message || data.error)) || 'Unknown error');
+      return data.liabilities || data;
+    });
+  }))
+  .then(function(results) {
+    var combined = { credit: [], student: [], mortgage: [], other: [] };
+    var hadSuccess = false;
+    var firstError = '';
+
+    results.forEach(function(result, index) {
+      if (result.status !== 'fulfilled') {
+        var reason = result.reason;
+        var message = (reason && reason.message) || 'Unknown error';
+        if (!firstError) firstError = message;
+        if (message.indexOf('ITEM_LOGIN_REQUIRED') > -1) {
+          var expiredId = itemIds[index];
+          plaidLinkedAccounts = plaidLinkedAccounts.map(function(a) {
+            if (a && a.itemId === expiredId) return Object.assign({}, a, { needsRelink: true });
+            return a;
+          });
+          savePlaidState();
+        }
+        return;
+      }
+
+      hadSuccess = true;
+      var liabilities = result.value || {};
+      combined.credit = combined.credit.concat(liabilities.credit || []);
+      combined.student = combined.student.concat(liabilities.student || []);
+      combined.mortgage = combined.mortgage.concat(liabilities.mortgage || []);
+      combined.other = combined.other.concat(liabilities.other || liabilities.personal || []);
+    });
+
+    if (!hadSuccess) {
+      _plaidLiabilitySyncError = firstError || 'Network error';
       _renderDebtSyncStatus();
+      if (!silent && typeof toast === 'function') toast('Debt sync failed — check connection', 'red');
       return;
     }
+
     _plaidLiabilitySyncError = null;
     _plaidLastLiabilitySync = new Date().toISOString();
-    _mergePlaidDebts(data.liabilities || data);
+    _mergePlaidDebts(combined);
     if (!silent && typeof toast === 'function') toast('Debts synced ✓', 'grn');
-    if (typeof rDbt  === 'function') rDbt();
+    if (typeof rDbt === 'function') rDbt();
     if (typeof rDash === 'function') setTimeout(rDash, 100);
     _renderDebtSyncStatus();
   })
@@ -470,6 +587,10 @@ function fetchPlaidLiabilities(silent) {
     _renderDebtSyncStatus();
     if (!silent && typeof toast === 'function') toast('Debt sync failed — check connection', 'red');
   });
+}
+
+if (typeof window !== 'undefined') {
+  window.__fcRealFetchPlaidLiabilities = fetchPlaidLiabilities;
 }
 
 function _getPlaidUserId() {
@@ -559,8 +680,30 @@ function _renderDebtSyncStatus() {
   var el = document.getElementById('debt-sync-status');
   if (!el) return;
   if (_plaidLiabilitySyncError) {
-    el.innerHTML = '<span style="color:#f87171">⚠ Sync failed: ' + _plaidLiabilitySyncError + '</span>' +
-      ' <button onclick="fetchPlaidLiabilities(false)" style="background:none;border:none;color:#F5A623;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;padding:0 4px">Retry</button>';
+    var raw = String(_plaidLiabilitySyncError || '').toLowerCase();
+    var title = 'Debt sync needs attention';
+    var copy = 'FlowCheck could not refresh liability details right now.';
+    var action = 'Retry';
+    var actionJs = 'fetchPlaidLiabilities(false)';
+    if (raw.indexOf('product_liabilities') >= 0 || raw.indexOf('liabilities') >= 0 || raw.indexOf('consent') >= 0) {
+      title = 'Debt details need a quick relink';
+      copy = 'This bank connection is not sharing liability details yet.';
+      action = 'Relink debt account';
+      actionJs = "launchPlaid('credit')";
+    } else if (raw.indexOf('item_login_required') >= 0 || raw.indexOf('reauth') >= 0) {
+      title = 'Your debt connection needs to be refreshed';
+      copy = 'A quick reconnect should bring balances and minimums back in.';
+      action = 'Reconnect';
+      actionJs = "launchPlaid('credit')";
+    }
+    el.innerHTML =
+      '<div class="debt-sync-pill" style="display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 10px;border-radius:999px;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.14);color:rgba(255,255,255,.72)">' +
+        '<span style="display:flex;align-items:center;gap:8px">' +
+          '<span style="width:8px;height:8px;border-radius:999px;background:#F5A623;flex-shrink:0"></span>' +
+          '<span><strong style="font-size:11px;color:inherit">' + title + '.</strong> <span style="font-size:11px;color:inherit">' + copy + '</span></span>' +
+        '</span>' +
+        '<button onclick="' + actionJs + '" style="background:none;border:none;color:#F5A623;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;padding:0 4px">' + action + '</button>' +
+      '</div>';
     el.style.display = 'block';
   } else if (_plaidLastLiabilitySync) {
     var d = new Date(_plaidLastLiabilitySync);
@@ -582,38 +725,90 @@ function _triggerLiabilitySync() {
   }, 2000);
 }
 
-function _importPlaidTxns(transactions, silent) {
+function plaidEscape(str) {
+  return String(str == null ? '' : str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function getLinkedPlaidAccountMeta(linkedItem, accountId) {
+  var accounts = linkedItem && Array.isArray(linkedItem.accounts) ? linkedItem.accounts : [];
+  for (var i = 0; i < accounts.length; i++) {
+    if (accounts[i] && accounts[i].id === accountId) return accounts[i];
+  }
+  return null;
+}
+
+function getPlaidAccountRole(acct) {
+  var text = [
+    String((acct && acct.type) || '').toLowerCase(),
+    String((acct && acct.subtype) || '').toLowerCase(),
+    String((acct && acct.name) || '').toLowerCase()
+  ].join(' ');
+  if (/credit|charge/.test(text) || String((acct && acct.type) || '').toLowerCase() === 'credit') return 'credit';
+  if (/loan|mortgage|student|auto loan|personal loan|line of credit/.test(text) || String((acct && acct.type) || '').toLowerCase() === 'loan') return 'loan';
+  if (/savings|money market|high yield|high-yield|reserve|emergency/.test(text)) return 'savings';
+  if (/checking/.test(text) || String((acct && acct.type) || '').toLowerCase() === 'depository') return 'checking';
+  return 'other';
+}
+
+function getPlaidAccountProfile(acct) {
+  var role = getPlaidAccountRole(acct);
+  if (role === 'checking') {
+    return { role: role, badge: 'Daily cash', hint: 'Feeds your safe-to-spend', short: 'CH', iconBg: 'rgba(74,222,128,.12)', iconFg: '#4ade80' };
+  }
+  if (role === 'savings') {
+    return { role: role, badge: 'Cash buffer', hint: 'Held outside daily spending', short: 'SV', iconBg: 'rgba(96,165,250,.12)', iconFg: '#60a5fa' };
+  }
+  if (role === 'credit') {
+    return { role: role, badge: 'Card balance', hint: 'Keep payoff in view', short: 'CC', iconBg: 'rgba(245,166,35,.12)', iconFg: '#F5A623' };
+  }
+  if (role === 'loan') {
+    return { role: role, badge: 'Debt account', hint: 'Track payoff over time', short: 'LN', iconBg: 'rgba(248,113,113,.12)', iconFg: '#f87171' };
+  }
+  return { role: role, badge: 'Linked account', hint: 'Available for planning insights', short: 'AC', iconBg: 'rgba(148,163,184,.12)', iconFg: '#cbd5e1' };
+}
+
+function _importPlaidTxns(transactions, silent, linkedItem) {
   if (!transactions || transactions.length === 0) return 0;
   var added = 0, updated = 0;
   transactions.forEach(function(tx) {
     var existingIdx = (logList||[]).findIndex(function(l) { return l.plaidId === tx.transaction_id; });
     var isCredit = tx.amount < 0; // Plaid: negative = money IN to account
     var txDesc = (tx.name || tx.merchant_name || '').toLowerCase();
+    var accountMeta = getLinkedPlaidAccountMeta(linkedItem, tx.account_id);
+    var accountText = [
+      String((accountMeta && accountMeta.type) || '').toLowerCase(),
+      String((accountMeta && accountMeta.subtype) || '').toLowerCase(),
+      String((accountMeta && accountMeta.name) || '').toLowerCase()
+    ].join(' ');
 
     // Smart category classification
     var rawCat = (typeof mapPlaidCategory === 'function')
       ? mapPlaidCategory(tx.personal_finance_category || tx.category)
       : 'Other';
 
-    // Income detection (credits + known patterns)
-    if (isCredit ||
-        /payroll|payday|early pay|direct deposit|ach deposit|salary|wages|employer/i.test(txDesc) ||
-        /interest (earned|paid)|dividend|tax refund|government/i.test(txDesc)) {
-      rawCat = 'Income';
-    }
-    // Transfer detection
-    if (/^(transfer (from|to)|account transfer|internal transfer)/i.test(txDesc) ||
-        /^(zelle from|zelle to|venmo|cashapp)/i.test(txDesc)) {
-      rawCat = 'Transfer';
-    }
     // Refund detection
-    if (/refund|reversal|credit adjustment/i.test(txDesc) && !isCredit) {
+    if (/refund|reversal|credit adjustment/i.test(txDesc)) {
       rawCat = 'Refund';
+    } else if ((/credit|loan|mortgage|card/.test(accountText) && /payment|autopay|thank you|ach|online payment|internet payment/.test(txDesc)) ||
+               /credit card payment|card payment|loan payment|mortgage payment|payment thank you|thank you payment/.test(txDesc)) {
+      rawCat = 'Debt Payment';
+    } else if (/^(transfer (from|to)|account transfer|internal transfer)/i.test(txDesc) ||
+               /^(zelle from|zelle to|venmo|cashapp)/i.test(txDesc) ||
+               (/savings|money market|reserve/.test(accountText) && /deposit|withdrawal|transfer/.test(txDesc))) {
+      rawCat = 'Transfer';
+    } else if (isCredit ||
+               /payroll|payday|early pay|direct deposit|ach deposit|salary|wages|employer/i.test(txDesc) ||
+               /interest (earned|paid)|dividend|tax refund|government/i.test(txDesc)) {
+      rawCat = 'Income';
     }
 
     // Tag with account identifiers for cleanup when account is disconnected
-    var _linkedAcct = plaidLinkedAccounts && plaidLinkedAccounts.length > 0
-      ? plaidLinkedAccounts[plaidLinkedAccounts.length - 1] : null;
+    var _linkedAcct = linkedItem || null;
     var entry = {
       id:            existingIdx >= 0 ? logList[existingIdx].id : ('plaid_' + tx.transaction_id),
       plaidId:       tx.transaction_id,
@@ -625,13 +820,28 @@ function _importPlaidTxns(transactions, silent) {
       isCredit:      isCredit,
       pending:       tx.pending || false,
       itemId:        (_linkedAcct && _linkedAcct.itemId) || null,
-      institutionId: (_linkedAcct && _linkedAcct.institutionId) || null
+      institutionId: (_linkedAcct && _linkedAcct.institutionId) || null,
+      institutionName: (_linkedAcct && _linkedAcct.institutionName) || null,
+      plaidAccountId: tx.account_id || (accountMeta && accountMeta.id) || null,
+      plaidAccountType: (accountMeta && accountMeta.type) || null,
+      plaidAccountSubtype: (accountMeta && accountMeta.subtype) || null,
+      accountName: (accountMeta && accountMeta.name) || null,
+      accountMask: (accountMeta && accountMeta.mask) || null
     };
 
     if (existingIdx >= 0) {
-      // Update existing (e.g. pending -> posted)
-      if (logList[existingIdx].pending && !tx.pending) {
-        logList[existingIdx] = entry;
+      var existing = logList[existingIdx] || {};
+      var shouldReplace = !!(existing.pending && !tx.pending);
+      var metaChanged =
+        existing.cat !== entry.cat ||
+        existing.itemId !== entry.itemId ||
+        existing.institutionName !== entry.institutionName ||
+        existing.plaidAccountId !== entry.plaidAccountId ||
+        existing.plaidAccountType !== entry.plaidAccountType ||
+        existing.plaidAccountSubtype !== entry.plaidAccountSubtype ||
+        existing.accountName !== entry.accountName;
+      if (shouldReplace || metaChanged) {
+        logList[existingIdx] = Object.assign({}, existing, entry);
         updated++;
       }
     } else {
@@ -647,6 +857,9 @@ function _importPlaidTxns(transactions, silent) {
     if (typeof rLog === 'function') rLog();
     if (typeof renderTxnPage === 'function') renderTxnPage();
     if (typeof rDash === 'function') rDash();
+    if (typeof primeTxnEnrichment === 'function') {
+      setTimeout(function() { primeTxnEnrichment(true); }, silent ? 600 : 1200);
+    }
     if (!silent && typeof toast === 'function') {
       var msg = added > 0 ? '✓ ' + added + ' new transaction' + (added !== 1 ? 's' : '') : '';
       if (updated > 0) msg += (msg ? ', ' : '✓ ') + updated + ' updated';
@@ -661,40 +874,82 @@ function _importPlaidTxns(transactions, silent) {
   return added + updated;
 }
 
-function fetchPlaidTransactions(itemIdOverride) {
-  var itemId = itemIdOverride || getPrimaryPlaidItemId();
+function fetchPlaidTransactions(itemIdOverride, options) {
+  var opts = options || {};
+  var activeItemIds = getActivePlaidItemIds();
+  var itemId = itemIdOverride || activeItemIds[0];
+  var syncEl = document.getElementById('plaid-sync-status');
+
   if (!itemId) {
     console.warn('[Plaid] No linked item — need to relink');
-    if (typeof toast === 'function') toast('Re-link your bank to sync transactions', 'amb');
-    return;
+    if (!opts.silent && typeof toast === 'function') toast('Re-link your bank to sync transactions', 'amb');
+    return Promise.resolve(0);
   }
   if (!FC_PLAID.BACKEND_URL) {
     console.warn('[Plaid] No backend URL');
-    return;
+    return Promise.resolve(0);
   }
 
-  // Offline check
+  if (!itemIdOverride && activeItemIds.length > 1 && !opts._multiPass) {
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      if (typeof showSync === 'function') showSync('No internet — using cached data', 'error');
+      return Promise.resolve(0);
+    }
+    if (syncEl) syncEl.textContent = 'Syncing…';
+    return Promise.all(activeItemIds.map(function(id) {
+      return fetchPlaidTransactions(id, {
+        _multiPass: true,
+        silent: true,
+        suppressSuccessUI: true,
+        suppressErrorUI: true
+      });
+    }))
+    .then(function(results) {
+      var total = results.reduce(function(sum, count) { return sum + (count || 0); }, 0);
+      if (syncEl) syncEl.textContent = total > 0 ? '✓ Synced' : 'Up to date';
+      if (typeof showSync === 'function') {
+        showSync(total > 0 ? total + ' transaction' + (total === 1 ? '' : 's') + ' imported' : 'Already up to date', 'success');
+      }
+      rPlaid();
+      if (typeof rDash === 'function') rDash();
+      if (typeof persist === 'function') persist();
+      return total;
+    })
+    .catch(function(err) {
+      console.error('[Plaid] Multi-item sync error:', err && err.message ? err.message : err);
+      if (syncEl) syncEl.textContent = 'Sync failed';
+      if (typeof showSync === 'function') showSync('Sync failed — check connection', 'error');
+      else if (typeof toast === 'function') toast('Sync failed', 'amb');
+      return 0;
+    });
+  }
+
   if (typeof navigator !== 'undefined' && !navigator.onLine) {
-    if (typeof showSync === 'function') showSync('No internet — using cached data', 'error');
-    return;
+    if (!opts.silent && typeof showSync === 'function') showSync('No internet — using cached data', 'error');
+    return Promise.resolve(0);
   }
 
-  // Show sync indicator
-  var syncEl = document.getElementById('plaid-sync-status');
-  if (syncEl) syncEl.textContent = 'Syncing…';
+  if (!opts.suppressSuccessUI && syncEl) syncEl.textContent = 'Syncing…';
 
   var now = new Date();
-  var start = new Date(now.getFullYear(), now.getMonth() - 1, 1); // Last 2 months
-  // 15 second timeout — never hang forever
-  var _fetchTimeout = setTimeout(function() {
+  var start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  var linkedItem = getPlaidLinkedItem(itemId);
+  var timeoutHandle = null;
+
+  if (!opts.silent && !opts.suppressErrorUI) {
+    timeoutHandle = setTimeout(function() {
+      _resetSyncBtn();
+      if (typeof showSync === 'function') showSync('Sync timed out — check your connection', 'error');
+      else if (typeof toast === 'function') toast('Sync timed out', 'red');
+    }, 15000);
+  }
+
+  function finish() {
+    if (timeoutHandle) clearTimeout(timeoutHandle);
     _resetSyncBtn();
-    if (typeof showSync === 'function') showSync('Sync timed out — check your connection', 'error');
-    else if (typeof toast === 'function') toast('Sync timed out', 'red');
-  }, 15000);
+  }
 
-  var _fetchDone = function() { clearTimeout(_fetchTimeout); _resetSyncBtn(); };
-
-  plaidAuthFetch('/api/transactions', {
+  return plaidAuthFetch('/api/transactions', {
     method: 'POST',
     body: JSON.stringify({
       item_id: itemId,
@@ -709,89 +964,123 @@ function fetchPlaidTransactions(itemIdOverride) {
     return r.json();
   })
   .then(function(data) {
-    _fetchDone();
+    finish();
     if (data.error) throw new Error(data.error);
-    var count = _importPlaidTxns(data.transactions, false);
-    if (syncEl) syncEl.textContent = count > 0 ? '✓ Synced' : 'Up to date';
-    if (typeof showSync === 'function') showSync(count > 0 ? count + ' transaction' + (count===1?'':'s') + ' imported' : 'Already up to date', 'success');
+    var suppressOnboardingToast = false;
+    try { suppressOnboardingToast = !!window._fcSuppressPlaidSyncToast; } catch (e) {}
+    var count = _importPlaidTxns(data.transactions, suppressOnboardingToast || opts.silent, linkedItem);
+    if (!opts.suppressSuccessUI && syncEl) syncEl.textContent = count > 0 ? '✓ Synced' : 'Up to date';
+    if (!suppressOnboardingToast && !opts.silent && !opts.suppressSuccessUI && typeof showSync === 'function') {
+      showSync(count > 0 ? count + ' transaction' + (count === 1 ? '' : 's') + ' imported' : 'Already up to date', 'success');
+    }
+    try {
+      if (window._fcSuppressPlaidSyncToast) {
+        window._fcSuppressPlaidSyncToast = false;
+        window._fcOnboardingPlaidType = null;
+      }
+    } catch (e) {}
     rPlaid();
     if (typeof rDash === 'function') rDash();
     if (typeof persist === 'function') persist();
+    return count;
   })
   .catch(function(err) {
     var errMsg = (err && err.message) || '';
-    // Plaid transactions product takes ~30s to provision after initial link
     var isNotReady = errMsg.toLowerCase().indexOf('not yet ready') > -1 ||
                      errMsg.indexOf('PRODUCT_NOT_READY') > -1;
+
     if (isNotReady) {
-      var retries = (fetchPlaidTransactions._retries = (fetchPlaidTransactions._retries || 0) + 1);
+      var retryKey = '_retries_' + itemId;
+      var retries = (fetchPlaidTransactions[retryKey] = (fetchPlaidTransactions[retryKey] || 0) + 1);
       if (retries <= 3) {
-        var delay = retries * 12000; // 12s, 24s, 36s
-        if (syncEl) syncEl.textContent = 'Provisioning — retry ' + retries + '/3…';
+        var delay = retries * 12000;
+        if (!opts.suppressSuccessUI && syncEl) syncEl.textContent = 'Provisioning — retry ' + retries + '/3…';
         console.log('[Plaid] Product not ready, retrying in ' + delay/1000 + 's (attempt ' + retries + ')');
-        setTimeout(function() { fetchPlaidTransactions(itemId); }, delay);
-        return;
-      } else {
-        fetchPlaidTransactions._retries = 0;
-        if (syncEl) syncEl.textContent = 'Bank linked — transactions sync in progress';
-        if (typeof toast === 'function') toast('Bank linked! Transactions will sync within a few minutes.', 'amb');
-        _fetchDone();
-        return;
+        finish();
+        return new Promise(function(resolve) {
+          setTimeout(function() {
+            fetchPlaidTransactions(itemId, opts).then(resolve).catch(function() { resolve(0); });
+          }, delay);
+        });
       }
+      fetchPlaidTransactions[retryKey] = 0;
+      finish();
+      if (!opts.silent && !opts.suppressErrorUI) {
+        if (!opts.suppressSuccessUI && syncEl) syncEl.textContent = 'Bank linked — transactions sync in progress';
+        if (!(typeof window !== 'undefined' && window._fcSuppressPlaidSyncToast) && typeof toast === 'function') {
+          toast('Bank linked! Transactions will sync within a few minutes.', 'amb');
+        }
+      }
+      try {
+        window._fcSuppressPlaidSyncToast = false;
+        window._fcOnboardingPlaidType = null;
+      } catch (e) {}
+      return 0;
     }
-    fetchPlaidTransactions._retries = 0;
-    _fetchDone();
+
+    finish();
+    fetchPlaidTransactions['_retries_' + itemId] = 0;
     console.error('[Plaid] Sync error:', errMsg);
-    if (syncEl) syncEl.textContent = 'Sync failed';
+    if (!opts.suppressSuccessUI && syncEl) syncEl.textContent = 'Sync failed';
+
     if (err.message && err.message.startsWith('AUTH:')) {
       plaidLinkedAccounts = plaidLinkedAccounts.map(function(a) {
-        if (a.itemId === itemId) return Object.assign({}, a, { needsRelink: true });
+        if (a && a.itemId === itemId) return Object.assign({}, a, { needsRelink: true });
         return a;
       });
       savePlaidState();
-      if (typeof showSync === 'function') showSync('Bank connection expired — reconnect in Settings', 'error');
-      else if (typeof toast === 'function') toast('Bank connection expired — reconnect in Settings', 'red');
+      if (!opts.silent && !opts.suppressErrorUI) {
+        if (typeof showSync === 'function') showSync('Bank connection expired — reconnect in Settings', 'error');
+        else if (typeof toast === 'function') toast('Bank connection expired — reconnect in Settings', 'red');
+      }
       rPlaid();
-    } else {
+      return 0;
+    }
+
+    if (!opts.silent && !opts.suppressErrorUI) {
       if (typeof showSync === 'function') showSync('Sync failed — check connection', 'error');
       else if (typeof toast === 'function') toast('Sync failed', 'amb');
-      // Send sync issue email
-      try {
-        var _fbU = JSON.parse(localStorage.getItem('fc-fb-user') || 'null');
-        var _bankName = (plaidLinkedAccounts && plaidLinkedAccounts[0]) ? plaidLinkedAccounts[0].institutionName : '';
-        if (_fbU && _fbU.email) {
-          authFetchWithBackendFallback('/api/email/events', {
-            method: 'POST',
-            body: JSON.stringify({
-              event: 'sync_issue',
-              data: { email: _fbU.email, name: _fbU.name || '', bankName: _bankName }
-            })
-          }, plaidBackendOrigin()).catch(function() {});
-        }
-      } catch(e) {}
     }
+
+    try {
+      var _fbU = JSON.parse(localStorage.getItem('fc-fb-user') || 'null');
+      var _bankName = (linkedItem && linkedItem.institutionName) || '';
+      if (_fbU && _fbU.email && !opts.silent) {
+        authFetchWithBackendFallback('/api/email/events', {
+          method: 'POST',
+          body: JSON.stringify({
+            event: 'sync_issue',
+            data: { email: _fbU.email, name: _fbU.name || '', bankName: _bankName }
+          })
+        }, plaidBackendOrigin()).catch(function() {});
+      }
+    } catch (e) {}
+
+    try {
+      window._fcSuppressPlaidSyncToast = false;
+      window._fcOnboardingPlaidType = null;
+    } catch (e) {}
+    return 0;
   });
 }
 
 // ── Silent background refresh (no toasts) ──
 function fetchPlaidTransactionsSilent() {
-  var itemId = getPrimaryPlaidItemId();
-  if (!itemId) return;
-  var now = new Date();
-  var start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-  plaidAuthFetch('/api/transactions', {
-    method: 'POST',
-    body: JSON.stringify({
-      item_id: itemId,
-      start_date: start.toISOString().split('T')[0],
-      end_date: now.toISOString().split('T')[0]
-    })
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
-    if (!data.error) _importPlaidTxns(data.transactions, true);
-  })
-  .catch(function(e) { console.log('[Plaid] Silent refresh failed:', e.message); });
+  var itemIds = getActivePlaidItemIds();
+  if (!itemIds.length) return;
+  Promise.all(itemIds.map(function(itemId) {
+    return fetchPlaidTransactions(itemId, {
+      _multiPass: true,
+      silent: true,
+      suppressSuccessUI: true,
+      suppressErrorUI: true
+    }).catch(function(e) {
+      console.log('[Plaid] Silent refresh failed:', e && e.message ? e.message : e);
+      return 0;
+    });
+  })).then(function() {
+    if (typeof rDash === 'function') rDash();
+  });
 }
 
 
@@ -801,6 +1090,10 @@ function syncPlaidData() {
   if (btn) { btn.textContent = 'Syncing…'; btn.disabled = true; btn.style.opacity = '.5'; }
   if (typeof showSync === 'function') showSync('Syncing transactions…', 'syncing');
   fetchPlaidTransactions();
+}
+
+if (typeof window !== 'undefined') {
+  window.__fcRealSyncPlaidData = syncPlaidData;
 }
 
 function _resetSyncBtn() {
@@ -905,21 +1198,82 @@ function injectDemoTransactions() {
 // ── Dashboard accounts render ──
 function rDashAccounts() {
   var wrap = document.getElementById('dash-accounts-wrap');
+  var allBtn = document.getElementById('dash-accounts-see-all');
   if (!wrap) return;
   if (plaidLinkedAccounts.length === 0) {
-    wrap.innerHTML = '<div style="padding:20px;text-align:center"><div style="font-size:13.5px;color:var(--t3);margin-bottom:12px">No accounts linked yet</div><button onclick="go(\'plaid\')" style="background:#F5A623;color:#000;border:none;border-radius:100px;padding:10px 22px;font-family:inherit;font-size:13.5px;font-weight:700;cursor:pointer">Link Bank Account</button></div>';
+    if (allBtn) allBtn.style.display = 'none';
+    wrap.innerHTML = ''
+      + '<div style="padding:18px 16px;background:linear-gradient(180deg,rgba(245,166,35,.07),rgba(255,255,255,.02));border:1px solid rgba(245,166,35,.12);border-radius:18px">'
+      +   '<div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:14px">'
+      +     '<div style="width:42px;height:42px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.16);border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#F5A623"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 10h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M6 10V18M10 10V18M14 10V18M18 10V18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M3 20h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 4l9 4H3l9-4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div>'
+      +     '<div style="flex:1;text-align:left">'
+      +       '<div style="font-size:11px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:rgba(245,166,35,.72);margin-bottom:6px">First Step</div>'
+      +       '<div style="font-size:16px;font-weight:800;color:var(--t1);letter-spacing:-.02em;margin-bottom:5px">Link your primary checking account</div>'
+      +       '<div style="font-size:13px;line-height:1.5;color:var(--t3)">FlowCheck becomes dramatically more useful once it can reserve bills, spot recurring charges, and calculate a real safe-to-spend number from live activity.</div>'
+      +     '</div>'
+      +   '</div>'
+      +   '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">'
+      +     '<div style="display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--t3)"><span style="color:#4ade80">✓</span> Read-only connection through Plaid</div>'
+      +     '<div style="display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--t3)"><span style="color:#4ade80">✓</span> Your bank password stays with your bank</div>'
+      +     '<div style="display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--t3)"><span style="color:#4ade80">✓</span> Faster onboarding, bills, and spending insights</div>'
+      +   '</div>'
+      +   '<button onclick="go(\'plaid\')" style="width:100%;background:#F5A623;color:#000;border:none;border-radius:100px;padding:12px 22px;font-family:inherit;font-size:13.5px;font-weight:800;cursor:pointer;margin-bottom:10px">Connect My Bank</button>'
+      +   '<div style="font-size:11.5px;line-height:1.45;color:var(--t3);text-align:center">Best experience starts with checking. You can add cards and other accounts right after.</div>'
+      + '</div>';
     return;
   }
-  wrap.innerHTML = plaidLinkedAccounts.map(function(item) {
-    return (item.accounts || []).map(function(acct) {
-      return '<div style="display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid rgba(255,255,255,.04)">' +
-        '<div style="width:38px;height:38px;background:rgba(245,166,35,.08);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🏦</div>' +
-        '<div style="flex:1"><div style="font-size:14px;font-weight:500;color:var(--t1)">' + acct.name + '</div>' +
-        '<div style="font-size:11.5px;color:var(--t3);margin-top:1px">···' + (acct.mask || '????') + ' · ' + (item.institutionName || 'Bank') + '</div></div>' +
-        (acct.balance !== null ? '<div style="font-size:14px;font-weight:700;color:var(--t1)">$' + (acct.balance || 0).toLocaleString() + '</div>' : '') +
-        '</div>';
-    }).join('');
-  }).join('');
+  var rows = [];
+  var hasChecking = false;
+  var hasSavings = false;
+  var roleOrder = { checking: 0, savings: 1, credit: 2, loan: 3, other: 4 };
+  plaidLinkedAccounts.forEach(function(item) {
+    (item.accounts || []).forEach(function(acct) {
+      var profile = getPlaidAccountProfile(acct);
+      var displayBalance = (profile.role === 'credit' || profile.role === 'loan')
+        ? Math.abs(Number(acct.balance) || 0)
+        : (Number(acct.balance) || 0);
+      if (profile.role === 'checking') hasChecking = true;
+      if (profile.role === 'savings') hasSavings = true;
+      rows.push({
+        role: profile.role,
+        balance: Math.abs(Number(acct.balance) || 0),
+        html:
+          '<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.04)">' +
+            '<div style="width:40px;height:40px;background:' + profile.iconBg + ';color:' + profile.iconFg + ';border:1px solid rgba(255,255,255,.05);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:900;letter-spacing:.08em;flex-shrink:0">' + profile.short + '</div>' +
+            '<div style="flex:1;min-width:0">' +
+              '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
+                '<div style="font-size:14px;font-weight:700;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px">' + plaidEscape(acct.name || profile.badge) + '</div>' +
+                '<div style="font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:' + profile.iconFg + ';background:' + profile.iconBg + ';border:1px solid rgba(255,255,255,.04);border-radius:999px;padding:4px 7px">' + profile.badge + '</div>' +
+              '</div>' +
+              '<div style="font-size:11.5px;color:var(--t3);margin-top:3px">' + profile.hint + ' · ···' + plaidEscape(acct.mask || '????') + ' · ' + plaidEscape(item.institutionName || 'Bank') + '</div>' +
+            '</div>' +
+            (acct.balance !== null
+              ? '<div style="text-align:right;flex-shrink:0"><div style="font-size:14px;font-weight:800;color:var(--t1)">$' + displayBalance.toLocaleString() + '</div><div style="font-size:10.5px;color:var(--t3);margin-top:2px">' + (profile.role === 'credit' || profile.role === 'loan' ? 'Outstanding' : 'Available') + '</div></div>'
+              : '') +
+          '</div>'
+      });
+    });
+  });
+  rows.sort(function(a, b) {
+    var roleDiff = (roleOrder[a.role] || 9) - (roleOrder[b.role] || 9);
+    if (roleDiff !== 0) return roleDiff;
+    return b.balance - a.balance;
+  });
+  var visibleRows = rows.slice(0, 3);
+  var hiddenCount = Math.max(0, rows.length - visibleRows.length);
+  var footerCta = '';
+  if (hasChecking && !hasSavings) {
+    footerCta =
+      '<button onclick="go(\'plaid\')" style="width:100%;background:rgba(96,165,250,.08);border:none;border-top:1px solid rgba(255,255,255,.05);padding:12px 16px;font-family:inherit;font-size:12.5px;font-weight:700;color:#60a5fa;cursor:pointer">Add a savings account → Build a cleaner cash buffer</button>';
+  } else if (!hasChecking) {
+    footerCta =
+      '<button onclick="go(\'plaid\')" style="width:100%;background:rgba(245,166,35,.08);border:none;border-top:1px solid rgba(255,255,255,.05);padding:12px 16px;font-family:inherit;font-size:12.5px;font-weight:700;color:#F5A623;cursor:pointer">Link checking next → Power safe-to-spend</button>';
+  } else if (hiddenCount > 0) {
+    footerCta =
+      '<button onclick="go(\'plaid\')" style="width:100%;background:rgba(245,166,35,.08);border:none;border-top:1px solid rgba(255,255,255,.05);padding:12px 16px;font-family:inherit;font-size:12.5px;font-weight:700;color:#F5A623;cursor:pointer">See all ' + rows.length + ' linked accounts →</button>';
+  }
+  wrap.innerHTML = visibleRows.map(function(row) { return row.html; }).join('') + footerCta;
+  if (allBtn) allBtn.style.display = hiddenCount > 0 ? 'inline-flex' : 'none';
 }
 
 // ── Toggle config panel ──

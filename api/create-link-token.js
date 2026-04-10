@@ -21,11 +21,18 @@ module.exports = async (req, res) => {
 
   try {
     const user = await requireUser(req);
+    const requestedType = String(req.body?.requested_type || '').toLowerCase();
+    const wantsDebtLink = requestedType === 'credit' || requestedType === 'debt' || requestedType === 'liabilities';
+    const products = wantsDebtLink
+      ? [Products.Transactions, Products.Liabilities]
+      : [Products.Transactions];
+    const optionalProducts = wantsDebtLink ? [] : [Products.Liabilities];
 
     const response = await client.linkTokenCreate({
       user: { client_user_id: user.uid },
       client_name: 'FlowCheck',
-      products: [Products.Transactions],
+      products,
+      optional_products: optionalProducts,
       country_codes: [CountryCode.Us],
       language: 'en',
     });

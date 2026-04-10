@@ -12,10 +12,11 @@
     { "src": "/api/delete-account",    "dest": "/api/delete_account.js" },
     { "src": "/api/migrate-plaid-item","dest": "/api/migrate_plaid_item.js" },
     { "src": "/api/transactions",      "dest": "/api/transactions.js" },
+    { "src": "/api/transactions-enrich","dest": "/api/transactions_enrich.js" },
     { "src": "/api/liabilities",       "dest": "/api/liabilities.js" },
     { "src": "/api/balance",           "dest": "/api/balance.js" },
+    { "src": "/api/analytics",         "dest": "/api/analytics.js" },
     { "src": "/api/health",            "dest": "/api/health.js" },
-    { "src": "/api/send-email",        "dest": "/api/send_email.js" },
     { "src": "/api/email/(.*)",        "dest": "/api/email.js" }
   ],
   "crons": [

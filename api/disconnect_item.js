@@ -1,5 +1,16 @@
+const { Configuration, PlaidApi, PlaidEnvironments } = require('plaid');
 const { requireUser } = require('./_auth');
-const { deletePlaidItem } = require('./_plaid-store');
+const { getPlaidItem, deletePlaidItem } = require('./_plaid-store');
+
+const plaid = new PlaidApi(new Configuration({
+  basePath: PlaidEnvironments[process.env.PLAID_ENV || 'production'],
+  baseOptions: {
+    headers: {
+      'PLAID-CLIENT-ID': process.env.PLAID_CLIENT_ID,
+      'PLAID-SECRET': process.env.PLAID_SECRET,
+    },
+  },
+}));
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -13,6 +24,15 @@ module.exports = async (req, res) => {
     const { item_id } = req.body || {};
 
     if (!item_id) return res.status(400).json({ error: 'Missing item_id' });
+
+    const plaidItem = await getPlaidItem(user.uid, item_id);
+    if (plaidItem && plaidItem.accessToken) {
+      try {
+        await plaid.itemRemove({ access_token: plaidItem.accessToken });
+      } catch (error) {
+        console.warn('[disconnect_item] Plaid item removal skipped:', error?.response?.data || error.message || error);
+      }
+    }
 
     await deletePlaidItem(user.uid, item_id);
     res.json({ success: true });

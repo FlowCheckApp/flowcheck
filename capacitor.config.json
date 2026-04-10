@@ -17,5 +17,10 @@
       "flowcheck-one.vercel.app",
       "*.plaid.com"
     ]
-  }
+  },
+  "packageClassList": [
+    "BiometricAuthNative",
+    "PreferencesPlugin",
+    "PurchasesPlugin"
+  ]
 }

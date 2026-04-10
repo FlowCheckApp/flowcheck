@@ -1,6 +1,17 @@
+const { Configuration, PlaidApi, PlaidEnvironments } = require('plaid');
 const { requireUser } = require('./_auth');
-const { deleteAllPlaidItems } = require('./_plaid-store');
+const { listPlaidItems, deleteAllPlaidItems } = require('./_plaid-store');
 const { auth, db } = require('../lib/firebase-admin');
+
+const plaid = new PlaidApi(new Configuration({
+  basePath: PlaidEnvironments[process.env.PLAID_ENV || 'production'],
+  baseOptions: {
+    headers: {
+      'PLAID-CLIENT-ID': process.env.PLAID_CLIENT_ID,
+      'PLAID-SECRET': process.env.PLAID_SECRET,
+    },
+  },
+}));
 
 async function deleteCollectionByUser(collectionName, userId) {
   const snapshot = await db.collection(collectionName).where('userId', '==', userId).get();
@@ -25,6 +36,15 @@ module.exports = async (req, res) => {
 
     let plaidDeleted = 0;
     try {
+      const plaidItems = await listPlaidItems(user.uid);
+      await Promise.all(plaidItems.map(async (item) => {
+        if (!item || !item.accessToken) return;
+        try {
+          await plaid.itemRemove({ access_token: item.accessToken });
+        } catch (error) {
+          console.warn('[delete_account] Plaid item removal skipped:', error?.response?.data || error.message || error);
+        }
+      }));
       plaidDeleted = await deleteAllPlaidItems(user.uid);
       await db.collection('userEmailState').doc(user.uid).delete().catch(() => {});
       await deleteCollectionByUser('emailLogs', user.uid).catch(() => {});
