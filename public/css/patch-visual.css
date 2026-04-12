@@ -1,0 +1,394 @@
+/* ═══════════════════════════════════════════════════════════════
+   FLOWCHECK VISUAL OVERHAUL — patch-visual.css
+   Drop in public/css/ and link in index.html before </head>
+   
+   Philosophy: "Calm confidence" — not a fintech dashboard,
+   feels like a trusted advisor who knows your money.
+   Dark deep navy base, warm amber accents for positive numbers,
+   crisp white for decision moments.
+   ═══════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
+
+/* ── Override Inter with DM Sans throughout ── */
+body, input, button, select, textarea {
+  font-family: 'DM Sans', -apple-system, sans-serif !important;
+}
+
+/* ── Display numbers and hero headings use Syne ── */
+.dash-hero-number,
+#hero-safe-spend,
+#lg-tot,
+#nw-n,
+#nw-a,
+#nw-l,
+.rpt-big-number,
+#txn-stat-spent,
+#txn-stat-income {
+  font-family: 'Syne', sans-serif !important;
+  letter-spacing: -1px !important;
+}
+
+/* ── Deep navy base — warmer and more trustworthy than pure black ── */
+:root {
+  --bg:       #06080f !important;
+  --bg2:      #0b0f1a !important;
+  --card:     #0f1520 !important;
+  --card2:    #141c2b !important;
+  --card3:    #1a2438 !important;
+  --line:     rgba(255,255,255,.065) !important;
+  --line2:    rgba(255,255,255,.035) !important;
+
+  /* Warm amber for positive/income (more human than cold teal) */
+  --gold:     #f5a623;
+  --gold-l:   rgba(245,166,35,.1);
+  --gold-b:   rgba(245,166,35,.22);
+
+  /* Keep teal as the FlowCheck brand accent */
+  --acc:      #06b6d4 !important;
+  --acc-rgb:  6,182,212 !important;
+
+  /* Richer green for positive states */
+  --pos:      #34d399 !important;
+  --pos-l:    rgba(52,211,153,.1) !important;
+}
+
+html, body, .app, .main, .pages, .page {
+  background: var(--bg) !important;
+}
+
+/* ═══════════════════════════════════════
+   TOPBAR — frosted glass refinement
+   ═══════════════════════════════════════ */
+.topbar {
+  background: rgba(6,8,15,.88) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border-bottom: 1px solid rgba(255,255,255,.06) !important;
+}
+
+/* ═══════════════════════════════════════
+   BOTTOM NAV — elevated with glow
+   ═══════════════════════════════════════ */
+#fc-nav {
+  background: rgba(8,10,18,.96) !important;
+  border-top: 1px solid rgba(255,255,255,.07) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+}
+
+/* Active nav item gets a warm glow */
+.fctab-btn.active .fctab-ico,
+.fctab-btn[data-active="true"] .fctab-ico {
+  filter: drop-shadow(0 0 8px rgba(6,182,212,.5)) !important;
+}
+
+/* ═══════════════════════════════════════
+   CARDS — deeper, more atmospheric
+   ═══════════════════════════════════════ */
+.card, .chi, .chip {
+  background: var(--card) !important;
+  border-color: var(--line) !important;
+  border-radius: 20px !important;
+}
+
+/* Hero cards get a subtle top gradient line */
+.dash-hero-card,
+#budget-plan-card,
+#bills-plan-card,
+#sav-plan-card,
+#debt-plan-card {
+  position: relative !important;
+  overflow: hidden !important;
+}
+.dash-hero-card::before,
+#budget-plan-card::before,
+#bills-plan-card::before,
+#sav-plan-card::before,
+#debt-plan-card::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important; left: 0 !important; right: 0 !important;
+  height: 1px !important;
+  background: linear-gradient(90deg, transparent, rgba(6,182,212,.4), transparent) !important;
+  pointer-events: none !important;
+}
+
+/* ═══════════════════════════════════════
+   TRANSACTION ROWS — tighter, richer
+   ═══════════════════════════════════════ */
+.txn-row {
+  padding: 14px 16px !important;
+  border-bottom: 1px solid rgba(255,255,255,.035) !important;
+  transition: background .1s ease !important;
+}
+.txn-row:active {
+  background: rgba(255,255,255,.04) !important;
+}
+.txn-icon-wrap {
+  border-radius: 16px !important;
+  background: rgba(255,255,255,.06) !important;
+}
+.txn-merchant {
+  font-family: 'DM Sans', sans-serif !important;
+  font-weight: 600 !important;
+  font-size: 14.5px !important;
+  letter-spacing: -.2px !important;
+}
+.txn-amount {
+  font-family: 'Syne', sans-serif !important;
+  font-size: 15px !important;
+  letter-spacing: -.5px !important;
+}
+
+/* ═══════════════════════════════════════
+   BUTTONS — premium feel
+   ═══════════════════════════════════════ */
+.btn-p, button.btn-p {
+  font-family: 'DM Sans', sans-serif !important;
+  font-weight: 600 !important;
+  letter-spacing: -.1px !important;
+  border-radius: 14px !important;
+  transition: transform .1s ease, box-shadow .15s ease !important;
+}
+.btn-p:active {
+  transform: scale(.97) !important;
+  box-shadow: 0 4px 20px rgba(6,182,212,.25) !important;
+}
+
+/* ═══════════════════════════════════════
+   SAFE TO SPEND — make it the hero
+   ═══════════════════════════════════════ */
+#hero-safe-spend {
+  font-size: 28px !important;
+  font-weight: 800 !important;
+  font-family: 'Syne', sans-serif !important;
+  letter-spacing: -1.5px !important;
+  color: #34d399 !important;
+  text-shadow: 0 0 24px rgba(52,211,153,.3) !important;
+}
+
+/* ═══════════════════════════════════════
+   STAT CHIPS — more breathing room
+   ═══════════════════════════════════════ */
+.chi, .chip {
+  border-radius: 16px !important;
+  padding: 13px 14px !important;
+}
+
+/* ═══════════════════════════════════════
+   PAGE HEADINGS — Syne for section titles
+   ═══════════════════════════════════════ */
+.page-title,
+[style*="font-size:24px"][style*="font-weight:700"],
+[style*="font-size:22px"][style*="font-weight:800"] {
+  font-family: 'Syne', sans-serif !important;
+  letter-spacing: -.5px !important;
+}
+
+/* ═══════════════════════════════════════
+   BUDGET BARS — smoother gradient
+   ═══════════════════════════════════════ */
+[style*="background:var(--acc)"][style*="border-radius:999px"],
+[style*="background: var(--acc)"][style*="border-radius:999px"] {
+  background: linear-gradient(90deg, #06b6d4, #22d3ee) !important;
+}
+
+/* ═══════════════════════════════════════
+   PILL FILTERS — cleaner
+   ═══════════════════════════════════════ */
+.txn-pill {
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  border-radius: 12px !important;
+  padding: 8px 16px !important;
+}
+.txn-pill.active {
+  background: rgba(6,182,212,.12) !important;
+  border-color: rgba(6,182,212,.3) !important;
+  color: #22d3ee !important;
+}
+
+/* ═══════════════════════════════════════
+   MORE TILES — icon glow on active page
+   ═══════════════════════════════════════ */
+.more-tile {
+  background: var(--card2) !important;
+  border-radius: 18px !important;
+  transition: transform .1s ease, background .12s ease !important;
+}
+.more-tile:active {
+  transform: scale(.94) !important;
+}
+.more-tile-ico {
+  border-radius: 14px !important;
+}
+
+/* ═══════════════════════════════════════
+   REPORT GRADE — hide the D, show momentum
+   ═══════════════════════════════════════ */
+#rpt-grade {
+  font-family: 'Syne', sans-serif !important;
+  font-size: 52px !important;
+  letter-spacing: -3px !important;
+}
+
+/* ═══════════════════════════════════════
+   INPUT FIELDS — native feeling
+   ═══════════════════════════════════════ */
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="password"] {
+  font-family: 'DM Sans', sans-serif !important;
+  background: rgba(255,255,255,.055) !important;
+  border: 1px solid rgba(255,255,255,.09) !important;
+  border-radius: 14px !important;
+  color: #fff !important;
+  transition: border-color .15s ease, box-shadow .15s ease !important;
+}
+input:focus {
+  border-color: rgba(6,182,212,.4) !important;
+  box-shadow: 0 0 0 3px rgba(6,182,212,.1) !important;
+  outline: none !important;
+}
+
+/* ═══════════════════════════════════════
+   NOTIFICATION BADGE — pulsing
+   ═══════════════════════════════════════ */
+.notif-dot {
+  animation: notifPulse 2s ease infinite !important;
+}
+@keyframes notifPulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(6,182,212,.4); }
+  50%      { box-shadow: 0 0 0 5px rgba(6,182,212,0); }
+}
+
+/* ═══════════════════════════════════════
+   DASHBOARD BRIEF — more dramatic
+   ═══════════════════════════════════════ */
+#dash-day-brief {
+  background: linear-gradient(135deg,
+    rgba(6,182,212,.1) 0%,
+    rgba(11,15,26,.6) 50%,
+    rgba(6,182,212,.04) 100%) !important;
+  border-color: rgba(6,182,212,.16) !important;
+  border-radius: 22px !important;
+}
+
+/* ═══════════════════════════════════════
+   COPILOT CARDS — premium polish
+   ═══════════════════════════════════════ */
+.copilot-card {
+  border-radius: 20px !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+/* ═══════════════════════════════════════
+   NET WORTH — dramatic number treatment
+   ═══════════════════════════════════════ */
+#nw-n {
+  font-family: 'Syne', sans-serif !important;
+  font-size: 42px !important;
+  letter-spacing: -2px !important;
+}
+
+/* ═══════════════════════════════════════
+   SCROLL BARS — invisible
+   ═══════════════════════════════════════ */
+::-webkit-scrollbar { display: none !important; }
+* { scrollbar-width: none !important; }
+
+/* ═══════════════════════════════════════
+   EMPTY STATES — warmer, more inviting
+   ═══════════════════════════════════════ */
+.fc-empty-badge {
+  background: rgba(6,182,212,.08) !important;
+  border-color: rgba(6,182,212,.14) !important;
+  border-radius: 16px !important;
+}
+
+/* ═══════════════════════════════════════
+   LOADING SHIMMER — smoother
+   ═══════════════════════════════════════ */
+@keyframes fcShimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.fc-shimmer {
+  background: linear-gradient(90deg,
+    rgba(255,255,255,.04) 25%,
+    rgba(255,255,255,.08) 50%,
+    rgba(255,255,255,.04) 75%) !important;
+  background-size: 200% 100% !important;
+  animation: fcShimmer 1.6s ease infinite !important;
+}
+
+/* ═══════════════════════════════════════
+   PAGE TRANSITIONS — smooth slide
+   ═══════════════════════════════════════ */
+.page {
+  transition: opacity .18s ease !important;
+}
+
+/* ═══════════════════════════════════════
+   SECTION LABELS — uppercase refinement
+   ═══════════════════════════════════════ */
+[style*="letter-spacing:.1em"],
+[style*="letter-spacing: .1em"],
+[style*="text-transform:uppercase"] {
+  font-family: 'DM Sans', sans-serif !important;
+  letter-spacing: .08em !important;
+  font-size: 10.5px !important;
+}
+
+/* ═══════════════════════════════════════
+   DEBT ROWS — cleaner status bars
+   ═══════════════════════════════════════ */
+.debt-row-card {
+  border-radius: 18px !important;
+  border-color: rgba(255,255,255,.055) !important;
+  transition: transform .1s ease !important;
+}
+.debt-row-card:active {
+  transform: scale(.99) !important;
+}
+
+/* ═══════════════════════════════════════
+   SETTINGS PAGE — cleaner rows
+   ═══════════════════════════════════════ */
+#pg-settings .card-body > div {
+  border-bottom-color: rgba(255,255,255,.04) !important;
+}
+
+/* ═══════════════════════════════════════
+   BADGE PILLS — rounder, bolder
+   ═══════════════════════════════════════ */
+.txn-badge {
+  border-radius: 8px !important;
+  font-family: 'DM Sans', sans-serif !important;
+  font-weight: 600 !important;
+  font-size: 10.5px !important;
+  padding: 3px 8px !important;
+}
+
+/* ═══════════════════════════════════════
+   LIGHT MODE REFINEMENTS
+   ═══════════════════════════════════════ */
+body.light-mode {
+  --bg:    #f0f2f7 !important;
+  --card:  #ffffff !important;
+  --card2: #f7f8fc !important;
+}
+body.light-mode .txn-icon-wrap {
+  background: rgba(0,0,0,.04) !important;
+}
+body.light-mode .txn-merchant {
+  color: #0a0a14 !important;
+}
+body.light-mode input {
+  background: rgba(0,0,0,.04) !important;
+  border-color: rgba(0,0,0,.08) !important;
+  color: #0a0a14 !important;
+}
