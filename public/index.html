@@ -2252,6 +2252,7 @@ body.fc-page-settings #pg-settings.on > div {
 <script src="/js/app-errors.js"></script>
 <script src="/js/app-auth.js"></script>
 <script src="/js/app-analytics.js"></script>
+<script src="/js/app-copilot.js"></script>
 </head>
 <body class="fc-booting">
 <div class="fc-startup" id="fc-startup" aria-hidden="true">
@@ -2359,7 +2360,7 @@ body.fc-page-settings #pg-settings.on > div {
   <div class="page on" id="pg-dashboard">
 
     <!-- ══ GREETING TOPBAR ══ -->
-    <div style="padding:18px 18px 4px;display:flex;align-items:center;justify-content:space-between">
+    <div id="dash-greeting-wrap" style="display:none;padding:18px 18px 4px;align-items:center;justify-content:space-between">
       <div>
         <div id="dash-greeting" style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.5px;line-height:1.15">Good morning</div>
         <div id="dash-date-sub" style="font-size:12px;color:rgba(255,255,255,.32);margin-top:2px;font-weight:500"></div>
@@ -2372,17 +2373,17 @@ body.fc-page-settings #pg-settings.on > div {
 
     <!-- ══ DAILY BRIEF ══ -->
     <div style="padding:10px 18px 0">
-      <div id="dash-day-brief" style="background:linear-gradient(145deg,rgba(var(--acc-rgb,6,182,212),.12),rgba(255,255,255,.03) 58%,rgba(255,255,255,.02));border:1px solid rgba(var(--acc-rgb,6,182,212),.14);border-radius:22px;padding:18px 16px 16px;position:relative;overflow:hidden">
+      <div id="dash-day-brief" style="background:linear-gradient(145deg,rgba(var(--acc-rgb,6,182,212),.12),rgba(255,255,255,.03) 58%,rgba(255,255,255,.02));border:1px solid rgba(var(--acc-rgb,6,182,212),.14);border-radius:22px;padding:16px 15px 14px;position:relative;overflow:hidden">
         <div style="position:absolute;top:-34px;right:-18px;width:110px;height:110px;border-radius:50%;background:radial-gradient(circle,rgba(var(--acc-rgb,6,182,212),.14),transparent 68%);pointer-events:none"></div>
         <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px;position:relative;z-index:1">
           <div>
-            <div style="font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(var(--acc-rgb,6,182,212),.72);margin-bottom:6px">Today Plan</div>
+            <div id="dash-brief-kicker" style="font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(var(--acc-rgb,6,182,212),.72);margin-bottom:6px">Today Plan</div>
             <div id="dash-brief-title" style="font-size:19px;font-weight:800;color:#fff;letter-spacing:-.5px;line-height:1.2">Your money is loading...</div>
             <div id="dash-brief-copy" style="font-size:12.5px;color:rgba(255,255,255,.46);line-height:1.55;margin-top:6px;max-width:280px">We are calculating your safest next move.</div>
           </div>
           <div id="dash-brief-badge" style="flex-shrink:0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:7px 12px;font-size:11px;font-weight:700;color:rgba(255,255,255,.52)">Loading</div>
         </div>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;position:relative;z-index:1">
+        <div id="dash-brief-tags" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;position:relative;z-index:1">
           <div style="display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.06);font-size:11px;font-weight:700;color:rgba(255,255,255,.46)">
             <span style="color:#4ade80">●</span><span>Updated from your live money flow</span>
           </div>
@@ -2404,7 +2405,7 @@ body.fc-page-settings #pg-settings.on > div {
             <div id="dash-brief-payday" style="font-size:15px;font-weight:800;color:#fff;letter-spacing:-.3px">Soon</div>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;position:relative;z-index:1">
+        <div id="dash-brief-secondary-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;position:relative;z-index:1">
           <div style="background:rgba(0,0,0,.14);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:11px 10px">
             <div style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.24);margin-bottom:4px">Money Pulse</div>
             <div id="dash-pulse-pace" style="font-size:13px;font-weight:800;color:#fff;letter-spacing:-.2px">Steady</div>
@@ -2424,6 +2425,8 @@ body.fc-page-settings #pg-settings.on > div {
         <button id="dash-brief-btn" style="display:none;width:100%;margin-top:12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:12px 14px;font-family:inherit;font-size:12.5px;font-weight:700;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;position:relative;z-index:1"></button>
       </div>
     </div>
+
+    <div id="copilot-feed" style="padding:16px 18px 0"></div>
 
     <!-- ══ HERO SWIPEABLE CARDS ══ -->
     <div style="padding:14px 18px 0">
@@ -2544,7 +2547,7 @@ body.fc-page-settings #pg-settings.on > div {
     </div>
 
     <!-- ══ 4-STAT GRID ══ -->
-    <div style="padding:10px 18px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div id="dash-stat-grid" style="padding:10px 18px 0;display:grid;grid-template-columns:1fr 1fr;gap:10px">
       <!-- Debt -->
       <div onclick="go('debt')" style="background:#181818;border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:16px 15px;cursor:pointer;-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden">
         <div style="position:absolute;top:0;left:0;right:0;height:1.5px;background:linear-gradient(90deg,#ff5252,transparent)"></div>
@@ -2596,7 +2599,40 @@ body.fc-page-settings #pg-settings.on > div {
     </div>
 
     <!-- ══ ACCOUNTS (Plaid) ══ -->
-    <div style="padding:18px 18px 0">
+    <div id="dash-upcoming-section" style="padding:18px 18px 0;display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3)">Upcoming Bills</div>
+        <button onclick="go('bills')" style="background:none;border:none;font-family:inherit;font-size:12.5px;font-weight:600;color:rgba(255,255,255,.35);cursor:pointer;-webkit-tap-highlight-color:transparent;padding:0">View all →</button>
+      </div>
+      <div id="dash-upcoming-scroll" style="display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin:0 -18px;padding-left:18px;padding-right:18px"></div>
+    </div>
+
+    <!-- ══ BUDGET SNAPSHOT ══ -->
+    <div id="dash-budget-section" style="padding:18px 18px 0">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3)">Budget Snapshot</div>
+        <button onclick="fcNav('budget')" style="background:none;border:none;font-family:inherit;font-size:12.5px;font-weight:600;color:rgba(255,255,255,.35);cursor:pointer;-webkit-tap-highlight-color:transparent;padding:0">Edit →</button>
+      </div>
+      <div style="background:#181818;border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:16px">
+        <div id="dash-budget-snap">
+          <div style="font-size:13px;color:rgba(255,255,255,.3);text-align:center;padding:8px 0;line-height:1.6">Set up your income to unlock a calmer monthly plan and a live safe-to-spend number.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ RECENT TRANSACTIONS ══ -->
+    <div id="dash-transactions-section" style="padding:18px 18px 0">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3)">Recent Transactions</div>
+        <button onclick="fcNav('transactions')" style="background:none;border:none;font-family:inherit;font-size:12.5px;font-weight:700;color:var(--acc);cursor:pointer;-webkit-tap-highlight-color:transparent;padding:0">See all →</button>
+      </div>
+      <div id="dash-txns" style="background:#181818;border:1px solid rgba(255,255,255,.07);border-radius:16px;overflow:hidden">
+        <div style="padding:20px;text-align:center;font-size:13px;color:rgba(255,255,255,.3)">No transactions yet — link a bank or add one.</div>
+      </div>
+    </div>
+
+    <!-- ══ ACCOUNTS (Plaid) ══ -->
+    <div id="dash-accounts-section" style="padding:18px 18px 0">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
         <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3)">Accounts</div>
         <div style="display:flex;align-items:center;gap:10px">
@@ -2611,44 +2647,11 @@ body.fc-page-settings #pg-settings.on > div {
           <div style="width:42px;height:42px;margin:0 auto 10px;border-radius:14px;background:rgba(var(--acc-rgb,6,182,212),.08);border:1px solid rgba(var(--acc-rgb,6,182,212),.14);display:flex;align-items:center;justify-content:center">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 9.5L12 4l9 5.5M5 10v7m4-7v7m6-7v7m4-7v7M3 19h18" stroke="var(--acc)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
-          <div style="font-size:14px;font-weight:600;color:rgba(255,255,255,.45);margin-bottom:4px">No accounts linked</div>
-          <div style="font-size:12px;color:rgba(255,255,255,.25);margin-bottom:14px;line-height:1.6">Connect your bank for live balances, cleaner transaction memory, and a more accurate safe-to-spend number.</div>
+          <div style="font-size:14px;font-weight:600;color:rgba(255,255,255,.55);margin-bottom:4px">Link your primary checking first</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.25);margin-bottom:14px;line-height:1.55">That is the fastest way to make safe to spend feel real.</div>
           <button onclick="go('plaid')" style="background:var(--acc);color:#000;border:none;border-radius:100px;padding:10px 22px;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;margin-bottom:10px">Link Bank Account</button>
-          <div style="font-size:11px;color:rgba(255,255,255,.18)">Read-only via Plaid. FlowCheck cannot move money.</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.18)">Read-only via Plaid</div>
         </div>
-      </div>
-    </div>
-
-    <!-- ══ UPCOMING BILLS horizontal scroll ══ -->
-    <div id="dash-upcoming-section" style="padding:18px 18px 0;display:none">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3)">Upcoming Bills</div>
-        <button onclick="go('bills')" style="background:none;border:none;font-family:inherit;font-size:12.5px;font-weight:600;color:rgba(255,255,255,.35);cursor:pointer;-webkit-tap-highlight-color:transparent;padding:0">View all →</button>
-      </div>
-      <div id="dash-upcoming-scroll" style="display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin:0 -18px;padding-left:18px;padding-right:18px"></div>
-    </div>
-
-    <!-- ══ BUDGET SNAPSHOT ══ -->
-    <div style="padding:18px 18px 0">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3)">Budget Snapshot</div>
-        <button onclick="fcNav('budget')" style="background:none;border:none;font-family:inherit;font-size:12.5px;font-weight:600;color:rgba(255,255,255,.35);cursor:pointer;-webkit-tap-highlight-color:transparent;padding:0">Edit →</button>
-      </div>
-      <div style="background:#181818;border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:16px">
-        <div id="dash-budget-snap">
-          <div style="font-size:13px;color:rgba(255,255,255,.3);text-align:center;padding:8px 0;line-height:1.6">Set up your income to unlock a calmer monthly plan and a live safe-to-spend number.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══ RECENT TRANSACTIONS ══ -->
-    <div style="padding:18px 18px 0">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3)">Recent Transactions</div>
-        <button onclick="fcNav('transactions')" style="background:none;border:none;font-family:inherit;font-size:12.5px;font-weight:700;color:var(--acc);cursor:pointer;-webkit-tap-highlight-color:transparent;padding:0">See all →</button>
-      </div>
-      <div id="dash-txns" style="background:#181818;border:1px solid rgba(255,255,255,.07);border-radius:16px;overflow:hidden">
-        <div style="padding:20px;text-align:center;font-size:13px;color:rgba(255,255,255,.3)">No transactions yet — link a bank or add one.</div>
       </div>
     </div>
 
@@ -2658,7 +2661,7 @@ body.fc-page-settings #pg-settings.on > div {
 
   <!-- ██ BUDGET ██ -->
   <div class="page" id="pg-budget">
-    <div class="card mb20" style="overflow:hidden;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(var(--acc-rgb,6,182,212),.045));border-color:rgba(var(--acc-rgb,6,182,212),.12);box-shadow:0 18px 44px rgba(0,0,0,.22)">
+    <div class="card mb20" id="budget-plan-card" style="overflow:hidden;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(var(--acc-rgb,6,182,212),.045));border-color:rgba(var(--acc-rgb,6,182,212),.12);box-shadow:0 18px 44px rgba(0,0,0,.22)">
       <div class="card-body">
         <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap">
           <div style="max-width:680px">
@@ -2689,8 +2692,8 @@ body.fc-page-settings #pg-settings.on > div {
         <div id="budget-plan-cta" style="font-size:12px;line-height:1.6;color:var(--tx2);margin-top:14px">Premium budgeting works best when every dollar has a role before the month gets busy.</div>
       </div>
     </div>
-    <div class="g2 mb20">
-      <div class="card">
+    <div class="g2 mb20" id="budget-top-grid">
+      <div class="card" id="budget-breakdown-card">
         <div class="card-hd"><div class="card-title">Income</div></div>
         <div class="card-body">
           <div class="inp-g"><label class="inp-lbl">Take-Home Pay</label><input class="inp" type="number" id="b-inc" placeholder="0.00" oninput="rB();persist()"></div>
@@ -2731,7 +2734,6 @@ body.fc-page-settings #pg-settings.on > div {
     <div class="sb mb20">
       <div><div id="debt-sync-status" style="display:none;font-size:11px;margin-top:2px"></div></div>
       <div style="display:flex;gap:8px">
-        <button class="btn btn-o" onclick="fetchPlaidLiabilities(false)" style="font-size:12px;padding:8px 14px;border-radius:100px">↻ Sync</button>
         <button class="btn btn-p" onclick="openDM()">+ Add Debt</button>
       </div>
     </div>
@@ -2741,12 +2743,12 @@ body.fc-page-settings #pg-settings.on > div {
           <div style="max-width:700px">
             <div id="debt-plan-badge" style="display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:rgba(197,48,48,.12);color:var(--red);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase">Payoff plan</div>
             <div id="debt-plan-title" style="font-family:'Lora',serif;font-size:28px;line-height:1.15;color:var(--tx1);margin-top:12px">Build a clean path out of debt</div>
-            <div id="debt-plan-copy" style="font-size:14px;line-height:1.6;color:var(--tx2);margin-top:8px">Track balances, compare momentum, and see which debt deserves your next extra dollar.</div>
+            <div id="debt-plan-copy" style="font-size:14px;line-height:1.6;color:var(--tx2);margin-top:8px">Add each balance manually, compare momentum, and see which debt deserves your next extra dollar.</div>
           </div>
           <div id="debt-plan-focus-card" style="padding:10px 14px;border-radius:16px;background:rgba(255,255,255,.82);border:1px solid rgba(197,48,48,.12);min-width:220px">
             <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx3)">Priority focus</div>
             <div id="debt-plan-focus-title" style="font-size:18px;font-weight:700;color:var(--tx1);margin-top:4px">Add your first debt</div>
-            <div id="debt-plan-focus-copy" style="font-size:12px;line-height:1.5;color:var(--tx2);margin-top:4px">Once balances and minimums are in place, FlowCheck can map your payoff runway.</div>
+            <div id="debt-plan-focus-copy" style="font-size:12px;line-height:1.5;color:var(--tx2);margin-top:4px">Enter the balance, APR, and minimum payment to start your payoff runway.</div>
           </div>
         </div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-top:16px">
@@ -2778,7 +2780,7 @@ body.fc-page-settings #pg-settings.on > div {
       <div class="chip chip-grn"><div class="chip-lbl">Paid Off</div><div class="chip-val" id="dt-paid">$0</div></div>
       <div class="chip"><div class="chip-lbl">Progress</div><div class="chip-val" id="dt-pct">0%</div></div>
     </div>
-    <div class="card"><div class="card-hd"><div class="card-title">Your Debts</div></div><div id="dt-list"><div class="fc-empty debt-empty-card"><div class="fc-empty-badge">DB</div><div class="fc-empty-title">No debts added yet</div><div class="fc-empty-sub">Link a card or loan for payoff dates, minimums, and a cleaner next move.</div><div class="debt-empty-actions" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px"><button onclick="go('plaid')" class="fc-btn fc-btn-secondary fc-btn-sm">Review bank sync</button><button onclick="openDM()" class="fc-btn fc-btn-primary fc-btn-sm">+ Add Manually</button></div></div></div></div>
+    <div class="card"><div class="card-hd"><div class="card-title">Your Debts</div></div><div id="dt-list"><div class="fc-empty debt-empty-card"><div class="fc-empty-badge">DB</div><div class="fc-empty-title">No debts added yet</div><div class="fc-empty-sub">Add each card or loan manually for balances, APR, minimums, and a cleaner payoff plan.</div><div class="debt-empty-actions" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px"><button onclick="openDM()" class="fc-btn fc-btn-primary fc-btn-sm">+ Add Debt</button></div></div></div></div>
   </div>
 
   <!-- ██ SAVINGS ██ -->
@@ -2841,7 +2843,7 @@ body.fc-page-settings #pg-settings.on > div {
     </div>
 
     <!-- ── Hero spend card (mirrors dashboard exactly) ── -->
-    <div style="margin:0 16px 14px;background:#1a1a1a;border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:20px;position:relative;overflow:hidden" onclick="fcNav('log')">
+    <div id="log-hero-card" style="margin:0 16px 14px;background:#1a1a1a;border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:18px 18px 16px;position:relative;overflow:hidden" onclick="fcNav('log')">
       <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--acc),transparent)"></div>
       <div style="font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.38);margin-bottom:8px">MONTHLY SPEND</div>
       <div style="font-size:48px;font-weight:800;color:#fff;letter-spacing:-2px;line-height:1;margin-bottom:4px" id="lg-tot">$0</div>
@@ -2876,7 +2878,7 @@ body.fc-page-settings #pg-settings.on > div {
     </div>
 
     <!-- ── Stats row ── -->
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:0 16px 16px">
+    <div id="log-stats-row" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:0 16px 16px">
       <div style="background:#1a1a1a;border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:12px 10px;text-align:center">
         <div style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:5px">SPENT</div>
         <div id="lg-stat-spent" style="font-size:18px;font-weight:800;color:#f87171;letter-spacing:-.5px">$0</div>
@@ -2916,7 +2918,7 @@ body.fc-page-settings #pg-settings.on > div {
         </div>
         <button class="btn btn-p" onclick="openBM()" style="border-radius:100px;padding:10px 20px;font-size:13.5px;color:#000">+ Add Bill</button>
       </div>
-      <div class="card mb16" style="overflow:hidden;background:linear-gradient(135deg,rgba(197,48,48,.08),rgba(var(--acc-rgb,6,182,212),.08));border-color:rgba(var(--acc-rgb,6,182,212),.14)">
+      <div class="card mb16" id="bills-plan-card" style="overflow:hidden;background:linear-gradient(135deg,rgba(197,48,48,.08),rgba(var(--acc-rgb,6,182,212),.08));border-color:rgba(var(--acc-rgb,6,182,212),.14)">
         <div class="card-body">
           <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap">
             <div style="max-width:700px">
@@ -2948,7 +2950,7 @@ body.fc-page-settings #pg-settings.on > div {
         </div>
       </div>
 
-      <div style="margin-bottom:16px">
+      <div id="bills-recurring-section" style="margin-bottom:16px">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
           <div>
             <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.28)">Recurring Center</div>
@@ -2960,7 +2962,7 @@ body.fc-page-settings #pg-settings.on > div {
       </div>
 
       <!-- Stats row -->
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px">
+      <div id="bills-stats-row" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px">
         <div style="background:#161616;border:1px solid rgba(255,82,82,.2);border-radius:14px;padding:14px 12px;text-align:center">
           <div style="font-size:9px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,82,82,.7);margin-bottom:4px">Monthly</div>
           <div id="bi-tot" style="font-size:20px;font-weight:800;color:#ff5252;letter-spacing:-.5px">$0</div>
@@ -2979,7 +2981,7 @@ body.fc-page-settings #pg-settings.on > div {
       </div>
 
       <!-- Calendar view toggle -->
-      <div style="display:flex;gap:6px;margin-bottom:14px">
+      <div id="bills-view-toggle" style="display:flex;gap:6px;margin-bottom:14px">
         <button id="bills-view-list" onclick="setBillsView('list')" style="flex:1;background:var(--acc);color:#000;border:none;border-radius:100px;padding:9px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer">List</button>
         <button id="bills-view-cal" onclick="setBillsView('calendar')" style="flex:1;background:#1e1e1e;color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.08);border-radius:100px;padding:9px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer">Calendar</button>
       </div>
@@ -4247,11 +4249,6 @@ function go(page,btn){
   if(page==='debt'){
     rDbt();
     rDebtCountdown();
-    try {
-      if (typeof plaidLinkedAccounts !== 'undefined' && plaidLinkedAccounts && plaidLinkedAccounts.length && typeof fetchPlaidLiabilities === 'function') {
-        fetchPlaidLiabilities(true);
-      }
-    } catch(e) {}
   }
   if(page==='savings') rSav();
   if(page==='log'){_lgFilter='';document.querySelectorAll('.txn-pill').forEach(function(p){p.classList.remove('active');p.style.background='';p.style.borderColor='';p.style.color='';});var allPill=document.querySelector('.txn-pill');if(allPill){allPill.classList.add('active');allPill.style.background='rgba(var(--acc-rgb,6,182,212),.1)';allPill.style.borderColor='rgba(var(--acc-rgb,6,182,212),.25)';allPill.style.color='var(--acc)';}rLog();setTimeout(drawSpendChart,100);}
@@ -4370,10 +4367,10 @@ function rBudgetPlan(inc,tots){
   if(!inc){
     if(badge){badge.textContent='Budget plan';badge.style.background='rgba(var(--acc-rgb,6,182,212),.1)';badge.style.color='rgba(var(--acc-rgb,6,182,212),.86)';}
     if(title)title.textContent='Set your monthly plan';
-    if(copy)copy.textContent='Add your take-home pay and FlowCheck will turn it into a clean 50/30/20 plan you can actually follow.';
+    if(copy)copy.textContent='Add take-home pay and FlowCheck will shape a cleaner monthly split.';
     if(statusTitle)statusTitle.textContent='Waiting on income';
-    if(statusCopy)statusCopy.textContent='Once income is set, we can show exactly how much should be assigned and what is still flexible.';
-    if(cta)cta.textContent='Start with the pay cadence you trust most. The app will normalize everything back to a monthly plan.';
+    if(statusCopy)statusCopy.textContent='Once income is set, we can show what is assigned and what is still flexible.';
+    if(cta)cta.textContent='Start with the pay cadence you trust most. FlowCheck will normalize it into one monthly plan.';
     return;
   }
   var targetTotal=inc;
@@ -4387,24 +4384,24 @@ function rBudgetPlan(inc,tots){
   if(room>0){
     if(badge){badge.textContent='On track';badge.style.background='rgba(var(--acc-rgb,6,182,212),.1)';badge.style.color='rgba(var(--acc-rgb,6,182,212),.86)';}
     if(title)title.textContent='You still have '+fmf(room)+' to assign';
-    if(copy)copy.textContent='Your current plan leaves breathing room. Use the remaining space to protect savings, debt payoff, or upcoming bills.';
+    if(copy)copy.textContent='Your current plan leaves breathing room. Use the remaining space intentionally.';
     if(statusTitle)statusTitle.textContent='Healthy flexibility';
-    if(statusCopy)statusCopy.textContent='Assigned '+fmf(assigned)+' of '+fmf(targetTotal)+' this month. Unassigned cash can become extra savings or debt momentum.';
-    if(cta)cta.textContent='Best next move: give the leftover '+fmf(room)+' a job before discretionary spending expands to fill it.';
+    if(statusCopy)statusCopy.textContent='Assigned '+fmf(assigned)+' of '+fmf(targetTotal)+' this month.';
+    if(cta)cta.textContent='Best next move: give the leftover '+fmf(room)+' a job before it disappears into random spending.';
   }else if(room<0){
     if(badge){badge.textContent='Needs attention';badge.style.background='rgba(197,48,48,.12)';badge.style.color='var(--red)';}
     if(title)title.textContent='You are over-assigned by '+fmf(Math.abs(room));
-    if(copy)copy.textContent='The plan is asking for more than this month can support. Tightening one category will restore calm and make the dashboard more trustworthy.';
+    if(copy)copy.textContent='The plan is asking for more than this month can support.';
     if(statusTitle)statusTitle.textContent=largestOver?largestOver.label+' is the pressure point':'Trim this month';
     if(statusCopy)statusCopy.textContent=largestOver?largestOver.label+' is running '+fmf(largestOver.diff)+' above its 50/30/20 target. Start there for the cleanest reset.':'Reduce one category so assigned dollars fit the income plan.';
-    if(cta)cta.textContent='Best next move: reallocate '+fmf(Math.abs(room))+' from wants or optional spending until the plan is back inside take-home pay.';
+    if(cta)cta.textContent='Best next move: reallocate '+fmf(Math.abs(room))+' until the plan fits your take-home pay again.';
   }else{
     if(badge){badge.textContent='Dialed in';badge.style.background='rgba(var(--acc-rgb,6,182,212),.1)';badge.style.color='rgba(var(--acc-rgb,6,182,212),.86)';}
     if(title)title.textContent='Your plan is fully assigned';
-    if(copy)copy.textContent='Every monthly dollar has a role. This is the sweet spot where your dashboard, bills, and safe-to-spend engine stay aligned.';
+    if(copy)copy.textContent='Every monthly dollar has a role. This is the calm version of budgeting.';
     if(statusTitle)statusTitle.textContent='Balanced allocation';
     if(statusCopy)statusCopy.textContent='Needs, wants, and savings add up cleanly to your take-home pay this month.';
-    if(cta)cta.textContent='Best next move: revisit the category targets if your spending behavior changes, not just because you had one noisy week.';
+    if(cta)cta.textContent='Best next move: adjust targets only when your real spending pattern changes.';
   }
 }
 function rB(){
@@ -4475,9 +4472,9 @@ function rDebtPlan(rem,paid){
   if(!active.length){
     if(badge){badge.textContent='Payoff plan';badge.style.background='rgba(197,48,48,.12)';badge.style.color='var(--red)';}
     if(title)title.textContent='Build a clean path out of debt';
-    if(copy)copy.textContent='Track balances, compare momentum, and see which debt deserves your next extra dollar.';
+    if(copy)copy.textContent='Add each balance manually, compare momentum, and see which debt deserves your next extra dollar.';
     if(focusTitle)focusTitle.textContent='Add your first debt';
-    if(focusCopy)focusCopy.textContent='Once balances and minimums are in place, FlowCheck can map your payoff runway.';
+    if(focusCopy)focusCopy.textContent='Enter the balance, APR, and minimum payment to start your payoff runway.';
     if(winEl)winEl.textContent='None yet';
     if(nextEl)nextEl.textContent='A premium payoff plan works best when each debt has a balance, APR, and minimum payment.';
     return;
@@ -4513,10 +4510,9 @@ function renderDebtEmptyStateMarkup() {
   return '<div class="fc-empty debt-empty-card">' +
     '<div class="fc-empty-badge">DB</div>' +
     '<div class="fc-empty-title">No debts yet</div>' +
-    '<div class="fc-empty-sub">Link a card or loan for payoff dates, minimums, and a cleaner next move.</div>' +
+    '<div class="fc-empty-sub">Add each card or loan manually for balances, APR, minimums, and a cleaner payoff plan.</div>' +
     '<div class="debt-empty-actions" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px">' +
-      '<button onclick="go(\'plaid\')" class="fc-btn fc-btn-secondary fc-btn-sm">Review bank sync</button>' +
-      '<button onclick="openDM()" class="fc-btn fc-btn-primary fc-btn-sm">+ Add Manually</button>' +
+      '<button onclick="openDM()" class="fc-btn fc-btn-primary fc-btn-sm">+ Add Debt</button>' +
     '</div>' +
   '</div>';
 }
@@ -4806,6 +4802,7 @@ function rLog() {
 
   // ── Get current filter ──
   var activeFilter = (typeof _lgFilter !== 'undefined') ? _lgFilter : 'all';
+  var statsRow = document.getElementById('log-stats-row');
 
   // ── Pull transactions for this month ──
   var allTxns = [];
@@ -4881,25 +4878,11 @@ function rLog() {
     }
   }
 
-  // Safe to spend — same formula as dashboard
-  var billsLeft = (typeof bills !== 'undefined')
-    ? bills.filter(function(b){ return !b.paid; }).reduce(function(s,b){ return s+(b.amt||0); }, 0) : 0;
-  var savTarget = 0;
-  if (typeof savGoals !== 'undefined') {
-    savGoals.forEach(function(g) {
-      if (g.target && (g.saved||0) < g.target) savTarget += g.monthly || 50;
-    });
+  var safeAmt = inc - totalSpent;
+  if (isCurrentMonth && typeof FC_PE !== 'undefined' && typeof FC_PE.computeSnapshot === 'function') {
+    var snap = FC_PE.computeSnapshot();
+    if (snap && typeof snap.safeToSpend === 'number') safeAmt = snap.safeToSpend;
   }
-  // Include detected subscriptions in safe-to-spend
-  var subCost = 0;
-  if (typeof FC_RECURRING_CACHE !== 'undefined' && FC_RECURRING_CACHE.length > 0) {
-    FC_RECURRING_CACHE.forEach(function(r) {
-      if ((r.cadence==='monthly'||r.cadence==='annual') && r.avgAmt<=200) {
-        subCost += r.cadence==='annual' ? r.avgAmt/12 : r.avgAmt;
-      }
-    });
-  }
-  var safeAmt = inc - totalSpent - billsLeft - savTarget;
   var safeEl = document.getElementById('lg-safe-val');
   if (safeEl) {
     if (inc > 0) {
@@ -4918,6 +4901,7 @@ function rLog() {
     netEl.textContent  = (netVal >= 0 ? '+$' : '-$') + Math.abs(Math.round(netVal)).toLocaleString();
     netEl.style.color  = netVal >= 0 ? '#4ade80' : '#f87171';
   }
+  if (statsRow) statsRow.style.display = (totalSpent > 0 || totalIncome > 0) ? 'grid' : 'none';
 
   // ── Apply filter ──
   var filtered = allTxns.filter(function(e) {
@@ -5173,6 +5157,11 @@ function rBills(){
   const today=getSelectedMonthDay();const isCurrent=isSelectedMonthCurrent();
   const wk=isCurrent?bills.filter(b=>!b.paid&&b.due>=today&&b.due<=today+7).length:0;
   const pd=bills.filter(b=>b.paid).length;
+  var recurringSection = el('bills-recurring-section');
+  var statsRow = el('bills-stats-row');
+  var viewToggle = el('bills-view-toggle');
+  var listView = el('bills-list-view');
+  var hasRecurring = typeof FC_RECURRING_CACHE !== 'undefined' && FC_RECURRING_CACHE.length > 0;
   (function(){
     var badge=el('bills-plan-badge');
     var title=el('bills-plan-title');
@@ -5191,11 +5180,11 @@ function rBills(){
     if(coverageEl)coverageEl.textContent=coverage+'%';
     if(!bills.length){
       if(badge){badge.textContent='Bills runway';badge.style.background='rgba(var(--acc-rgb,6,182,212),.12)';badge.style.color='#b45309';}
-      if(title)title.textContent='See what is coming before it gets tight';
-      if(copy)copy.textContent='Keep upcoming obligations visible so safe-to-spend stays believable and due dates never sneak up on you.';
+      if(title)title.textContent='Bring your fixed bills into one clean view';
+      if(copy)copy.textContent='Start with the few bills that matter most before payday.';
       if(focusTitle)focusTitle.textContent='Add your first bill';
-      if(focusCopy)focusCopy.textContent='Once due dates are in place, FlowCheck can forecast what needs attention next.';
-      if(nextEl)nextEl.textContent='A premium bills view should tell you what is due next, what is risky, and what is already handled.';
+      if(focusCopy)focusCopy.textContent='Due dates are what make safe-to-spend believable.';
+      if(nextEl)nextEl.textContent='The best bills view is short, obvious, and ahead of surprises.';
       return;
     }
     if(wk>0){
@@ -5222,11 +5211,15 @@ function rBills(){
       else nextEl.textContent='Best next move: keep upcoming bills funded before they move into the “due soon” zone.';
     }
   })();
+  if (recurringSection) recurringSection.style.display = hasRecurring ? 'block' : 'none';
+  if (statsRow) statsRow.style.display = bills.length ? 'grid' : 'none';
+  if (viewToggle) viewToggle.style.display = bills.length ? 'flex' : 'none';
+  if (listView) listView.style.marginTop = bills.length ? '0' : '4px';
   if(el('bi-tot'))el('bi-tot').textContent=fm(tot);
   if(el('bi-wk'))el('bi-wk').textContent=wk;
   if(el('bi-pd'))el('bi-pd').textContent=pd+'/'+bills.length;
   const w=el('bi-list');if(!w)return;
-  if(!bills.length){w.innerHTML='<div class="fc-empty"><div class="fc-empty-icon">📅</div><div class="fc-empty-title">No bills yet</div><div class="fc-empty-sub">Add recurring bills to track due dates and factor them into your safe-to-spend calculation.</div><div style="margin-top:16px"><button onclick="openBM()" class="fc-btn fc-btn-secondary fc-btn-sm">+ Add First Bill</button></div></div>';return;}
+  if(!bills.length){w.innerHTML='<div class="fc-empty" style="padding:28px 22px"><div class="fc-empty-icon">📅</div><div class="fc-empty-title">No bills yet</div><div class="fc-empty-sub">Add the few recurring bills you want protected before payday.</div><div style="margin-top:16px"><button onclick="openBM()" class="fc-btn fc-btn-secondary fc-btn-sm">+ Add First Bill</button></div></div>';return;}
   const ico={'Streaming':'📺','Utilities':'💡','Insurance':'🛡️','Rent/Mortgage':'🏠','Phone':'📱','Internet':'🌐','Subscription':'🔄','Loan':'💳','Other':'📄'};
   w.innerHTML='<table class="tbl"><thead><tr><th>Bill</th><th>Amount</th><th>Due</th><th>Status</th><th></th></tr></thead><tbody>'+
     [...bills].sort((a,b)=>a.due-b.due).map(b=>{
@@ -6080,6 +6073,7 @@ function rDashDailyBrief() {
   var titleEl = document.getElementById('dash-brief-title');
   var copyEl = document.getElementById('dash-brief-copy');
   var badgeEl = document.getElementById('dash-brief-badge');
+  var kickerEl = document.getElementById('dash-brief-kicker');
   var dailyEl = document.getElementById('dash-brief-daily');
   var billsEl = document.getElementById('dash-brief-bills');
   var paydayEl = document.getElementById('dash-brief-payday');
@@ -6090,6 +6084,8 @@ function rDashDailyBrief() {
   var reviewSubEl = document.getElementById('dash-pulse-review-sub');
   var trustEl = document.getElementById('dash-pulse-trust');
   var trustSubEl = document.getElementById('dash-pulse-trust-sub');
+  var tagsWrap = document.getElementById('dash-brief-tags');
+  var secondaryGrid = document.getElementById('dash-brief-secondary-grid');
   if (!titleEl || typeof FC_PE === 'undefined') return;
 
   var snap = FC_PE.computeSnapshot();
@@ -6107,10 +6103,11 @@ function rDashDailyBrief() {
     tight:  { title:'You are close to the line', copy:'Your plan still works, but this is a good moment to keep wants spending calm until the next paycheck lands.', badge:'Use care', badgeBg:'rgba(var(--acc-rgb,6,182,212),.12)', badgeBd:'rgba(var(--acc-rgb,6,182,212),.18)', badgeFg:'var(--acc)', btn:'See what is reserved →', action:function(){ toggleSafeBreakdown(); } },
     info:   { title:'A few obligations are coming up', copy:'Nothing alarming, but upcoming bills are the main thing shaping your money right now. Stay ahead of them.', badge:'Upcoming', badgeBg:'rgba(96,165,250,.12)', badgeBd:'rgba(96,165,250,.18)', badgeFg:'#60a5fa', btn:'View upcoming bills →', action:function(){ go('bills'); } },
     good:   { title:'You have room to move', copy:'Your plan looks healthy right now. FlowCheck is already accounting for the important obligations ahead of payday.', badge:'On track', badgeBg:'rgba(74,222,128,.12)', badgeBd:'rgba(74,222,128,.18)', badgeFg:'#4ade80', btn:'Review recent activity →', action:function(){ fcNav('transactions'); } },
-    setup:  { title:'Set up your daily plan', copy:'Income and checking are what turn FlowCheck into one live safe-to-spend number, cleaner bills, and calmer daily decisions.', badge:'Set up', badgeBg:'rgba(var(--acc-rgb,6,182,212),.12)', badgeBd:'rgba(var(--acc-rgb,6,182,212),.18)', badgeFg:'var(--acc)', btn:'Finish setup →', action:function(){ fcNav('budget'); } }
+    setup:  { title:'Finish your money setup', copy:'Income, checking, and payday are what make FlowCheck feel real.', badge:'Set up', badgeBg:'rgba(var(--acc-rgb,6,182,212),.12)', badgeBd:'rgba(var(--acc-rgb,6,182,212),.18)', badgeFg:'var(--acc)', btn:'Finish setup →', action:function(){ fcNav('budget'); } }
   };
   var ui = stateMap[insight.level] || stateMap.good;
 
+  if (kickerEl) kickerEl.textContent = insight.level === 'setup' ? 'Get started' : 'Decision Brief';
   titleEl.textContent = ui.title;
   copyEl.textContent = ui.copy;
   if (badgeEl) {
@@ -6119,14 +6116,16 @@ function rDashDailyBrief() {
     badgeEl.style.borderColor = ui.badgeBd;
     badgeEl.style.color = ui.badgeFg;
   }
-  if (dailyEl) dailyEl.textContent = snap.monthlyIncome > 0 ? '$' + Math.round(snap.dailyBudget).toLocaleString() + '/day' : 'Set income';
-  if (billsEl) billsEl.textContent = nextBillLabel;
-  if (paydayEl) paydayEl.textContent = snap.monthlyIncome > 0 ? snap.nextPayDateStr + ' · ' + snap.daysLeft + 'd' : 'Not set';
+  if (dailyEl) dailyEl.textContent = (snap.hasLiveCash || snap.monthlyIncome > 0) ? '$' + Math.round(snap.dailyBudget).toLocaleString() + '/day' : 'Link bank';
+  if (billsEl) billsEl.textContent = (insight.level === 'setup' && (!snap.billsBefore || !snap.billsBefore.length)) ? 'Add bills' : nextBillLabel;
+  if (paydayEl) paydayEl.textContent = (snap.hasLiveCash || snap.monthlyIncome > 0) ? snap.nextPayDateStr + ' · ' + snap.daysLeft + 'd' : 'Set payday';
   if (btnEl) {
     btnEl.style.display = 'block';
     btnEl.textContent = ui.btn;
     btnEl.onclick = ui.action;
   }
+  if (tagsWrap) tagsWrap.style.display = 'none';
+  if (secondaryGrid) secondaryGrid.style.display = 'none';
 
   (function renderDashboardPulse() {
     var txns = Array.isArray(logList) ? logList : [];
@@ -6269,7 +6268,7 @@ function getTxnReviewQueue(sourceTxns) {
   return txns.map(function(tx) {
     if (!tx || !tx.id) return null;
     var enriched = (typeof enrichTransaction === 'function') ? enrichTransaction(tx) : tx;
-    var conf = enriched.confidence || ((typeof getClassificationConfidence === 'function') ? getClassificationConfidence(tx) : { score: 0.6, reason: 'Still needs one more check' });
+    var conf = enriched.confidence || ((typeof getClassificationConfidence === 'function') ? getClassificationConfidence(tx) : { score: 0.6, reason: 'Review suggested' });
     var intent = enriched.intent || ((typeof getIntentLabel === 'function') ? getIntentLabel(tx) : 'lifestyle_spend');
     var type = enriched.type || classifyTxn(tx);
     var merchant = enriched.merchant || ((typeof cleanMerchant === 'function') ? cleanMerchant(tx.desc || '') : (tx.desc || 'Transaction'));
@@ -6323,8 +6322,8 @@ function renderTxnReviewQueue(reviewQueue) {
       '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px">' +
         '<div>' +
           '<div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(var(--acc-rgb,6,182,212),.7);margin-bottom:5px">Needs Review</div>' +
-          '<div class="txn-review-title">Double-check the transactions that shape your plan</div>' +
-          '<div class="txn-review-copy">Transfers, card payments, and uncertain income are surfaced here so your totals stay trustworthy.</div>' +
+          '<div class="txn-review-title">Clean up the few transactions that matter most</div>' +
+          '<div class="txn-review-copy">A quick review keeps your totals and safe-to-spend number trustworthy.</div>' +
         '</div>' +
         '<button onclick="showTxnReviewAll()" style="background:rgba(var(--acc-rgb,6,182,212),.1);border:1px solid rgba(var(--acc-rgb,6,182,212),.18);border-radius:999px;padding:9px 12px;font-family:inherit;font-size:11.5px;font-weight:700;color:var(--acc);cursor:pointer;white-space:nowrap">Review all →</button>' +
       '</div>' +
@@ -6435,9 +6434,7 @@ function renderSafeBreakdown() {
   var snap = FC_PE.computeSnapshot();
   var rows = [];
 
-  // Header: income
-  rows.push({ label: 'Your income', val: snap.paycheckAmount, color: '#4ade80', prefix: '' });
-  rows.push({ label: 'Spent so far', val: -snap.spentSoFar, color: '#f87171', prefix: '' });
+  rows.push({ label: snap.hasLiveCash ? 'Spendable cash' : 'Estimated cash before payday', val: snap.spendableCash, color: snap.hasLiveCash ? '#4ade80' : '#60a5fa', prefix: '' });
 
   // Bills due before paycheck
   if (snap.billsTotal > 0) {
@@ -6452,14 +6449,19 @@ function renderSafeBreakdown() {
     rows.push({ label: 'Subscriptions due', val: -snap.subsTotal, color: '#a78bfa', prefix: '' });
   }
 
-  // Projected spending
-  if (snap.projectedAdd > 0 && snap.daysLeft > 0) {
-    rows.push({ label: 'Projected spending (' + snap.daysLeft + ' days)', val: -snap.projectedAdd, color: 'rgba(255,255,255,.3)', prefix: '' });
+  if (snap.debtMinimumTotal > 0) {
+    rows.push({ label: 'Debt minimums', val: -snap.debtMinimumTotal, color: '#fb7185', prefix: '' });
+    snap.debtBefore.slice(0,3).forEach(function(d) {
+      rows.push({ label: '  · ' + d.name, val: -(d.min || 0), color: 'rgba(251,113,133,.58)', indent: true });
+    });
   }
 
-  // Savings
   if (snap.savingsTarget > 0) {
-    rows.push({ label: 'Savings targets', val: -snap.savingsTarget, color: '#60a5fa', prefix: '' });
+    rows.push({ label: 'Savings set-aside', val: -snap.savingsTarget, color: '#60a5fa', prefix: '' });
+  }
+
+  if (snap.safetyBuffer > 0) {
+    rows.push({ label: 'Safety buffer', val: -snap.safetyBuffer, color: 'rgba(255,255,255,.42)', prefix: '' });
   }
 
   // Safe to spend total
@@ -6727,13 +6729,16 @@ function rDashUpcoming() {
 
 // ── Budget snapshot ──
 function rDashBudgetSnap() {
+  var section = document.getElementById('dash-budget-section');
   var wrap = document.getElementById('dash-budget-snap');
   if (!wrap) return;
+  var hasLinked = (typeof hasLinkedPlaidItem === 'function') ? hasLinkedPlaidItem() : false;
   var inc = (typeof getInc === 'function') ? getInc() : 0;
   if (!inc) {
-    wrap.innerHTML = '<div style="text-align:center;padding:10px 0 6px"><div style="font-size:13px;color:rgba(255,255,255,.28);margin-bottom:8px;line-height:1.6">Set up your income to unlock a recommended monthly split and cleaner pacing guidance.</div><button onclick="fcNav(\'budget\')" style="background:rgba(var(--acc-rgb,6,182,212),.1);color:var(--acc);border:1px solid rgba(var(--acc-rgb,6,182,212),.2);border-radius:100px;padding:8px 18px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer">Set Up Budget →</button></div>';
+    if (section) section.style.display = 'none';
     return;
   }
+  if (section) section.style.display = 'block';
   var cats = {needs:{k:'needs',lbl:'Needs',col:'var(--acc)',pct:.5}, wants:{k:'wants',lbl:'Wants',col:'#5b9cf6',pct:.3}, savings:{k:'savings',lbl:'Savings',col:'#a78bfa',pct:.2}};
   var html = '';
   Object.values(cats).forEach(function(cat) {
@@ -6750,12 +6755,13 @@ function rDashBudgetSnap() {
       '<div style="height:100%;border-radius:5px;background:'+( over?'#ff5252':cat.col)+';width:'+pct.toFixed(0)+'%;transition:width .7s ease"></div>' +
       '</div></div>';
   });
-  html += '<div style="margin-top:6px;padding-top:8px;border-top:1px solid rgba(255,255,255,.05);font-size:11.5px;color:rgba(255,255,255,.3);line-height:1.6">A healthy month is not just under budget. It is spending deliberately across needs, wants, and future-you money.</div>';
+  html += '<div style="margin-top:6px;padding-top:8px;border-top:1px solid rgba(255,255,255,.05);font-size:11px;color:rgba(255,255,255,.26);line-height:1.55">One clean split for needs, wants, and future-you money.</div>';
   wrap.innerHTML = html;
 }
 
 // ── Recent transactions ──
 function rDashTxns() {
+  var section = document.getElementById('dash-transactions-section');
   var container = document.getElementById('dash-txns');
   if (!container || typeof logList === 'undefined') return;
 
@@ -6770,9 +6776,10 @@ function rDashTxns() {
   var recent = sorted.slice(0, 6);
 
   if (!recent.length) {
-    container.innerHTML = '<div style="padding:26px 16px;text-align:center"><div style="width:46px;height:46px;margin:0 auto 10px;border-radius:14px;background:rgba(var(--acc-rgb,6,182,212),.08);border:1px solid rgba(var(--acc-rgb,6,182,212),.14);display:flex;align-items:center;justify-content:center"><svg width="21" height="21" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="3" stroke="var(--acc)" stroke-width="1.7"/><path d="M7 9h10M7 13h6" stroke="var(--acc)" stroke-width="1.7" stroke-linecap="round"/></svg></div><div style="font-size:14px;font-weight:600;color:rgba(255,255,255,.46);margin-bottom:6px">No transactions yet</div><div style="font-size:12.5px;color:rgba(255,255,255,.26);margin-bottom:14px;line-height:1.6">Link your bank to bring your money story into FlowCheck.</div><div style="display:flex;justify-content:center"><button onclick="go(\'plaid\')" style="background:var(--acc);color:#000;border:none;border-radius:100px;padding:10px 18px;font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer">Link Bank</button></div></div>';
+    if (section) section.style.display = 'none';
     return;
   }
+  if (section) section.style.display = 'block';
 
   container.innerHTML = recent.map(function(tx, i) {
     var type = classifyTxn(tx);
@@ -6795,6 +6802,24 @@ function rDashTxns() {
       '<div style="font-size:14.5px;font-weight:700;color:'+amtColor+';flex-shrink:0">'+amtPrefix+'$'+(tx.amt||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+'</div>' +
       '</div>';
   }).join('');
+}
+
+function rDashPremiumVisibility() {
+  var statGrid = document.getElementById('dash-stat-grid');
+  var accountsSection = document.getElementById('dash-accounts-section');
+  var txSection = document.getElementById('dash-transactions-section');
+  var hasDebt = typeof debts !== 'undefined' && debts.some(function(d){ return (d.bal || 0) > 0; });
+  var hasSavings = typeof savGoals !== 'undefined' && savGoals.some(function(g){ return (g.saved || 0) > 0 || (g.target || 0) > 0; });
+  var hasBills = typeof bills !== 'undefined' && bills.length > 0;
+  var hasTxns = typeof logList !== 'undefined' && logList.length > 0;
+  var hasLinked = (typeof hasLinkedPlaidItem === 'function') ? hasLinkedPlaidItem() : false;
+  var meaningfulTiles = 0;
+  if (hasDebt) meaningfulTiles++;
+  if (hasSavings) meaningfulTiles++;
+  if (hasBills) meaningfulTiles++;
+  if (statGrid) statGrid.style.display = meaningfulTiles >= 1 ? 'grid' : 'none';
+  if (txSection) txSection.style.paddingTop = hasLinked ? '14px' : '18px';
+  if (accountsSection) accountsSection.style.display = hasLinked ? 'block' : (hasTxns || hasBills ? 'none' : 'block');
 }
 
 // ── Smart insight ──
@@ -6949,6 +6974,7 @@ function hideSync() {
 function rDash() {
   rDashGreeting();
   rDashDailyBrief();
+  if (typeof refreshCopilotFeed === 'function') refreshCopilotFeed(false);
   rDashCredit();
   if (typeof checkWhatsNew === 'function') checkWhatsNew();
   rDashSpend();
@@ -6959,6 +6985,7 @@ function rDash() {
   rDashBudgetSnap();
   rDashTxns();
   rDashInsight();
+  rDashPremiumVisibility();
   setTimeout(drawHeroSparkline, 100);
   setTimeout(function(){if(typeof rDashAccounts==="function")rDashAccounts();},50);
 }
@@ -8102,7 +8129,7 @@ function fetchPlaidLiabilities(silent){
   if(!silent&&typeof toast==='function')toast('Fetching liability details…');
   syncPlaidData();
 }
-function testPlaidBackend(){var url=(document.getElementById('plaid-backend-url')||{}).value||'';var s=document.getElementById('plaid-backend-status');if(!url){if(s)s.textContent='Enter a backend URL first.';return;}if(s)s.textContent='Testing…';fetch(url+'/api/health').then(function(r){if(s)s.textContent=r.ok?'✓ Connected':'✗ Error '+r.status;}).catch(function(){if(s)s.textContent='✗ Could not reach server';});}
+function testPlaidBackend(){var url=(document.getElementById('plaid-backend-url')||{}).value||'';var s=document.getElementById('plaid-backend-status');if(!url){if(s)s.textContent='Enter a backend URL first.';return;}if(s)s.textContent='Testing…';fetch(url.replace(/\/$/,'')+'/api/create-link-token',{method:'OPTIONS'}).then(function(r){if(s)s.textContent=r.status<500?'✓ Connected':'✗ Error '+r.status;}).catch(function(){if(s)s.textContent='✗ Could not reach server';});}
 function saveCreditScore(){var inp=document.getElementById('cr-inp');var val=inp?parseInt(inp.value):0;if(!val||val<300||val>850){if(typeof toast==='function')toast('Enter a score between 300–850');return;}if(typeof settings!=='undefined'){settings.creditScore=val;if(typeof persist==='function')persist();}if(typeof closeM==='function')closeM('m-credit');if(typeof rCredit==='function')rCredit();if(typeof toast==='function')toast('Credit score saved');}
 function exportData(){if(typeof exportAll==='function')exportAll();else if(typeof toast==='function')toast('Preparing export…');}
 function savePlaidConfig() {
@@ -8899,17 +8926,11 @@ function _autoTriggerFaceIDIfEligible() {
     try { lskData = JSON.parse(localStorage.getItem('fc-v5') || 'null'); } catch(e) {}
     if (!lskData || lskData.faceID !== true) return;
 
-    // Ensure a session exists for obFaceID to validate against
-    var noSession = !localStorage.getItem('fc-fb-user');
-    if (noSession) {
-      try {
-        localStorage.setItem('fc-fb-user', JSON.stringify({
-          uid:   bioProfile.uid,
-          email: bioProfile.email,
-          name:  bioProfile.name || ''
-        }));
-      } catch(e) {}
-    }
+    // Only auto-trigger Face ID when there is already a real secure session.
+    var fbUser = null;
+    try { fbUser = JSON.parse(localStorage.getItem('fc-fb-user') || 'null'); } catch(e) {}
+    var hasSecureSession = !!(fbUser && fbUser.uid && fbUser.email && (fbUser.idToken || fbUser.refreshToken));
+    if (!hasSecureSession) return;
 
     // Show the Face ID button in "Unlocking..." state
     var wrap = document.getElementById('ob-faceid-wrap');
@@ -8919,6 +8940,7 @@ function _autoTriggerFaceIDIfEligible() {
 
     // Auto-trigger biometric after brief UI settle delay
     setTimeout(function() {
+      if (window._obFaceIDBusy) return;
       if (typeof obFaceID === 'function') obFaceID();
     }, 400);
 
@@ -9046,6 +9068,7 @@ function checkOnboarding() {
 
 function showFaceIDLock(user, opts) {
   opts = opts || {};
+  window._fcLockFaceIDBusy = false;
   var existing = document.getElementById('fc-lock-screen');
   if (existing) existing.remove();
 
@@ -9115,30 +9138,30 @@ function showFaceIDLock(user, opts) {
 }
 
 function triggerFaceIDUnlock() {
+  if (window._fcLockFaceIDBusy) return;
+  window._fcLockFaceIDBusy = true;
+
+  function releaseLockFaceIDBusy() {
+    window._fcLockFaceIDBusy = false;
+  }
+
   // ── Security gate ──
   var fbUser = null;
   try { fbUser = JSON.parse(localStorage.getItem('fc-fb-user') || 'null'); } catch(e) {}
   var bioProfile = null;
   try { bioProfile = JSON.parse(localStorage.getItem('fc-biometric-user') || 'null'); } catch(e) {}
-  var authUser = (fbUser && fbUser.uid && fbUser.email) ? fbUser :
+  var hasFullSession = !!(fbUser && fbUser.uid && fbUser.email && (fbUser.refreshToken || fbUser.idToken));
+  var authUser = hasFullSession ? fbUser :
                  (bioProfile && bioProfile.uid && bioProfile.email) ? bioProfile : null;
-  if (!authUser) {
+  if (!authUser || !hasFullSession) {
+    releaseLockFaceIDBusy();
     var lock = document.getElementById('fc-lock-screen');
     if (lock) lock.style.display = 'none';
     var ov = document.getElementById('onboard-overlay');
     if (ov) { ov.style.display = 'block'; document.body.classList.add('ob-active'); }
+    if (typeof toast === 'function') toast('Please sign in to reconnect your secure session', 'amb');
     if (typeof obPg === 'function') obPg('ob-signin');
     return;
-  }
-  if ((!fbUser || !fbUser.uid || !fbUser.email) && authUser) {
-    try {
-      localStorage.setItem('fc-fb-user', JSON.stringify({
-        uid: authUser.uid,
-        email: authUser.email,
-        name: authUser.name || ''
-      }));
-    } catch(e) {}
-    fbUser = authUser;
   }
 
   var status = document.getElementById('fc-lock-status');
@@ -9184,6 +9207,7 @@ function triggerFaceIDUnlock() {
     var verifiedUser = null;
     try { verifiedUser = JSON.parse(localStorage.getItem('fc-fb-user') || 'null'); } catch(e) {}
     if (!verifiedUser || !verifiedUser.uid || !verifiedUser.email) {
+      releaseLockFaceIDBusy();
       setStatus('Session expired. Please sign in.', 'rgba(248,113,113,.8)');
       setRing('rgba(248,113,113,.4)', 'none');
       showFallbackActions();
@@ -9198,6 +9222,7 @@ function triggerFaceIDUnlock() {
     }
     _unlockSuccess(verifiedUser);
   }).catch(function(err) {
+    releaseLockFaceIDBusy();
     var msg = String(err && (err.message || err.code || '')).toLowerCase();
     if (msg.includes('cancel') || msg.includes('dismiss') || msg.includes('user_cancel')) {
       setStatus('Face ID canceled. Sign in with password instead.', 'rgba(255,255,255,.32)');
@@ -9216,6 +9241,7 @@ function triggerFaceIDUnlock() {
 }
 
 function _unlockSuccess(user) {
+  window._fcLockFaceIDBusy = false;
   var lockEl = document.getElementById('fc-lock-screen');
   var status = document.getElementById('fc-lock-status');
   var ring   = document.getElementById('fc-lock-ring');
@@ -9260,6 +9286,7 @@ function _unlockSuccess(user) {
 
 
 function fcLockSignOut() {
+  window._fcLockFaceIDBusy = false;
   // Clear session and show onboarding
   localStorage.removeItem('fc-fb-user');
   _setLaunchLockArmed(false);
@@ -9277,6 +9304,7 @@ function fcLockSignOut() {
 }
 
 function fcLockUsePassword() {
+  window._fcLockFaceIDBusy = false;
   var lock = document.getElementById('fc-lock-screen');
   if (lock) lock.style.display = 'none';
   _hidePrivacyShield();
@@ -10922,6 +10950,141 @@ function fcNav(page) {
   border: 1.5px solid #0d0d0d;
 }
 
+#dash-day-brief,
+#budget-plan-card,
+#bills-plan-card,
+#log-hero-card,
+#pg-transactions > div > div[style*="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px"] > div,
+#dash-stat-grid > div,
+#dash-budget-section > div:last-child,
+#dash-transactions-section > #dash-txns,
+#dash-accounts-section > #dash-accounts-wrap {
+  box-shadow: 0 14px 34px rgba(0,0,0,.18);
+}
+
+#dash-day-brief,
+#dash-hero-wrap .dash-hero-card,
+#dash-stat-grid > div,
+#budget-plan-card,
+#budget-top-grid .card,
+#log-hero-card,
+#log-stats-row > div,
+#bills-plan-card,
+#bills-stats-row > div,
+#txn-review-wrap > div {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+#dash-day-brief #dash-brief-tags { margin-bottom: 8px !important; }
+#dash-day-brief #dash-brief-secondary-grid { margin-top: 8px !important; }
+#dash-day-brief #dash-brief-btn { margin-top: 10px !important; }
+
+#budget-plan-card .card-body,
+#bills-plan-card .card-body {
+  padding-top: 18px;
+  padding-bottom: 18px;
+}
+
+#budget-plan-title,
+#bills-plan-title,
+#debt-plan-title,
+#sav-plan-title {
+  font-size: 24px !important;
+  letter-spacing: -.03em;
+}
+
+#budget-plan-copy,
+#bills-plan-copy,
+#debt-plan-copy,
+#sav-plan-copy,
+#budget-plan-cta,
+#bills-plan-next,
+#debt-plan-next,
+#sav-plan-next {
+  font-size: 12px !important;
+  line-height: 1.55 !important;
+}
+
+#budget-top-grid {
+  gap: 12px;
+}
+
+#budget-top-grid .card .card-body,
+#dash-budget-section > div:last-child,
+#dash-transactions-section > #dash-txns,
+#dash-accounts-section > #dash-accounts-wrap {
+  padding: 14px !important;
+}
+
+#log-hero-card #lg-tot,
+#dash-card-0 #hero-spend-val,
+#dash-card-1 #hero-nw-val,
+#dash-card-2 #hero-cs-val {
+  font-size: 42px !important;
+}
+
+#budget-breakdown-card .card-body {
+  padding-top: 14px;
+}
+
+#pg-budget #b-secs > div,
+#pg-bills #bills-list-view > div,
+#pg-transactions .txn-day-block,
+#pg-log #lg-rows > div {
+  box-shadow: 0 10px 26px rgba(0,0,0,.14);
+}
+
+#pg-budget .card,
+#pg-bills .card,
+#pg-transactions .txn-day-block,
+#pg-log #lg-rows > div,
+#dash-stat-grid > div,
+#dash-budget-section > div:last-child,
+#dash-transactions-section > #dash-txns,
+#dash-accounts-section > #dash-accounts-wrap {
+  border-color: rgba(255,255,255,.06) !important;
+}
+
+body.light-mode #dash-day-brief,
+body.light-mode #budget-plan-card,
+body.light-mode #bills-plan-card,
+body.light-mode #log-hero-card,
+body.light-mode #dash-stat-grid > div,
+body.light-mode #dash-budget-section > div:last-child,
+body.light-mode #dash-transactions-section > #dash-txns,
+body.light-mode #dash-accounts-section > #dash-accounts-wrap,
+body.light-mode #pg-budget .card,
+body.light-mode #pg-bills .card,
+body.light-mode #pg-transactions .txn-day-block,
+body.light-mode #pg-log #lg-rows > div {
+  box-shadow: 0 8px 24px rgba(15,23,42,.06) !important;
+}
+
+@media (max-width: 430px) {
+  #dash-day-brief #dash-brief-title { font-size: 18px !important; }
+  #dash-day-brief #dash-brief-copy { font-size: 12px !important; max-width: none !important; }
+  #dash-day-brief #dash-brief-secondary-grid { grid-template-columns: 1fr !important; }
+  #budget-plan-title,
+  #bills-plan-title,
+  #debt-plan-title,
+  #sav-plan-title { font-size: 22px !important; }
+  #budget-top-grid { grid-template-columns: 1fr !important; }
+  #log-hero-card #lg-tot,
+  #dash-card-0 #hero-spend-val,
+  #dash-card-1 #hero-nw-val,
+  #dash-card-2 #hero-cs-val { font-size: 38px !important; }
+}
+
+#dash-day-brief #dash-brief-btn {
+  background: rgba(255,255,255,.06) !important;
+}
+
+#dash-transactions-section > #dash-txns > div,
+#dash-accounts-section > #dash-accounts-wrap > div {
+  min-height: 0;
+}
+
 </style>
 
 <script>
@@ -11206,7 +11369,7 @@ function updateRecentTxns() {
     var db = b.date ? new Date(b.date+'T12:00:00') : new Date(0);
     return db - da;
   });
-  var recent = sorted.slice(0, 6);
+  var recent = sorted.slice(0, 4);
 
   container.innerHTML = recent.map(function(tx, i) {
     var type = classifyTxn(tx);
@@ -11858,7 +12021,7 @@ function renderTxnPage() {
   updateTxnStats(monthTxns, targetMonth, targetYear);
 
   if (filtered.length === 0) {
-    wrap.innerHTML = '<div style="padding:28px;text-align:center;background:#141414;border:1px solid rgba(255,255,255,.06);border-radius:18px"><div style="font-size:13.5px;color:rgba(255,255,255,.3);">' + (search || txnFilter ? 'No transactions match this filter.' : 'No transactions this month.') + '</div></div>';
+    wrap.innerHTML = '<div style="padding:26px 20px;text-align:center;background:#141414;border:1px solid rgba(255,255,255,.06);border-radius:18px"><div style="font-size:14px;font-weight:700;color:rgba(255,255,255,.58);margin-bottom:6px">' + (search || txnFilter ? 'Nothing matches this view' : 'No transactions this month') + '</div><div style="font-size:12px;line-height:1.6;color:rgba(255,255,255,.28)">' + (search || txnFilter ? 'Try a broader filter or search term.' : 'This tab will get sharper once money activity starts landing.') + '</div></div>';
     return;
   }
 
@@ -12360,6 +12523,7 @@ function fbSaveUser(data, displayName) {
   if(typeof settings!=='undefined'){settings.name=user.name;settings.email=user.email;if(typeof persist==='function')persist();}
   if(typeof refreshSecondarySurfaces==='function')refreshSecondarySurfaces();
   if(typeof rSettingsPage==='function')rSettingsPage();
+  if (typeof refreshCopilotFeed === 'function') setTimeout(function(){ refreshCopilotFeed(true); }, 450);
 }
 function fbErrMsg(code) {
   var map={'EMAIL_EXISTS':'An account with this email already exists.','EMAIL_NOT_FOUND':'No account found with this email.','INVALID_PASSWORD':'Incorrect password. Please try again.','INVALID_EMAIL':'Please enter a valid email address.','USER_DISABLED':'This account has been disabled.','TOO_MANY_ATTEMPTS_TRY_LATER':'Too many attempts. Please try again later.','WEAK_PASSWORD':'Password must be at least 6 characters.','INVALID_LOGIN_CREDENTIALS':'Incorrect email or password.'};
@@ -12512,10 +12676,9 @@ function obPg(id) {
   }
   if (id === 'ob-subscribe') {
     setTimeout(function() {
-      var RC=(typeof getRCPurchases==='function')?getRCPurchases():null;
+      var RC=(typeof ensureRCConfigured==='function')?ensureRCConfigured():((typeof getRCPurchases==='function')?getRCPurchases():null);
       if(!RC)return;
       try{
-        RC.configure({apiKey:RC_API_KEY});
         RC.getOfferings().then(function(o){
           if(!o||!o.current)return;
           (o.current.availablePackages||[]).forEach(function(p){
@@ -13007,6 +13170,8 @@ function obAppleAuth() {
 
 // ── Face ID Sign In (sheet) ──
 function obFaceID() {
+  if (window._obFaceIDBusy) return;
+  window._obFaceIDBusy = true;
   var siErr = document.getElementById('si-err');
   if (siErr) siErr.textContent = '';
 
@@ -13026,6 +13191,7 @@ function obFaceID() {
     // No saved user at all — never trigger biometrics for new users
     console.warn('[FaceID] No eligible user found — redirecting to sign-in');
     if (siErr) siErr.textContent = 'Please sign in with your email first.';
+    window._obFaceIDBusy = false;
     return;
   }
 
@@ -13053,6 +13219,7 @@ function obFaceID() {
 
   if (!faceIDEnabled) {
     if (siErr) siErr.textContent = 'Enable Face ID in Settings to use this feature.';
+    window._obFaceIDBusy = false;
     return;
   }
 
@@ -13062,6 +13229,7 @@ function obFaceID() {
 
   if (!bio) {
     if (siErr) siErr.textContent = 'Face ID is not available. Please sign in with email.';
+    window._obFaceIDBusy = false;
     return;
   }
 
@@ -13087,27 +13255,22 @@ function obFaceID() {
     var verifiedUser = null;
     try { verifiedUser = JSON.parse(localStorage.getItem('fc-fb-user') || 'null'); } catch(e) {}
 
-    if (!verifiedUser || !verifiedUser.uid || !verifiedUser.email) {
-      // Active session gone — restore from biometric profile (post-sign-out re-entry)
+    if (!verifiedUser || !verifiedUser.uid || !verifiedUser.email || (!verifiedUser.idToken && !verifiedUser.refreshToken)) {
+      // Active secure session is gone — biometric identity alone is not enough for protected backend flows.
       var bioProf = null;
       try { bioProf = JSON.parse(localStorage.getItem('fc-biometric-user') || 'null'); } catch(e) {}
 
       if (!bioProf || !bioProf.uid || !bioProf.email) {
         console.error('[FaceID] No valid profile after biometric — aborting');
         if (siErr) siErr.textContent = 'Session expired. Please sign in with email.';
+        window._obFaceIDBusy = false;
         return;
       }
 
-      // Restore session from biometric profile
-      verifiedUser = bioProf;
-      try {
-        localStorage.setItem('fc-fb-user', JSON.stringify({
-          uid:   bioProf.uid,
-          email: bioProf.email,
-          name:  bioProf.name || ''
-        }));
-      } catch(e) {}
-      console.log('[FaceID] Restored session from biometric profile:', bioProf.email);
+      console.warn('[FaceID] Biometric match found, but auth token is missing. Requiring password sign-in for a clean session.');
+      if (siErr) siErr.textContent = 'Session expired. Sign in with your password to reconnect bank sync and briefing.';
+      window._obFaceIDBusy = false;
+      return;
     }
 
     // Apply to in-memory settings
@@ -13119,11 +13282,13 @@ function obFaceID() {
     if (typeof persist === 'function') persist();
     if (siErr) siErr.textContent = '';
     // Use premium fade transition for Face ID entry
+    window._obFaceIDBusy = false;
     if (typeof obFinishFaceID === 'function') obFinishFaceID();
     else obFinish();
     console.log('[FaceID signin] authenticated as:', verifiedUser.email);
 
   }).catch(function(err) {
+    window._obFaceIDBusy = false;
     var msg = String(err && (err.code || err.message || err)).toLowerCase();
     console.log('[FaceID signin] catch:', msg);
     if (msg === 'not_available') return;
@@ -13423,6 +13588,7 @@ function obFinishFaceID() {
   if (typeof persist === 'function') persist();
   if (typeof rAll  === 'function') rAll();
   if (typeof rDash === 'function') rDash();
+  if (typeof refreshCopilotFeed === 'function') setTimeout(function(){ refreshCopilotFeed(true); }, 650);
   if (typeof animateDashboard === 'function') setTimeout(animateDashboard, 200);
   if (typeof haptic === 'function') haptic('medium');
 }
@@ -16122,7 +16288,7 @@ function getClassificationConfidence(tx) {
   }
 
   // Lower: generic
-  return { score: 0.60, reason: 'Still needs one more check' };
+  return { score: 0.60, reason: 'Review suggested' };
 }
 
 // ── LAYER 3: Merchant memory + user correction ──
@@ -16886,6 +17052,85 @@ var FC_PE = {
     return FC_PE.getDailyPace() * daysLeft;
   },
 
+  getSpendableCash: function() {
+    var total = 0;
+    var found = false;
+
+    function addBalance(raw) {
+      var n = Number(raw);
+      if (!isFinite(n)) return;
+      total += n;
+      found = true;
+    }
+
+    try {
+      if (typeof plaidLinkedAccounts !== 'undefined' && Array.isArray(plaidLinkedAccounts)) {
+        plaidLinkedAccounts.forEach(function(item) {
+          (item.accounts || []).forEach(function(acct) {
+            if (!acct) return;
+            var type = String(acct.type || '').toLowerCase();
+            var subtype = String(acct.subtype || '').toLowerCase();
+            if (type !== 'depository') return;
+            if (/savings|money market|certificate|cd/.test(subtype)) return;
+            if (acct.available !== null && acct.available !== undefined) addBalance(acct.available);
+            else if (acct.balance !== null && acct.balance !== undefined && typeof acct.balance !== 'object') addBalance(acct.balance);
+            else if (acct.balances && acct.balances.available !== null && acct.balances.available !== undefined) addBalance(acct.balances.available);
+            else if (acct.balances && acct.balances.current !== null && acct.balances.current !== undefined) addBalance(acct.balances.current);
+          });
+        });
+      }
+    } catch (e) {}
+
+    try {
+      if (!found && typeof plaidConfig !== 'undefined' && plaidConfig && Array.isArray(plaidConfig.cachedBalances)) {
+        plaidConfig.cachedBalances.forEach(function(b) {
+          if (!b) return;
+          var type = String(b.type || '').toLowerCase();
+          var subtype = String(b.subtype || '').toLowerCase();
+          if (type !== 'depository') return;
+          if (/savings|money market|certificate|cd/.test(subtype)) return;
+          if (b.available !== null && b.available !== undefined) addBalance(b.available);
+          else if (b.current !== null && b.current !== undefined) addBalance(b.current);
+          else if (b.balance !== null && b.balance !== undefined) addBalance(b.balance);
+        });
+      }
+    } catch (e) {}
+
+    return {
+      amount: Math.round(total),
+      hasLiveCash: found
+    };
+  },
+
+  getDebtMinimumsBeforePaycheck: function(nextPayDate) {
+    if (typeof debts === 'undefined' || !Array.isArray(debts)) return [];
+    var now = new Date();
+    return debts.filter(function(d) {
+      if (!d || (d.bal || 0) <= 0 || (d.min || 0) <= 0) return false;
+      if (!d.dueDate) return true;
+      var due = new Date(d.dueDate + 'T12:00:00');
+      return due >= now && due <= nextPayDate;
+    });
+  },
+
+  getSavingsSetAside: function() {
+    if (typeof savGoals === 'undefined' || !Array.isArray(savGoals)) return 0;
+    return savGoals.reduce(function(sum, g) {
+      if (!g || !g.target) return sum;
+      var saved = Number(g.saved) || 0;
+      var target = Number(g.target) || 0;
+      if (saved >= target) return sum;
+      var monthly = Number(g.monthly) || Math.max(25, Math.ceil((target - saved) / 12));
+      return sum + monthly;
+    }, 0);
+  },
+
+  getSafetyBuffer: function(spendableCash, fallbackCash) {
+    var base = Number(spendableCash) || Number(fallbackCash) || 0;
+    if (base <= 0) return 50;
+    return Math.round(Math.max(50, Math.min(250, base * 0.08)));
+  },
+
   // ── MASTER: compute full safe-to-spend snapshot ──
   computeSnapshot: function() {
     var now = new Date();
@@ -16896,34 +17141,29 @@ var FC_PE = {
     var daysLeft = Math.max(0, Math.ceil((nextPayDate - now) / 86400000));
     var spentSoFar = FC_PE.getSpendingThisMonth();
     var dailyPace = FC_PE.getDailyPace();
-    var projectedAdd = FC_PE.getProjectedAdditionalSpend(nextPayDate);
     var billsBefore = FC_PE.getBillsBeforePaycheck(nextPayDate);
     var subsBefore = FC_PE.getSubscriptionsBeforePaycheck(nextPayDate);
+    var debtBefore = FC_PE.getDebtMinimumsBeforePaycheck(nextPayDate);
+    var cashState = FC_PE.getSpendableCash();
+    var spendableCash = cashState.amount || 0;
+    var usingEstimatedCash = !cashState.hasLiveCash && paycheckAmt > 0;
+    var baseCash = cashState.hasLiveCash ? spendableCash : Math.round(paycheckAmt);
     var billsTotal = billsBefore.reduce(function(s,b) { return s+(b.amt||0); }, 0);
     var subsTotal  = subsBefore.reduce(function(s,r)  { return s+(r.avgAmt||0); }, 0);
+    var debtMinimumTotal = debtBefore.reduce(function(s, d) { return s + (Number(d.min) || 0); }, 0);
+    var savingsTarget = FC_PE.getSavingsSetAside();
+    var safetyBuffer = FC_PE.getSafetyBuffer(spendableCash, paycheckAmt);
 
-    // Safe-to-spend = remaining income - bills due - subs due - projected spending
-    var remainingInc = paycheckAmt - spentSoFar;
-    var safeToSpend  = remainingInc - billsTotal - subsTotal - projectedAdd;
-
-    // Savings targets
-    var savingsTarget = 0;
-    if (typeof savGoals !== 'undefined') {
-      savGoals.forEach(function(g) {
-        if (g.target && (g.saved||0) < g.target) {
-          var monthly = g.monthly || Math.max(50, Math.ceil((g.target-(g.saved||0))/12));
-          savingsTarget += monthly / (freq === 'biweekly' ? 2.167 : 1);
-        }
-      });
-    }
-
-    var safeAfterSavings = safeToSpend - savingsTarget;
+    // Safe-to-spend = spendable cash - obligations due before next payday
+    var safeToSpend = baseCash - billsTotal - debtMinimumTotal - subsTotal - savingsTarget - safetyBuffer;
+    var safeAfterSavings = safeToSpend;
 
     // Status
     var status = 'healthy';
+    var tensionBase = Math.max(baseCash, paycheckAmt, 1);
     if (safeAfterSavings < 0) status = 'danger';
-    else if (safeAfterSavings < paycheckAmt * 0.1) status = 'tight';
-    else if (dailyPace > (paycheckAmt / 30) * 1.3) status = 'warning';
+    else if (safeAfterSavings < Math.max(75, tensionBase * 0.08)) status = 'tight';
+    else if (dailyPace > Math.max(1, safeAfterSavings / Math.max(daysLeft, 1)) * 1.25) status = 'warning';
 
     // Pace check: is user spending faster than income supports?
     var pacePct = monthlyInc > 0 ? (dailyPace * 30) / monthlyInc * 100 : 0;
@@ -16935,11 +17175,16 @@ var FC_PE = {
       // Core numbers
       monthlyIncome:    Math.round(monthlyInc),
       paycheckAmount:   Math.round(paycheckAmt),
+      spendableCash:    Math.round(baseCash),
+      hasLiveCash:      !!cashState.hasLiveCash,
+      usingEstimatedCash: !!usingEstimatedCash,
       spentSoFar:       Math.round(spentSoFar),
-      remainingIncome:  Math.round(remainingInc),
+      remainingIncome:  Math.round(baseCash),
       safeToSpend:      Math.round(safeToSpend),
       safeAfterSavings: Math.round(safeAfterSavings),
       savingsTarget:    Math.round(savingsTarget),
+      safetyBuffer:     Math.round(safetyBuffer),
+      debtMinimumTotal: Math.round(debtMinimumTotal),
       dailyBudget:      Math.round(dailyBudget),
       dailyPace:        Math.round(dailyPace),
       pacePct:          Math.round(pacePct),
@@ -16948,7 +17193,7 @@ var FC_PE = {
       billsTotal:       Math.round(billsTotal),
       subsBefore:       subsBefore,
       subsTotal:        Math.round(subsTotal),
-      projectedAdd:     Math.round(projectedAdd),
+      debtBefore:       debtBefore,
       // Timing
       nextPayDate:      nextPayDate,
       nextPayDateStr:   nextPayDate.toLocaleDateString('en-US', {month:'short', day:'numeric'}),
@@ -16969,7 +17214,14 @@ var FC_PE = {
 
   // ── Get insight message based on snapshot ──
   getInsight: function(snap) {
-    if (!snap || snap.monthlyIncome === 0) return null;
+    if (!snap) return null;
+    if (!snap.hasLiveCash && snap.monthlyIncome === 0) return null;
+    if (!snap.hasLiveCash) {
+      return { icon: '🏦', color: 'var(--acc)', msg: 'Link checking to turn FlowCheck into a live safe-to-spend number instead of an estimate.', level: 'setup' };
+    }
+    if (snap.monthlyIncome === 0) {
+      return { icon: '📅', color: '#60a5fa', msg: 'Add your income cadence so FlowCheck knows what this cash needs to cover before payday.', level: 'setup' };
+    }
     if (snap.isDanger) {
       return { icon: '⚠️', color: '#f87171', msg: 'You\u2019re projected to overspend before your next paycheck. Consider pausing non-essential spending.', level: 'danger' };
     }
@@ -16979,8 +17231,10 @@ var FC_PE = {
     if (snap.isWarning) {
       return { icon: '📊', color: '#fbbf24', msg: 'Your spending pace is running ' + snap.pacePct + '% of income. Keep an eye on it.', level: 'warning' };
     }
-    if (snap.billsTotal > 0) {
-      return { icon: '📅', color: '#60a5fa', msg: snap.billsBefore.length + ' bill' + (snap.billsBefore.length > 1 ? 's' : '') + ' due before ' + snap.nextPayDateStr + ' — $' + snap.billsTotal.toLocaleString() + ' total.', level: 'info' };
+    if (snap.billsTotal > 0 || snap.debtMinimumTotal > 0 || snap.subsTotal > 0) {
+      var obligationCount = (snap.billsBefore || []).length + (snap.debtBefore || []).length + (snap.subsBefore || []).length;
+      var obligationTotal = (snap.billsTotal || 0) + (snap.debtMinimumTotal || 0) + (snap.subsTotal || 0);
+      return { icon: '📅', color: '#60a5fa', msg: obligationCount + ' obligations land before ' + snap.nextPayDateStr + ' — about $' + obligationTotal.toLocaleString() + ' reserved.', level: 'info' };
     }
     if (snap.safeAfterSavings > snap.paycheckAmount * 0.4) {
       return { icon: '✅', color: '#4ade80', msg: 'You\u2019re on track. $' + snap.dailyBudget.toLocaleString() + '/day available until ' + snap.nextPayDateStr + '.', level: 'good' };
@@ -17173,10 +17427,10 @@ function renderSubscriptionCenter(containerId) {
 
   if (!subs.length) {
     container.innerHTML =
-      '<div style="background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015));border:1px solid rgba(255,255,255,.07);border-radius:20px;padding:30px 18px;text-align:center">' +
-        '<div style="width:64px;height:64px;margin:0 auto 16px;border-radius:20px;background:rgba(var(--acc-rgb,6,182,212),.1);display:flex;align-items:center;justify-content:center;font-size:30px">🔄</div>' +
-        '<div style="font-size:16px;font-weight:700;color:rgba(255,255,255,.72);margin-bottom:8px;letter-spacing:-.2px">Recurring charges will appear here</div>' +
-        '<div style="font-size:13px;color:rgba(255,255,255,.3);line-height:1.7;max-width:260px;margin:0 auto">Link your bank or add a few transactions and FlowCheck will start surfacing repeat subscriptions, renewals, and likely memberships automatically.</div>' +
+      '<div style="background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015));border:1px solid rgba(255,255,255,.07);border-radius:20px;padding:24px 18px;text-align:center">' +
+        '<div style="width:56px;height:56px;margin:0 auto 14px;border-radius:18px;background:rgba(var(--acc-rgb,6,182,212),.1);display:flex;align-items:center;justify-content:center;font-size:24px">🔄</div>' +
+        '<div style="font-size:15px;font-weight:700;color:rgba(255,255,255,.72);margin-bottom:6px;letter-spacing:-.2px">Recurring charges will appear here</div>' +
+        '<div style="font-size:12px;color:rgba(255,255,255,.3);line-height:1.6;max-width:240px;margin:0 auto">Link your bank or add a few transactions and FlowCheck will start spotting repeats automatically.</div>' +
       '</div>';
     return;
   }
@@ -17427,19 +17681,19 @@ function renderSubscriptionCenter(containerId) {
   <div style="padding:16px 16px 8px">
 
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px">
-      <button class="more-tile" onclick="closeMoreSheet();go('bills')">
+      <button class="more-tile" onclick="goFromMoreSheet('bills')">
         <div class="more-tile-ico" style="background:rgba(var(--acc-rgb,6,182,212),.12);color:var(--acc)">
           <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="3"></rect><path d="M8 3v4M16 3v4M4 10h16"></path></svg>
         </div>
         <div class="more-tile-lbl">Bills</div>
       </button>
-      <button class="more-tile" onclick="closeMoreSheet();go('plaid')">
+      <button class="more-tile" onclick="goFromMoreSheet('plaid')">
         <div class="more-tile-ico" style="background:rgba(74,222,128,.1);color:#4ade80">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16"></path><path d="M6 10V18"></path><path d="M10 10V18"></path><path d="M14 10V18"></path><path d="M18 10V18"></path><path d="M3 20h18"></path><path d="M12 4l9 4H3l9-4Z"></path></svg>
         </div>
         <div class="more-tile-lbl">Accounts</div>
       </button>
-      <button class="more-tile" onclick="closeMoreSheet();go('debt')">
+      <button class="more-tile" onclick="goFromMoreSheet('debt')">
         <div class="more-tile-ico" style="background:rgba(248,113,113,.1);color:#f87171">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16"></path><path d="M4 18h16"></path><path d="M6 15l4-4 3 3 5-6"></path></svg>
         </div>
@@ -17448,19 +17702,19 @@ function renderSubscriptionCenter(containerId) {
     </div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px">
-      <button class="more-tile" onclick="closeMoreSheet();go('savings')">
+      <button class="more-tile" onclick="goFromMoreSheet('savings')">
         <div class="more-tile-ico" style="background:rgba(74,222,128,.1);color:#22c55e">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"></circle><circle cx="12" cy="12" r="3"></circle><path d="M12 5V2"></path><path d="M12 22v-3"></path><path d="M5 12H2"></path><path d="M22 12h-3"></path></svg>
         </div>
         <div class="more-tile-lbl">Savings</div>
       </button>
-      <button class="more-tile" onclick="closeMoreSheet();go('report')">
+      <button class="more-tile" onclick="goFromMoreSheet('report')">
         <div class="more-tile-ico" style="background:rgba(96,165,250,.1);color:#60a5fa">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18V9"></path><path d="M12 18V5"></path><path d="M19 18v-7"></path><path d="M4 18h16"></path></svg>
         </div>
         <div class="more-tile-lbl">Report</div>
       </button>
-      <button class="more-tile" onclick="closeMoreSheet();go('settings')">
+      <button class="more-tile" onclick="goFromMoreSheet('settings')">
         <div class="more-tile-ico" style="background:rgba(255,255,255,.08);color:#cbd5e1">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.6 1.6 0 0 0 .33 1.77l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06A1.6 1.6 0 0 0 15 19.4a1.6 1.6 0 0 0-1 1.49V21a2 2 0 0 1-4 0v-.11A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.77.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.6 1.6 0 0 0 4.6 15a1.6 1.6 0 0 0-1.49-1H3a2 2 0 0 1 0-4h.11A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.33-1.77l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.6 1.6 0 0 0 9 4.6a1.6 1.6 0 0 0 1-1.49V3a2 2 0 0 1 4 0v.11A1.6 1.6 0 0 0 15 4.6a1.6 1.6 0 0 0 1.77-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.6 1.6 0 0 0 19.4 9a1.6 1.6 0 0 0 1.49 1H21a2 2 0 0 1 0 4h-.11A1.6 1.6 0 0 0 19.4 15Z"></path></svg>
         </div>
@@ -17472,7 +17726,7 @@ function renderSubscriptionCenter(containerId) {
     <div class="more-sheet-section-label" style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:10px;padding:0 4px">Account</div>
     <div class="more-account-card" style="background:var(--card2);border:0.5px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:8px">
 
-      <button class="more-account-row" onclick="closeMoreSheet();openProfilePanel()" style="width:100%;display:flex;align-items:center;gap:14px;background:none;border:none;padding:14px 16px;cursor:pointer;-webkit-tap-highlight-color:transparent">
+      <button class="more-account-row" onclick="openProfileFromMoreSheet()" style="width:100%;display:flex;align-items:center;gap:14px;background:none;border:none;padding:14px 16px;cursor:pointer;-webkit-tap-highlight-color:transparent">
         <div style="width:36px;height:36px;border-radius:10px;background:var(--acc);display:flex;align-items:center;justify-content:center;flex-shrink:0">
           <div id="more-sheet-avatar" style="font-size:14px;font-weight:700;color:#000">F</div>
         </div>
@@ -17645,6 +17899,20 @@ function closeMoreSheet() {
     if (backdrop) backdrop.style.display = 'none';
     if (typeof unlockAppSheetsIfIdle === 'function') unlockAppSheetsIfIdle();
   }, 320);
+}
+
+function goFromMoreSheet(page) {
+  try { closeMoreSheet(); } catch (e) {}
+  setTimeout(function() {
+    try { go(page); } catch (err) { console.error('[FlowCheck Error]', err); }
+  }, 40);
+}
+
+function openProfileFromMoreSheet() {
+  try { closeMoreSheet(); } catch (e) {}
+  setTimeout(function() {
+    try { openProfilePanel(); } catch (err) { console.error('[FlowCheck Error]', err); }
+  }, 40);
 }
 </script>
 </body>

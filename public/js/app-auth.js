@@ -225,6 +225,9 @@ function fbSaveUser(data, name) {
     if (typeof _activateBiometricReentry === 'function') {
       _activateBiometricReentry(userInfo);
     }
+    if (typeof refreshCopilotFeed === 'function') {
+      setTimeout(function() { refreshCopilotFeed(true); }, 450);
+    }
     return userInfo;
   } catch(e) {}
 }

@@ -1,6 +1,6 @@
 const { Configuration, PlaidApi, PlaidEnvironments } = require('plaid');
-const { requireUser } = require('./_auth');
-const { getPlaidItem } = require('./_plaid-store');
+const { requireUser } = require('../lib/auth');
+const { getPlaidItem } = require('../lib/plaid-store');
 
 const plaid = new PlaidApi(new Configuration({
   basePath: PlaidEnvironments[process.env.PLAID_ENV || 'production'],

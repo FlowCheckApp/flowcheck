@@ -1,6 +1,6 @@
 const { Configuration, PlaidApi, PlaidEnvironments } = require('plaid');
-const { requireUser } = require('./_auth');
-const { listPlaidItems, deleteAllPlaidItems } = require('./_plaid-store');
+const { requireUser } = require('../lib/auth');
+const { listPlaidItems, deleteAllPlaidItems } = require('../lib/plaid-store');
 const { auth, db } = require('../lib/firebase-admin');
 
 const plaid = new PlaidApi(new Configuration({

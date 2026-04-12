@@ -3,7 +3,7 @@
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM = 'FlowCheck <hello@getflowcheck.app>';
-const { requireUser } = require('./_auth');
+const { requireUser } = require('../lib/auth');
 
 // Firebase compatibility layer for user lookup
 let _admin = null;

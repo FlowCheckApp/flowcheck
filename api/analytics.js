@@ -1,4 +1,4 @@
-const { getBearerToken } = require('./_auth');
+const { getBearerToken } = require('../lib/auth');
 const { auth, db } = require('../lib/firebase-admin');
 
 async function getOptionalUser(req) {

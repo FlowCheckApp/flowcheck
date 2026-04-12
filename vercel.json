@@ -16,7 +16,7 @@
     { "src": "/api/liabilities",       "dest": "/api/liabilities.js" },
     { "src": "/api/balance",           "dest": "/api/balance.js" },
     { "src": "/api/analytics",         "dest": "/api/analytics.js" },
-    { "src": "/api/health",            "dest": "/api/health.js" },
+    { "src": "/api/copilot",           "dest": "/api/copilot.js" },
     { "src": "/api/email/(.*)",        "dest": "/api/email.js" }
   ],
   "crons": [

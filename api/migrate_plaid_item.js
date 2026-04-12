@@ -1,5 +1,5 @@
-const { requireUser } = require('./_auth');
-const { savePlaidItem } = require('./_plaid-store');
+const { requireUser } = require('../lib/auth');
+const { savePlaidItem } = require('../lib/plaid-store');
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');

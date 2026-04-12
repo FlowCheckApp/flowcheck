@@ -518,8 +518,16 @@ function exchangePublicToken(publicToken, inst, accounts) {
 
 var _plaidLastLiabilitySync = null;
 var _plaidLiabilitySyncError = null;
+var FC_MANUAL_DEBT_ONLY = true;
 
 function fetchPlaidLiabilities(silent) {
+  if (FC_MANUAL_DEBT_ONLY) {
+    _plaidLiabilitySyncError = null;
+    _plaidLastLiabilitySync = null;
+    _renderDebtSyncStatus();
+    if (!silent && typeof toast === 'function') toast('Manual debt tracking is on for now', 'amb');
+    return Promise.resolve(false);
+  }
   var itemIds = getActivePlaidItemIds();
   if (!itemIds.length) {
     if (!silent && typeof toast === 'function') toast('Connect a bank account first', 'amb');
@@ -679,6 +687,11 @@ function _mergePlaidDebts(liabilities) {
 function _renderDebtSyncStatus() {
   var el = document.getElementById('debt-sync-status');
   if (!el) return;
+  if (FC_MANUAL_DEBT_ONLY) {
+    el.style.display = 'none';
+    el.innerHTML = '';
+    return;
+  }
   if (_plaidLiabilitySyncError) {
     var raw = String(_plaidLiabilitySyncError || '').toLowerCase();
     var title = 'Debt sync needs attention';
@@ -720,6 +733,7 @@ function _renderDebtSyncStatus() {
 // ── Core transaction importer (shared by fetch + silent) ──
 // Auto-fetch liabilities after successful Plaid link
 function _triggerLiabilitySync() {
+  if (FC_MANUAL_DEBT_ONLY) return;
   setTimeout(function() {
     if (typeof fetchPlaidLiabilities === 'function') fetchPlaidLiabilities(true);
   }, 2000);
@@ -1238,17 +1252,17 @@ function rDashAccounts() {
         role: profile.role,
         balance: Math.abs(Number(acct.balance) || 0),
         html:
-          '<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.04)">' +
-            '<div style="width:40px;height:40px;background:' + profile.iconBg + ';color:' + profile.iconFg + ';border:1px solid rgba(255,255,255,.05);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:900;letter-spacing:.08em;flex-shrink:0">' + profile.short + '</div>' +
+          '<div style="display:flex;align-items:center;gap:12px;padding:13px 15px;border-bottom:1px solid rgba(255,255,255,.04)">' +
+            '<div style="width:38px;height:38px;background:' + profile.iconBg + ';color:' + profile.iconFg + ';border:1px solid rgba(255,255,255,.05);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;letter-spacing:.08em;flex-shrink:0">' + profile.short + '</div>' +
             '<div style="flex:1;min-width:0">' +
               '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
-                '<div style="font-size:14px;font-weight:700;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px">' + plaidEscape(acct.name || profile.badge) + '</div>' +
-                '<div style="font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:' + profile.iconFg + ';background:' + profile.iconBg + ';border:1px solid rgba(255,255,255,.04);border-radius:999px;padding:4px 7px">' + profile.badge + '</div>' +
+                '<div style="font-size:13.5px;font-weight:700;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px">' + plaidEscape(acct.name || profile.badge) + '</div>' +
+                '<div style="font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:' + profile.iconFg + ';background:' + profile.iconBg + ';border:1px solid rgba(255,255,255,.04);border-radius:999px;padding:3px 7px">' + profile.badge + '</div>' +
               '</div>' +
-              '<div style="font-size:11.5px;color:var(--t3);margin-top:3px">' + profile.hint + ' · ···' + plaidEscape(acct.mask || '????') + ' · ' + plaidEscape(item.institutionName || 'Bank') + '</div>' +
+              '<div style="font-size:11px;color:var(--t3);margin-top:3px">' + profile.hint + ' · ···' + plaidEscape(acct.mask || '????') + '</div>' +
             '</div>' +
             (acct.balance !== null
-              ? '<div style="text-align:right;flex-shrink:0"><div style="font-size:14px;font-weight:800;color:var(--t1)">$' + displayBalance.toLocaleString() + '</div><div style="font-size:10.5px;color:var(--t3);margin-top:2px">' + (profile.role === 'credit' || profile.role === 'loan' ? 'Outstanding' : 'Available') + '</div></div>'
+              ? '<div style="text-align:right;flex-shrink:0"><div style="font-size:13.5px;font-weight:800;color:var(--t1)">$' + displayBalance.toLocaleString() + '</div><div style="font-size:10px;color:var(--t3);margin-top:2px">' + (profile.role === 'credit' || profile.role === 'loan' ? 'Outstanding' : 'Available') + '</div></div>'
               : '') +
           '</div>'
       });
@@ -1259,18 +1273,18 @@ function rDashAccounts() {
     if (roleDiff !== 0) return roleDiff;
     return b.balance - a.balance;
   });
-  var visibleRows = rows.slice(0, 3);
+  var visibleRows = rows.slice(0, 2);
   var hiddenCount = Math.max(0, rows.length - visibleRows.length);
   var footerCta = '';
   if (hasChecking && !hasSavings) {
     footerCta =
-      '<button onclick="go(\'plaid\')" style="width:100%;background:rgba(96,165,250,.08);border:none;border-top:1px solid rgba(255,255,255,.05);padding:12px 16px;font-family:inherit;font-size:12.5px;font-weight:700;color:#60a5fa;cursor:pointer">Add a savings account → Build a cleaner cash buffer</button>';
+      '<button onclick="go(\'plaid\')" style="width:100%;background:rgba(96,165,250,.08);border:none;border-top:1px solid rgba(255,255,255,.05);padding:11px 16px;font-family:inherit;font-size:12px;font-weight:700;color:#60a5fa;cursor:pointer">Add savings next → Build a cleaner cash buffer</button>';
   } else if (!hasChecking) {
     footerCta =
-      '<button onclick="go(\'plaid\')" style="width:100%;background:rgba(245,166,35,.08);border:none;border-top:1px solid rgba(255,255,255,.05);padding:12px 16px;font-family:inherit;font-size:12.5px;font-weight:700;color:#F5A623;cursor:pointer">Link checking next → Power safe-to-spend</button>';
+      '<button onclick="go(\'plaid\')" style="width:100%;background:rgba(245,166,35,.08);border:none;border-top:1px solid rgba(255,255,255,.05);padding:11px 16px;font-family:inherit;font-size:12px;font-weight:700;color:#F5A623;cursor:pointer">Link checking next → Power safe to spend</button>';
   } else if (hiddenCount > 0) {
     footerCta =
-      '<button onclick="go(\'plaid\')" style="width:100%;background:rgba(245,166,35,.08);border:none;border-top:1px solid rgba(255,255,255,.05);padding:12px 16px;font-family:inherit;font-size:12.5px;font-weight:700;color:#F5A623;cursor:pointer">See all ' + rows.length + ' linked accounts →</button>';
+      '<button onclick="go(\'plaid\')" style="width:100%;background:rgba(245,166,35,.08);border:none;border-top:1px solid rgba(255,255,255,.05);padding:11px 16px;font-family:inherit;font-size:12px;font-weight:700;color:#F5A623;cursor:pointer">See all ' + rows.length + ' linked accounts →</button>';
   }
   wrap.innerHTML = visibleRows.map(function(row) { return row.html; }).join('') + footerCta;
   if (allBtn) allBtn.style.display = hiddenCount > 0 ? 'inline-flex' : 'none';
