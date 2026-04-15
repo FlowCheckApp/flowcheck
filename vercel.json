@@ -6,6 +6,7 @@
     }
   },
   "routes": [
+    { "src": "/support", "dest": "/support.html" },
     { "src": "/privacy", "dest": "/privacy.html" },
     { "src": "/terms",   "dest": "/terms.html" },
     { "src": "/api/create-link-token", "dest": "/api/create-link-token.js" },
