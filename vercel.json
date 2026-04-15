@@ -6,6 +6,8 @@
     }
   },
   "routes": [
+    { "src": "/privacy", "dest": "/privacy.html" },
+    { "src": "/terms",   "dest": "/terms.html" },
     { "src": "/api/create-link-token", "dest": "/api/create-link-token.js" },
     { "src": "/api/exchange-token",    "dest": "/api/exchange_token.js" },
     { "src": "/api/disconnect-item",   "dest": "/api/disconnect_item.js" },
