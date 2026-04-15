@@ -1,77 +1,897 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FlowCheck Privacy Policy</title>
-  <style>
-    :root{
-      --bg:#0a0a0a;
-      --card:#141414;
-      --line:rgba(255,255,255,.08);
-      --text:#f5f5f5;
-      --muted:rgba(255,255,255,.64);
-      --accent:#f5a623;
-      --ok:#4ade80;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      background:radial-gradient(circle at top, rgba(245,166,35,.12), transparent 30%), var(--bg);
-      color:var(--text);
-      line-height:1.65;
-    }
-    .wrap{max-width:760px;margin:0 auto;padding:56px 22px 72px}
-    .hero{margin-bottom:28px}
-    .kicker{display:inline-flex;padding:8px 12px;border-radius:999px;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.18);color:var(--accent);font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
-    h1{font-size:42px;line-height:1;margin:18px 0 10px;letter-spacing:-.04em}
-    .sub{font-size:16px;color:var(--muted);max-width:620px}
-    .notice{margin-top:22px;padding:14px 16px;border-radius:16px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.16);color:var(--ok);font-weight:600}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px 20px;margin-top:16px}
-    h2{font-size:18px;margin:0 0 8px;color:#fff}
-    p{margin:0;color:var(--muted)}
-    .footer{margin-top:28px;font-size:13px;color:var(--muted)}
-    a{color:var(--accent)}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlowCheck — Privacy Policy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #06080f;
+  --bg2:     #0b0f1a;
+  --card:    #0f1520;
+  --card2:   #141c2b;
+  --line:    rgba(255,255,255,.07);
+  --t1:      #ffffff;
+  --t2:      rgba(255,255,255,.6);
+  --t3:      rgba(255,255,255,.35);
+  --t4:      rgba(255,255,255,.15);
+  --acc:     #06b6d4;
+  --acc-l:   rgba(6,182,212,.1);
+  --acc-b:   rgba(6,182,212,.2);
+  --gold:    #f5a623;
+  --gold-l:  rgba(245,166,35,.1);
+  --gold-b:  rgba(245,166,35,.2);
+  --grn:     #34d399;
+  --grn-l:   rgba(52,211,153,.08);
+  --red:     #f87171;
+  --red-l:   rgba(248,113,113,.08);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--t1);
+  line-height: 1.7;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── HEADER ── */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(6,8,15,.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--line);
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.logo-mark {
+  width: 36px;
+  height: 36px;
+  background: var(--gold);
+  border-radius: 10px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+  padding: 7px 7px 6px;
+}
+.logo-mark span {
+  display: block;
+  background: #000;
+  border-radius: 2px;
+  width: 5px;
+  opacity: .85;
+}
+
+.logo-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--t1);
+  letter-spacing: -.3px;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.header-nav a {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--t3);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: color .15s, background .15s;
+}
+.header-nav a:hover {
+  color: var(--t1);
+  background: rgba(255,255,255,.06);
+}
+.header-nav a.active {
+  color: var(--acc);
+  background: var(--acc-l);
+}
+
+/* ── HERO ── */
+.hero {
+  padding: 64px 24px 48px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 500px;
+  height: 300px;
+  background: radial-gradient(ellipse, rgba(6,182,212,.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--acc-l);
+  border: 1px solid var(--acc-b);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--acc);
+  letter-spacing: .04em;
+  margin-bottom: 20px;
+}
+.hero-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--acc);
+}
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(32px, 6vw, 52px);
+  font-weight: 800;
+  color: var(--t1);
+  letter-spacing: -2px;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+.hero-sub {
+  font-size: 16px;
+  color: var(--t2);
+  max-width: 520px;
+  margin: 0 auto 28px;
+  line-height: 1.65;
+}
+.hero-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.hero-meta-item {
+  font-size: 12.5px;
+  color: var(--t3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.hero-meta-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--t4);
+}
+
+/* ── LAYOUT ── */
+.page-body {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 48px 24px 100px;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+@media (max-width: 700px) {
+  .page-body {
+    grid-template-columns: 1fr;
+    padding: 24px 16px 80px;
+  }
+  .sidebar { display: none; }
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  position: sticky;
+  top: 80px;
+}
+.sidebar-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--t4);
+  margin-bottom: 12px;
+  padding-left: 12px;
+}
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.sidebar-nav a {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--t3);
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 10px;
+  transition: color .15s, background .15s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sidebar-nav a:hover {
+  color: var(--t1);
+  background: rgba(255,255,255,.05);
+}
+.sidebar-nav a.active {
+  color: var(--acc);
+  background: var(--acc-l);
+}
+.sidebar-num {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: rgba(255,255,255,.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--t4);
+  flex-shrink: 0;
+}
+
+/* ── CONTENT ── */
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── TL;DR CARD ── */
+.tldr {
+  background: linear-gradient(135deg, rgba(52,211,153,.08), rgba(6,182,212,.05));
+  border: 1px solid rgba(52,211,153,.2);
+  border-radius: 18px;
+  padding: 22px 24px;
+  margin-bottom: 8px;
+}
+.tldr-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--grn);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tldr p {
+  font-size: 14px;
+  color: rgba(52,211,153,.75);
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* ── SECTION CARDS ── */
+.section {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  overflow: hidden;
+  scroll-margin-top: 80px;
+}
+.section-header {
+  padding: 20px 24px 18px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.section-num {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--t3);
+  flex-shrink: 0;
+}
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--t1);
+  letter-spacing: -.2px;
+}
+.section-body {
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.section-body p {
+  font-size: 14.5px;
+  color: var(--t2);
+  line-height: 1.7;
+  margin: 0;
+}
+.section-body ul, .section-body ol {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.section-body li {
+  font-size: 14.5px;
+  color: var(--t2);
+  line-height: 1.65;
+}
+.section-body strong {
+  color: var(--t1);
+  font-weight: 600;
+}
+.section-body a {
+  color: var(--acc);
+  text-decoration: none;
+}
+.section-body a:hover {
+  text-decoration: underline;
+}
+
+/* ── HIGHLIGHT BOXES ── */
+.highlight {
+  background: var(--grn-l);
+  border: 1px solid rgba(52,211,153,.18);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+.highlight p {
+  color: rgba(52,211,153,.8) !important;
+  font-size: 13.5px !important;
+  margin: 0;
+}
+
+.warning {
+  background: rgba(245,166,35,.07);
+  border: 1px solid rgba(245,166,35,.18);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+.warning p {
+  color: rgba(245,166,35,.8) !important;
+  font-size: 13.5px !important;
+  margin: 0;
+}
+
+/* ── TABLES ── */
+.table-wrap {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+thead tr {
+  background: rgba(255,255,255,.04);
+  border-bottom: 1px solid var(--line);
+}
+th {
+  padding: 11px 14px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--t3);
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+td {
+  padding: 11px 14px;
+  color: var(--t2);
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  vertical-align: top;
+  line-height: 1.55;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,.02); }
+td a { color: var(--acc); text-decoration: none; }
+td strong { color: var(--t1); font-weight: 600; }
+
+.check { color: var(--grn); font-weight: 600; }
+.cross { color: var(--red); font-weight: 600; }
+
+/* ── CONTACT CARD ── */
+.contact-card {
+  background: linear-gradient(135deg, var(--card2), var(--card));
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 22px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.contact-card-info p {
+  font-size: 14px;
+  color: var(--t2) !important;
+  margin: 0;
+}
+.contact-card-info strong {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  color: var(--t1) !important;
+  display: block;
+  margin-bottom: 4px;
+  letter-spacing: -.2px;
+}
+.contact-btn {
+  background: var(--gold);
+  color: #000;
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+  padding: 10px 22px;
+  border-radius: 12px;
+  white-space: nowrap;
+  letter-spacing: -.1px;
+  transition: opacity .15s;
+}
+.contact-btn:hover { opacity: .88; }
+
+/* ── FOOTER ── */
+.site-footer {
+  border-top: 1px solid var(--line);
+  padding: 32px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.footer-logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--t3);
+  letter-spacing: -.3px;
+}
+.footer-links {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.footer-links a {
+  font-size: 13px;
+  color: var(--t4);
+  text-decoration: none;
+  transition: color .15s;
+}
+.footer-links a:hover { color: var(--acc); }
+.footer-meta {
+  font-size: 12px;
+  color: var(--t4);
+}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="hero">
-      <div class="kicker">FlowCheck Legal</div>
-      <h1>Privacy Policy</h1>
-      <div class="sub">How FlowCheck handles your data, connected accounts, and subscription-related information.</div>
-      <div class="notice">We do not sell your personal data.</div>
-    </div>
 
-    <div class="card">
-      <h2>Data We Collect</h2>
-      <p>FlowCheck stores what you provide, such as your name, email address, income, goals, bills, and optional connected-account data through Plaid. The app may also infer recurring charges from your transaction history to organize your money flow.</p>
+<!-- Header -->
+<header class="site-header">
+  <a href="https://getflowcheck.app" class="logo">
+    <div class="logo-mark">
+      <span style="height:7px"></span>
+      <span style="height:12px"></span>
+      <span style="height:17px"></span>
     </div>
-    <div class="card">
-      <h2>How Data Is Stored</h2>
-      <p>Most budgeting data is stored locally on your iPhone. Authentication is handled by Firebase. Optional connected-account metadata and Plaid access tokens are stored server-side so FlowCheck can sync securely. We never store your banking password.</p>
-    </div>
-    <div class="card">
-      <h2>Bank Account Connections</h2>
-      <p>If you link a financial account, Plaid securely handles credential entry. FlowCheck receives read-only transaction, balance, and account metadata. FlowCheck cannot move money or initiate transfers.</p>
-    </div>
-    <div class="card">
-      <h2>Biometrics</h2>
-      <p>Face ID is handled by Apple Secure Enclave on your device. FlowCheck does not collect or store your biometric data.</p>
-    </div>
-    <div class="card">
-      <h2>Data Sharing</h2>
-      <p>We do not sell, rent, or share personal data for advertising. Data is only shared with services required to run features you use, such as Apple subscriptions, Plaid account linking, Firebase authentication, RevenueCat subscription state, or opted-in emails.</p>
-    </div>
-    <div class="card">
-      <h2>Deletion</h2>
-      <p>You can delete your FlowCheck account and synced data inside the app from Settings. Deleting your account removes Firebase sign-in access and connected-account records tied to your profile.</p>
-    </div>
+    <span class="logo-name">FlowCheck</span>
+  </a>
+  <nav class="header-nav">
+    <a href="https://getflowcheck.app/privacy" class="active">Privacy</a>
+    <a href="https://getflowcheck.app/terms">Terms</a>
+    <a href="mailto:flowcheckapp.help@outlook.com">Support</a>
+  </nav>
+</header>
 
-    <div class="footer">
-      Questions? Contact <a href="mailto:flowcheckapp.help@outlook.com">flowcheckapp.help@outlook.com</a>.
-    </div>
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-badge">
+    <div class="hero-badge-dot"></div>
+    Effective March 2026 · v1.1
   </div>
+  <h1>Privacy Policy</h1>
+  <p class="hero-sub">We built FlowCheck to be on your side. That means your financial data stays yours — always private, never sold, never used for ads.</p>
+  <div class="hero-meta">
+    <span class="hero-meta-item">📍 Kearney, Nebraska</span>
+    <div class="hero-meta-dot"></div>
+    <span class="hero-meta-item">📱 iOS Application</span>
+    <div class="hero-meta-dot"></div>
+    <span class="hero-meta-item">✉️ flowcheckapp.help@outlook.com</span>
+  </div>
+</div>
+
+<!-- Body -->
+<div class="page-body">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-label">Contents</div>
+    <nav class="sidebar-nav">
+      <a href="#s1"><span class="sidebar-num">1</span>Who We Are</a>
+      <a href="#s2"><span class="sidebar-num">2</span>What We Collect</a>
+      <a href="#s3"><span class="sidebar-num">3</span>How We Use It</a>
+      <a href="#s4"><span class="sidebar-num">4</span>Storage & Security</a>
+      <a href="#s5"><span class="sidebar-num">5</span>Third Parties</a>
+      <a href="#s6"><span class="sidebar-num">6</span>Plaid</a>
+      <a href="#s7"><span class="sidebar-num">7</span>RevenueCat</a>
+      <a href="#s8"><span class="sidebar-num">8</span>Data Sharing</a>
+      <a href="#s9"><span class="sidebar-num">9</span>Deletion</a>
+      <a href="#s10"><span class="sidebar-num">10</span>Children</a>
+      <a href="#s11"><span class="sidebar-num">11</span>Your Rights</a>
+      <a href="#s12"><span class="sidebar-num">12</span>Changes</a>
+      <a href="#s13"><span class="sidebar-num">13</span>Contact</a>
+    </nav>
+  </aside>
+
+  <!-- Content -->
+  <main class="content">
+
+    <!-- TL;DR -->
+    <div class="tldr">
+      <div class="tldr-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#34d399" stroke-width="2" stroke-linejoin="round"/></svg>
+        The short version
+      </div>
+      <p>FlowCheck stores your financial data locally on your device. We do not sell your data, run ads, or share your personal information with third parties except as required to provide core features (Plaid for bank connections, RevenueCat for purchases). You are always in control.</p>
+    </div>
+
+    <!-- Section 1 -->
+    <div class="section" id="s1">
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <div class="section-title">Who We Are</div>
+      </div>
+      <div class="section-body">
+        <p>FlowCheck is a personal finance management application developed and operated as an independent iOS application. FlowCheck is not affiliated with any bank, financial institution, or credit bureau.</p>
+        <p>For all privacy-related inquiries, contact us at: <strong>flowcheckapp.help@outlook.com</strong></p>
+      </div>
+    </div>
+
+    <!-- Section 2 -->
+    <div class="section" id="s2">
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <div class="section-title">What Data We Collect</div>
+      </div>
+      <div class="section-body">
+        <p>FlowCheck collects only the minimum data necessary to provide its features:</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Data Type</th><th>Source</th><th>Stored Where</th><th>Required</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Name (first name)</strong></td><td>You enter it</td><td>Device only</td><td>Optional</td></tr>
+              <tr><td><strong>Income & budget figures</strong></td><td>You enter it</td><td>Device only</td><td>Optional</td></tr>
+              <tr><td><strong>Manual transactions</strong></td><td>You enter it</td><td>Device only</td><td>Optional</td></tr>
+              <tr><td><strong>Bank transaction data</strong></td><td>Plaid (if connected)</td><td>Device only</td><td>Optional</td></tr>
+              <tr><td><strong>Bank account balances</strong></td><td>Plaid (if connected)</td><td>Device only</td><td>Optional</td></tr>
+              <tr><td><strong>Savings goals & debt info</strong></td><td>You enter it</td><td>Device only</td><td>Optional</td></tr>
+              <tr><td><strong>Subscription status</strong></td><td>RevenueCat</td><td>RevenueCat servers</td><td>Premium only</td></tr>
+              <tr><td><strong>Crash reports</strong></td><td>iOS system</td><td>Apple servers</td><td>Automatic</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="warning">
+          <p>⚠️ <strong>We do not collect:</strong> your Social Security Number, date of birth, full bank account numbers, passwords, government ID, location data, contacts, camera data, or any information beyond what is listed above.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3 -->
+    <div class="section" id="s3">
+      <div class="section-header">
+        <div class="section-num">3</div>
+        <div class="section-title">How We Use Your Data</div>
+      </div>
+      <div class="section-body">
+        <p>We use your data solely to provide and improve FlowCheck's features:</p>
+        <ul>
+          <li><strong>Display your financial dashboard</strong> — show spending summaries, budgets, net worth, and transactions</li>
+          <li><strong>Calculate budgets and savings goals</strong> — using the income and expense data you provide</li>
+          <li><strong>Provide bank sync</strong> — via Plaid to automatically import transactions when you connect an account</li>
+          <li><strong>Manage your subscription</strong> — via RevenueCat to verify premium access</li>
+          <li><strong>Improve the app</strong> — using anonymized, aggregated crash and usage data from Apple's standard iOS analytics</li>
+        </ul>
+        <div class="highlight">
+          <p>✅ We never use your financial data for advertising, profiling, selling to third parties, or any purpose other than providing FlowCheck's features directly to you.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4 -->
+    <div class="section" id="s4">
+      <div class="section-header">
+        <div class="section-num">4</div>
+        <div class="section-title">Data Storage & Security</div>
+      </div>
+      <div class="section-body">
+        <p><strong>Local storage by default.</strong> All financial data you enter into FlowCheck is stored locally on your device using iOS device storage. This data never leaves your device unless you explicitly use a feature that requires it (such as Plaid bank sync).</p>
+        <p><strong>iCloud Backup (optional).</strong> If you enable iCloud Backup within FlowCheck settings, your app data may be included in your iCloud backup, governed by Apple's iCloud Terms and Privacy Policy.</p>
+        <p><strong>Security measures:</strong></p>
+        <ul>
+          <li>iOS device encryption (AES-256) protects all locally stored data at rest</li>
+          <li>Face ID / Touch ID biometric authentication for app access (when enabled)</li>
+          <li>All network communications use HTTPS / TLS 1.2 or higher</li>
+          <li>Plaid's bank-grade security for all financial institution connections</li>
+          <li>We never store your banking credentials — Plaid handles authentication directly with your bank</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Section 5 -->
+    <div class="section" id="s5">
+      <div class="section-header">
+        <div class="section-num">5</div>
+        <div class="section-title">Third-Party Services</div>
+      </div>
+      <div class="section-body">
+        <p>FlowCheck integrates with the following third-party services, each with its own privacy policy:</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Service</th><th>Purpose</th><th>Data Shared</th><th>Privacy Policy</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Plaid</strong></td><td>Bank connections & transaction sync</td><td>Bank credentials (never stored by us), transaction data</td><td><a href="https://plaid.com/legal/privacy-policy/">plaid.com/legal</a></td></tr>
+              <tr><td><strong>RevenueCat</strong></td><td>Subscription management</td><td>App user ID, purchase history</td><td><a href="https://www.revenuecat.com/privacy/">revenuecat.com/privacy</a></td></tr>
+              <tr><td><strong>Apple App Store</strong></td><td>App distribution & crash reporting</td><td>Standard iOS analytics (anonymized)</td><td><a href="https://www.apple.com/privacy/">apple.com/privacy</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>We do not use Google Analytics, Facebook SDK, advertising networks, data brokers, or any other tracking services.</p>
+      </div>
+    </div>
+
+    <!-- Section 6 -->
+    <div class="section" id="s6">
+      <div class="section-header">
+        <div class="section-num">6</div>
+        <div class="section-title">Bank Account Connections (Plaid)</div>
+      </div>
+      <div class="section-body">
+        <p>When you connect a bank account, FlowCheck uses <strong>Plaid Technologies, Inc.</strong> Here is exactly how it works:</p>
+        <ul>
+          <li>You enter your bank credentials directly into Plaid's secure interface — FlowCheck never sees your username or password</li>
+          <li>Plaid returns read-only transaction and balance data to FlowCheck</li>
+          <li>FlowCheck stores that data locally on your device only</li>
+          <li>FlowCheck cannot initiate payments, transfers, or any write actions to your bank account</li>
+          <li>You can disconnect any linked account at any time from Settings → Linked Accounts</li>
+        </ul>
+        <p>By connecting a bank account you also agree to <a href="https://plaid.com/legal/end-user-privacy-policy/">Plaid's End User Privacy Policy</a>. Bank connections are optional — you may use FlowCheck entirely with manually entered transactions.</p>
+      </div>
+    </div>
+
+    <!-- Section 7 -->
+    <div class="section" id="s7">
+      <div class="section-header">
+        <div class="section-num">7</div>
+        <div class="section-title">In-App Purchases (RevenueCat)</div>
+      </div>
+      <div class="section-body">
+        <p>FlowCheck offers a Premium subscription through Apple's in-app purchase system, managed by <strong>RevenueCat, Inc.</strong></p>
+        <ul>
+          <li>Payment processing is handled entirely by Apple — we never receive or store your payment card information</li>
+          <li>RevenueCat receives a non-personally-identifiable app user ID and your purchase status to verify premium access</li>
+          <li>To manage or cancel your subscription, go to iPhone Settings → Apple ID → Subscriptions</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Section 8 -->
+    <div class="section" id="s8">
+      <div class="section-header">
+        <div class="section-num">8</div>
+        <div class="section-title">Data Sharing & Sale</div>
+      </div>
+      <div class="section-body">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Practice</th><th>FlowCheck's Position</th></tr></thead>
+            <tbody>
+              <tr><td>Selling personal data to third parties</td><td><span class="cross">✗ Never</span></td></tr>
+              <tr><td>Sharing data with advertisers</td><td><span class="cross">✗ Never</span></td></tr>
+              <tr><td>Using financial data for advertising targeting</td><td><span class="cross">✗ Never</span></td></tr>
+              <tr><td>Sharing data with data brokers</td><td><span class="cross">✗ Never</span></td></tr>
+              <tr><td>Sharing data with Plaid (for bank sync, if enabled)</td><td><span class="check">✓ With your consent</span></td></tr>
+              <tr><td>Sharing purchase status with RevenueCat</td><td><span class="check">✓ For subscription management only</span></td></tr>
+              <tr><td>Disclosing data if required by law</td><td><span class="check">✓ Only if legally required</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>FlowCheck is ad-free. We earn revenue only through Premium subscriptions, not from your data.</p>
+      </div>
+    </div>
+
+    <!-- Section 9 -->
+    <div class="section" id="s9">
+      <div class="section-header">
+        <div class="section-num">9</div>
+        <div class="section-title">Data Retention & Deletion</div>
+      </div>
+      <div class="section-body">
+        <p><strong>Your data, your control.</strong> Because FlowCheck stores data locally on your device, you are always in full control.</p>
+        <p><strong>To delete all your FlowCheck data:</strong></p>
+        <ul>
+          <li>Open FlowCheck → More tab → scroll to the bottom → tap <strong>Delete All Data</strong></li>
+          <li>Or simply delete the FlowCheck app — all locally stored data is immediately and permanently removed</li>
+        </ul>
+        <p><strong>Third-party data:</strong> To remove your data from Plaid or RevenueCat, contact them directly:</p>
+        <ul>
+          <li>Plaid: <a href="https://plaid.com/legal/privacy-policy/#your-rights">plaid.com/legal</a> or privacy@plaid.com</li>
+          <li>RevenueCat: <a href="https://www.revenuecat.com/privacy/">revenuecat.com/privacy</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Section 10 -->
+    <div class="section" id="s10">
+      <div class="section-header">
+        <div class="section-num">10</div>
+        <div class="section-title">Children's Privacy</div>
+      </div>
+      <div class="section-body">
+        <p>FlowCheck is intended for users 17 years of age or older, consistent with the App Store age rating. We do not knowingly collect personal information from children under 13. If you believe a child under 13 has provided personal information to us, contact us at <strong>flowcheckapp.help@outlook.com</strong> and we will take steps to remove such information.</p>
+      </div>
+    </div>
+
+    <!-- Section 11 -->
+    <div class="section" id="s11">
+      <div class="section-header">
+        <div class="section-num">11</div>
+        <div class="section-title">Your Rights</div>
+      </div>
+      <div class="section-body">
+        <p>Depending on where you live, you may have the following rights regarding your personal information:</p>
+        <ul>
+          <li><strong>Right to access</strong> — request a copy of the personal information we hold about you</li>
+          <li><strong>Right to deletion</strong> — request that we delete your personal information (see Section 9)</li>
+          <li><strong>Right to correction</strong> — request that we correct inaccurate personal information</li>
+          <li><strong>Right to opt out of sale</strong> — we do not sell personal data, so this right is automatically fulfilled</li>
+          <li><strong>Right to data portability</strong> — export your transaction data as CSV from the Transactions page</li>
+          <li><strong>Right to non-discrimination</strong> — exercising privacy rights will not affect your access to FlowCheck</li>
+        </ul>
+        <p><strong>California residents (CCPA):</strong> You have the right to know what personal information is collected, the right to delete it, and the right to opt out of its sale. We do not sell personal information.</p>
+        <p><strong>European users (GDPR):</strong> Our lawful basis for processing is your consent and our legitimate interest in providing the service you requested. You may withdraw consent at any time by deleting the app.</p>
+        <p>To exercise any of these rights, contact us at <strong>flowcheckapp.help@outlook.com</strong>. We will respond within 30 days.</p>
+      </div>
+    </div>
+
+    <!-- Section 12 -->
+    <div class="section" id="s12">
+      <div class="section-header">
+        <div class="section-num">12</div>
+        <div class="section-title">Changes to This Policy</div>
+      </div>
+      <div class="section-body">
+        <p>We may update this Privacy Policy from time to time. When we make material changes, we will notify you through the app and update the "Effective" date at the top of this policy. Your continued use of FlowCheck after changes are posted constitutes your acceptance of the updated policy.</p>
+        <p>The current version of this policy is always available within the app under More → Privacy Policy.</p>
+      </div>
+    </div>
+
+    <!-- Section 13 -->
+    <div class="section" id="s13">
+      <div class="section-header">
+        <div class="section-num">13</div>
+        <div class="section-title">Contact Us</div>
+      </div>
+      <div class="section-body">
+        <p>For any privacy questions, data requests, or concerns:</p>
+        <div class="contact-card">
+          <div class="contact-card-info">
+            <strong>FlowCheck Support</strong>
+            <p>flowcheckapp.help@outlook.com</p>
+            <p style="font-size:12px;color:rgba(255,255,255,.3);margin-top:4px">We aim to respond within 2 business days.</p>
+          </div>
+          <a href="mailto:flowcheckapp.help@outlook.com?subject=Privacy Request" class="contact-btn">Email Us</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Support -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num" style="background:var(--gold-l);border-color:var(--gold-b);color:var(--gold)">?</div>
+        <div class="section-title">Support</div>
+      </div>
+      <div class="section-body">
+        <p>Need help with FlowCheck? We're here for you.</p>
+        <ul>
+          <li><strong>General questions:</strong> flowcheckapp.help@outlook.com</li>
+          <li><strong>Subscription / billing:</strong> iPhone Settings → Apple ID → Subscriptions</li>
+          <li><strong>Bank connection issues:</strong> Settings → Linked Accounts → Reconnect</li>
+          <li><strong>Delete all data:</strong> More tab → Delete All Data</li>
+          <li><strong>Report a bug:</strong> Email with subject line "Bug Report"</li>
+        </ul>
+        <div class="contact-card">
+          <div class="contact-card-info">
+            <strong>Still need help?</strong>
+            <p>Email us and we'll get back to you within 2 business days.</p>
+          </div>
+          <a href="mailto:flowcheckapp.help@outlook.com?subject=FlowCheck Support" class="contact-btn">Get Help</a>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="footer-logo">FlowCheck</div>
+  <div class="footer-links">
+    <a href="https://getflowcheck.app/privacy">Privacy Policy</a>
+    <a href="https://getflowcheck.app/terms">Terms of Use</a>
+    <a href="mailto:flowcheckapp.help@outlook.com">Contact</a>
+    <a href="https://getflowcheck.app">App</a>
+  </div>
+  <div class="footer-meta">Privacy Policy v1.1 · Effective March 2026 · flowcheckapp.help@outlook.com</div>
+</footer>
+
+<script>
+// Highlight active sidebar item on scroll
+var sections = document.querySelectorAll('.section[id]');
+var navLinks = document.querySelectorAll('.sidebar-nav a');
+
+function onScroll() {
+  var scrollY = window.scrollY + 100;
+  var current = '';
+  sections.forEach(function(s) {
+    if (s.offsetTop <= scrollY) current = s.id;
+  });
+  navLinks.forEach(function(a) {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+}
+
+window.addEventListener('scroll', onScroll, { passive: true });
+onScroll();
+</script>
+
 </body>
 </html>
