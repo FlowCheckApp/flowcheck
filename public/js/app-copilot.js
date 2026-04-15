@@ -162,48 +162,29 @@ function escCopilot(str) {
 function renderCopilotLoading() {
   var feed = document.getElementById('copilot-feed');
   if (!feed) return;
-  feed.style.display = 'block';
-  feed.innerHTML = '<div style="background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.02));border:1px solid rgba(var(--acc-rgb,6,182,212),.14);border-radius:18px;padding:14px 15px;box-shadow:0 10px 30px rgba(0,0,0,.16)">' +
-    '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px">' +
-      '<div><div style="font-size:13px;font-weight:800;color:#fff;letter-spacing:-.2px">Decision Brief</div><div style="font-size:11.5px;color:rgba(255,255,255,.42);margin-top:3px">Loading your latest signal…</div></div>' +
-      '<div style="width:10px;height:10px;border-radius:999px;background:var(--acc);box-shadow:0 0 0 6px rgba(var(--acc-rgb,6,182,212),.12)"></div>' +
-    '</div>' +
-  '</div>';
+  feed.style.display = 'none';
+  feed.innerHTML = '';
 }
 
 function renderCopilotError() {
   var feed = document.getElementById('copilot-feed');
   if (!feed) return;
-  feed.style.display = 'block';
-  feed.innerHTML = '<div style="background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:14px 15px">' +
-    '<div style="font-size:13px;font-weight:800;color:#fff;margin-bottom:4px">Decision Brief unavailable</div>' +
-    '<div style="font-size:11.5px;color:rgba(255,255,255,.45);margin-bottom:12px">Check your connection and try again.</div>' +
-    '<button onclick="clearCopilotCache();fetchCopilotCards(true)" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:8px 14px;color:#fff;font:inherit;font-size:12px;font-weight:700;cursor:pointer">Retry</button>' +
-    '</div>';
+  feed.style.display = 'none';
+  feed.innerHTML = '';
 }
 
 function renderCopilotEmpty() {
   var feed = document.getElementById('copilot-feed');
   if (!feed) return;
-  feed.style.display = 'block';
-  feed.innerHTML = '<div style="background:linear-gradient(180deg,rgba(255,255,255,.042),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:14px 15px">' +
-    '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px">' +
-      '<div><div style="font-size:13px;font-weight:800;color:#fff;letter-spacing:-.2px">Decision Brief</div><div style="font-size:11.5px;color:rgba(255,255,255,.42);margin-top:3px">No urgent money moves right now.</div></div>' +
-      '<div style="font-size:11px;font-weight:800;color:#4ade80;background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.18);padding:6px 9px;border-radius:999px">Calm</div>' +
-    '</div>' +
-  '</div>';
+  feed.style.display = 'none';
+  feed.innerHTML = '';
 }
 
 function renderCopilotAwaitingAuth(message) {
   var feed = document.getElementById('copilot-feed');
   if (!feed) return;
-  feed.style.display = 'block';
-  feed.innerHTML = '<div style="background:linear-gradient(180deg,rgba(var(--acc-rgb,6,182,212),.08),rgba(255,255,255,.02));border:1px solid rgba(var(--acc-rgb,6,182,212),.16);border-radius:18px;padding:14px 15px;box-shadow:0 10px 30px rgba(0,0,0,.16)">' +
-    '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px">' +
-      '<div><div style="font-size:13px;font-weight:800;color:#fff;letter-spacing:-.2px">Decision Brief</div><div style="font-size:11.5px;color:rgba(255,255,255,.5);margin-top:3px">' + escCopilot(message || 'Secure sign-in finishes your briefing.') + '</div></div>' +
-      '<div style="font-size:11px;font-weight:800;color:var(--acc);background:rgba(var(--acc-rgb,6,182,212),.12);border:1px solid rgba(var(--acc-rgb,6,182,212),.18);padding:6px 9px;border-radius:999px">Secure</div>' +
-    '</div>' +
-  '</div>';
+  feed.style.display = 'none';
+  feed.innerHTML = '';
 }
 
 var COPILOT_URGENCY = {

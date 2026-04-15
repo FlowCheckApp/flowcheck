@@ -1385,7 +1385,7 @@ input[type="number"], input[type="date"], input[type="text"], input[type="passwo
   0%,100% { box-shadow: 0 6px 20px rgba(45,122,79,.4); }
   50%      { box-shadow: 0 6px 28px rgba(45,122,79,.7), 0 0 0 8px rgba(45,122,79,.12); }
 }
-#quick-add-fab { animation: fabPulse 2.5s ease-in-out 1s 2; }
+#quick-add-fab { animation: none !important; }
 #quick-add-fab:active { transform: scale(.93) !important; }
 .spend-tab.active { background: var(--grn) !important; color: #fff !important; border-color: var(--grn) !important; }
 .spend-tab { transition: all .15s; }
@@ -1529,9 +1529,9 @@ body::after {
 
 /* FAB */
 #quick-add-fab {
-  background: linear-gradient(135deg, #00e5a0, #00b87a) !important;
-  color: #050a0e !important;
-  box-shadow: 0 4px 24px rgba(var(--acc-rgb,6,182,212),0.4), 0 0 40px rgba(var(--acc-rgb,6,182,212),0.15) !important;
+  background: linear-gradient(180deg, rgba(var(--acc-rgb,6,182,212),.96), rgba(var(--acc-rgb,6,182,212),.84)) !important;
+  color: #031017 !important;
+  box-shadow: 0 16px 36px rgba(0,0,0,.28), 0 10px 20px rgba(var(--acc-rgb,6,182,212),0.18) !important;
 }
 
 /* Scrollbar */
@@ -2253,11 +2253,11 @@ body.fc-page-settings #pg-settings.on > div {
 <script src="/js/app-auth.js"></script>
 <script src="/js/app-analytics.js"></script>
 <script src="/js/app-copilot.js"></script>
-<script src="/js/patch-dashboard.js"></script>
 <script src="/js/patch-categories.js"></script>
 <script src="/js/patch-savings.js"></script>
 <script src="/js/patch-accounts.js"></script>
 <script src="/js/patch-features.js"></script>
+<script src="/js/patch-subscription-legal.js"></script>
 <script src="/js/app-copilot-fix.js"></script>
 <script src="/js/patch-delete-account.js"></script>
 <link rel="stylesheet" href="/css/patch-visual.css">
@@ -2391,7 +2391,7 @@ body.fc-page-settings #pg-settings.on > div {
           </div>
           <div id="dash-brief-badge" style="flex-shrink:0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:999px;padding:7px 12px;font-size:11px;font-weight:700;color:rgba(255,255,255,.52)">Loading</div>
         </div>
-        <div id="dash-brief-tags" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;position:relative;z-index:1">
+        <div id="dash-brief-tags" style="display:none;flex-wrap:wrap;gap:8px;margin-bottom:10px;position:relative;z-index:1">
           <div style="display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.06);font-size:11px;font-weight:700;color:rgba(255,255,255,.46)">
             <span style="color:#4ade80">●</span><span>Updated from your live money flow</span>
           </div>
@@ -2399,7 +2399,7 @@ body.fc-page-settings #pg-settings.on > div {
             <span style="color:var(--acc)">•</span><span>One clear next move</span>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;position:relative;z-index:1">
+        <div id="dash-brief-primary-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;position:relative;z-index:1">
           <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.06);border-radius:15px;padding:12px 11px">
             <div style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.26);margin-bottom:5px">Daily Pace</div>
             <div id="dash-brief-daily" style="font-size:15px;font-weight:800;color:#fff;letter-spacing:-.3px">$0/day</div>
@@ -2413,7 +2413,7 @@ body.fc-page-settings #pg-settings.on > div {
             <div id="dash-brief-payday" style="font-size:15px;font-weight:800;color:#fff;letter-spacing:-.3px">Soon</div>
           </div>
         </div>
-        <div id="dash-brief-secondary-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;position:relative;z-index:1">
+        <div id="dash-brief-secondary-grid" style="display:none;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;position:relative;z-index:1">
           <div style="background:rgba(0,0,0,.14);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:11px 10px">
             <div style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.24);margin-bottom:4px">Money Pulse</div>
             <div id="dash-pulse-pace" style="font-size:13px;font-weight:800;color:#fff;letter-spacing:-.2px">Steady</div>
@@ -6094,6 +6094,7 @@ function rDashDailyBrief() {
   var trustSubEl = document.getElementById('dash-pulse-trust-sub');
   var tagsWrap = document.getElementById('dash-brief-tags');
   var secondaryGrid = document.getElementById('dash-brief-secondary-grid');
+  var briefWrap = document.getElementById('dash-day-brief');
   if (!titleEl || typeof FC_PE === 'undefined') return;
 
   var snap = FC_PE.computeSnapshot();
@@ -6111,10 +6112,11 @@ function rDashDailyBrief() {
     tight:  { title:'You are close to the line', copy:'Your plan still works, but this is a good moment to keep wants spending calm until the next paycheck lands.', badge:'Use care', badgeBg:'rgba(var(--acc-rgb,6,182,212),.12)', badgeBd:'rgba(var(--acc-rgb,6,182,212),.18)', badgeFg:'var(--acc)', btn:'See what is reserved →', action:function(){ toggleSafeBreakdown(); } },
     info:   { title:'A few obligations are coming up', copy:'Nothing alarming, but upcoming bills are the main thing shaping your money right now. Stay ahead of them.', badge:'Upcoming', badgeBg:'rgba(96,165,250,.12)', badgeBd:'rgba(96,165,250,.18)', badgeFg:'#60a5fa', btn:'View upcoming bills →', action:function(){ go('bills'); } },
     good:   { title:'You have room to move', copy:'Your plan looks healthy right now. FlowCheck is already accounting for the important obligations ahead of payday.', badge:'On track', badgeBg:'rgba(74,222,128,.12)', badgeBd:'rgba(74,222,128,.18)', badgeFg:'#4ade80', btn:'Review recent activity →', action:function(){ fcNav('transactions'); } },
-    setup:  { title:'Finish your money setup', copy:'Income, checking, and payday are what make FlowCheck feel real.', badge:'Set up', badgeBg:'rgba(var(--acc-rgb,6,182,212),.12)', badgeBd:'rgba(var(--acc-rgb,6,182,212),.18)', badgeFg:'var(--acc)', btn:'Finish setup →', action:function(){ fcNav('budget'); } }
+    setup:  { title:'Finish your money setup', copy:'Add the few details that make your safe-to-spend number feel real.', badge:'Set up', badgeBg:'rgba(var(--acc-rgb,6,182,212),.12)', badgeBd:'rgba(var(--acc-rgb,6,182,212),.18)', badgeFg:'var(--acc)', btn:'Finish setup →', action:function(){ fcNav('budget'); } }
   };
   var ui = stateMap[insight.level] || stateMap.good;
 
+  if (briefWrap) briefWrap.setAttribute('data-mode', insight.level === 'setup' ? 'setup' : 'live');
   if (kickerEl) kickerEl.textContent = insight.level === 'setup' ? 'Get started' : 'Decision Brief';
   titleEl.textContent = ui.title;
   copyEl.textContent = ui.copy;
@@ -6164,7 +6166,7 @@ function rDashDailyBrief() {
         paceEl.style.color = 'var(--acc)';
         paceSubEl.textContent = 'Spent in the last 7 days';
       } else {
-        paceEl.textContent = 'Fresh month';
+        paceEl.textContent = 'Fresh start';
         paceEl.style.color = '#4ade80';
         paceSubEl.textContent = 'No recent spend pressure';
       }
@@ -6172,7 +6174,7 @@ function rDashDailyBrief() {
     if (reviewEl && reviewSubEl) {
       reviewEl.textContent = reviewQueue.length ? reviewQueue.length + ' to verify' : 'Queue clear';
       reviewEl.style.color = reviewQueue.length ? '#fbbf24' : '#4ade80';
-      reviewSubEl.textContent = reviewQueue.length ? 'Transfers, payments, or fuzzy income' : 'No low-confidence transactions';
+      reviewSubEl.textContent = reviewQueue.length ? 'A few transactions need a closer look' : 'No low-confidence transactions';
     }
     if (trustEl && trustSubEl) {
       if (linked > 0 && faceOn) {
@@ -6182,11 +6184,11 @@ function rDashDailyBrief() {
       } else if (linked > 0) {
         trustEl.textContent = 'Read-only sync';
         trustEl.style.color = '#60a5fa';
-        trustSubEl.textContent = linked + ' linked account' + (linked !== 1 ? 's' : '') + ' protected server-side';
+        trustSubEl.textContent = linked + ' linked account' + (linked !== 1 ? 's' : '') + ' protected';
       } else {
         trustEl.textContent = 'Private mode';
         trustEl.style.color = '#a78bfa';
-        trustSubEl.textContent = 'Local-first budgeting until bank sync is connected';
+        trustSubEl.textContent = 'Local-first until bank sync is connected';
       }
     }
   })();
@@ -6816,17 +6818,21 @@ function rDashPremiumVisibility() {
   var statGrid = document.getElementById('dash-stat-grid');
   var accountsSection = document.getElementById('dash-accounts-section');
   var txSection = document.getElementById('dash-transactions-section');
+  var upcomingSection = document.getElementById('dash-upcoming-section');
   var hasDebt = typeof debts !== 'undefined' && debts.some(function(d){ return (d.bal || 0) > 0; });
   var hasSavings = typeof savGoals !== 'undefined' && savGoals.some(function(g){ return (g.saved || 0) > 0 || (g.target || 0) > 0; });
   var hasBills = typeof bills !== 'undefined' && bills.length > 0;
   var hasTxns = typeof logList !== 'undefined' && logList.length > 0;
   var hasLinked = (typeof hasLinkedPlaidItem === 'function') ? hasLinkedPlaidItem() : false;
+  var reviewQueueCount = (typeof getTxnReviewQueue === 'function' && Array.isArray(logList)) ? getTxnReviewQueue(logList).length : 0;
   var meaningfulTiles = 0;
   if (hasDebt) meaningfulTiles++;
   if (hasSavings) meaningfulTiles++;
   if (hasBills) meaningfulTiles++;
-  if (statGrid) statGrid.style.display = meaningfulTiles >= 1 ? 'grid' : 'none';
-  if (txSection) txSection.style.paddingTop = hasLinked ? '14px' : '18px';
+  if (reviewQueueCount > 0) meaningfulTiles++;
+  if (statGrid) statGrid.style.display = meaningfulTiles >= 2 ? 'grid' : 'none';
+  if (txSection) txSection.style.paddingTop = hasLinked ? '14px' : '16px';
+  if (upcomingSection && !hasBills) upcomingSection.style.display = 'none';
   if (accountsSection) accountsSection.style.display = hasLinked ? 'block' : (hasTxns || hasBills ? 'none' : 'block');
 }
 
@@ -8066,16 +8072,17 @@ function quickAdd(){
 function updateFAB(page){
   var fab=el('quick-add-fab');
   if(!fab)return;
-  var showOn=['debt','savings','log','bills'];
+  var showOn=['debt','savings','bills'];
   if(showOn.indexOf(page)>=0){
     fab.style.display='flex';
     // Animate in
-    fab.style.transform='scale(0)';
+    fab.style.transform='translateY(8px) scale(.96)';
     fab.style.opacity='0';
-    setTimeout(function(){fab.style.transform='scale(1)';fab.style.opacity='1';fab.style.transition='transform .2s cubic-bezier(.34,1.4,.64,1),opacity .15s';},50);
+    setTimeout(function(){fab.style.transform='translateY(0) scale(1)';fab.style.opacity='1';fab.style.transition='transform .18s ease,opacity .15s';},50);
   } else {
     fab.style.display='none';
     fab.style.opacity='0';
+    fab.style.transform='translateY(10px) scale(.95)';
   }
 }
 
@@ -11088,6 +11095,42 @@ body.light-mode #pg-log #lg-rows > div {
   background: rgba(255,255,255,.06) !important;
 }
 
+#dash-day-brief[data-mode="setup"] {
+  padding: 14px 14px 13px !important;
+}
+
+#dash-day-brief[data-mode="setup"] #dash-brief-copy {
+  max-width: none !important;
+}
+
+#dash-day-brief[data-mode="setup"] #dash-brief-primary-grid {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 8px !important;
+}
+
+#dash-day-brief[data-mode="setup"] #dash-brief-primary-grid > div {
+  flex: 1 1 31%;
+  min-width: 0;
+  padding: 10px 10px !important;
+  border-radius: 14px !important;
+}
+
+#dash-day-brief[data-mode="setup"] #dash-brief-primary-grid > div > div:first-child {
+  font-size: 8.5px !important;
+  margin-bottom: 4px !important;
+}
+
+#dash-day-brief[data-mode="setup"] #dash-brief-primary-grid > div > div:last-child {
+  font-size: 13px !important;
+  line-height: 1.2 !important;
+}
+
+#dash-day-brief[data-mode="setup"] #dash-brief-btn {
+  margin-top: 10px !important;
+  padding: 11px 14px !important;
+}
+
 #dash-transactions-section > #dash-txns > div,
 #dash-accounts-section > #dash-accounts-wrap > div {
   min-height: 0;
@@ -11377,7 +11420,7 @@ function updateRecentTxns() {
     var db = b.date ? new Date(b.date+'T12:00:00') : new Date(0);
     return db - da;
   });
-  var recent = sorted.slice(0, 4);
+  var recent = sorted.slice(0, 3);
 
   container.innerHTML = recent.map(function(tx, i) {
     var type = classifyTxn(tx);
