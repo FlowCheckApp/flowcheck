@@ -2253,7 +2253,6 @@ body.fc-page-settings #pg-settings.on > div {
 <script src="/js/app-auth.js"></script>
 <script src="/js/app-analytics.js"></script>
 <script src="/js/app-copilot.js"></script>
-<script src="/js/patch-dashboard.js"></script>
 <script src="/js/patch-categories.js"></script>
 <script src="/js/patch-savings.js"></script>
 <script src="/js/patch-accounts.js"></script>
@@ -2261,9 +2260,7 @@ body.fc-page-settings #pg-settings.on > div {
 <script src="/js/patch-subscription-legal.js"></script>
 <script src="/js/app-copilot-fix.js"></script>
 <script src="/js/patch-delete-account.js"></script>
-<script src="/js/patch-v3.js"></script>
 <link rel="stylesheet" href="/css/patch-visual.css">
-<link rel="stylesheet" href="/css/patch-v3.css">
 </head>
 <body class="fc-booting">
 <div class="fc-startup" id="fc-startup" aria-hidden="true">
@@ -2373,7 +2370,7 @@ body.fc-page-settings #pg-settings.on > div {
     <!-- ══ GREETING TOPBAR ══ -->
     <div id="dash-greeting-wrap" style="display:none;padding:18px 18px 4px;align-items:center;justify-content:space-between">
       <div>
-        <div id="dash-greeting" style="font-size:24px;font-weight:800;font-family:Syne,sans-serif;letter-spacing:-0.8px;color:#fff;letter-spacing:-.5px;line-height:1.15">Good morning</div>
+        <div id="dash-greeting" style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.5px;line-height:1.15">Good morning</div>
         <div id="dash-date-sub" style="font-size:12px;color:rgba(255,255,255,.32);margin-top:2px;font-weight:500"></div>
       </div>
       <!-- Month badge -->
@@ -2467,7 +2464,7 @@ body.fc-page-settings #pg-settings.on > div {
             </div>
             <div style="display:flex;justify-content:space-between;border-top:1px solid rgba(255,255,255,.07);padding-top:12px">
               <div><div style="font-size:9px;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.28)">INCOME</div><div id="hero-income-line" style="font-size:14px;font-weight:700;color:rgba(255,255,255,.6);margin-top:2px">—</div></div>
-              <div style="text-align:right"><div style="font-size:9px;font-weight:800;letter-spacing:.12em;color:rgba(52,211,153,.55)">SAFE TO SPEND</div><div id="hero-safe-spend" style="font-size:26px;font-weight:800;color:#4ade80;margin-top:2px;cursor:pointer;font-family:Syne,sans-serif;letter-spacing:-1.5px;text-shadow:0 0 20px rgba(52,211,153,.25)" onclick="toggleSafeBreakdown()">—</div></div>
+              <div style="text-align:right"><div style="font-size:9px;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.28)">SAFE TO SPEND</div><div id="hero-safe-spend" style="font-size:14px;font-weight:700;color:#4ade80;margin-top:2px;cursor:pointer" onclick="toggleSafeBreakdown()">—</div></div>
             </div>
             <div id="hero-trend" style="font-size:11px;font-weight:600;color:rgba(255,255,255,.35);margin-top:6px;min-height:14px"></div>
             <!-- Safe-to-spend breakdown (expandable) -->
@@ -2875,7 +2872,7 @@ body.fc-page-settings #pg-settings.on > div {
           <div id="lg-income-val" style="font-size:14px;font-weight:700;color:rgba(255,255,255,.6);margin-top:2px">—</div>
         </div>
         <div style="text-align:right">
-          <div style="font-size:9px;font-weight:800;letter-spacing:.12em;color:rgba(52,211,153,.55)">SAFE TO SPEND</div>
+          <div style="font-size:9px;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.28)">SAFE TO SPEND</div>
           <div id="lg-safe-val" style="font-size:14px;font-weight:700;color:#4ade80;margin-top:2px">—</div>
         </div>
       </div>
